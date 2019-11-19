@@ -1,0 +1,251 @@
+.img-responsive
+{   width: 30%;}
+
+.expert-within-logo img{
+    width: 20%;
+}
+.auth-page-frgt{
+    margin: 1rem 0;
+}
+.auth-bg-container{
+padding-top: 4rem !important;
+}
+.expert-within-logo,
+.card,
+.footer-text{
+    background: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    width: 50%;
+    margin: 0 auto;
+    padding: 1rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+.card{
+    width: 100%;
+}
+.card-header{
+    background: none;
+}
+
+.card-body form input{
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.card-body form input:focus{
+    background: rgba(255, 255, 255, 0.8);
+}
+
+#login-page,
+.auth-bg-container{
+    background: url('/images/Cover-Art-Opportunity.jpg')no-repeat right;
+    background-size: cover;
+    padding: 2rem 0;
+    height: 100vh;
+}
+.left-wrapper{
+    text-align: center;
+}
+.login-wrapper{
+    width: 50%;
+    margin: 3rem auto;
+    background:rgba(255,255,255, 0.8);
+    border-radius: 10px;
+    padding: 2rem 1rem;
+    height: 80%;
+}
+.login-forms-wrapper{
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+}
+.login-links ul li{
+    margin-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.login-links ul li a,
+.login-btn,
+.linkedin-btn,
+.auth-btn{
+    text-decoration: none;
+    color:#fff;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 4px;
+    padding: 0 3rem;
+    min-width: 64px;
+    height: 36px;
+    vertical-align: middle;
+    text-align: center;
+    text-overflow: ellipsis;
+    text-transform: normal;
+    color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 36px;
+    overflow: hidden;
+    outline: none;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+.nav{
+    display: inline-flex !important;
+}
+
+/* Hover, Focus */
+.login-links ul li a:hover,
+.login-links ul li a:focus{
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.login-links ul li a:hover::before {
+    opacity: 0.08;
+}
+
+.login-links ul li a:focus::before {
+    opacity: 0.24;
+}
+
+.login-links ul li a:hover:focus::before {
+    opacity: 0.3;
+}
+
+/* Active */
+.login-links ul li a:active {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.login-links ul li a:active::after {
+    opacity: 0.32;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0s;
+}
+
+/* Disabled */
+.login-links ul li a:disabled {
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.12);
+    box-shadow: none;
+    cursor: initial;
+}
+
+.login-links ul li a:disabled::before {
+    opacity: 0;
+}
+
+.login-links ul li a:disabled::after {
+    opacity: 0;
+}
+
+.form-group input{
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    padding: 1.3rem 1rem;
+}
+
+.login-btn,
+.auth-btn {
+    background: #d41872;
+    background: -webkit-linear-gradient(left,#a445b2,#d41872,#fa4299);
+    background: -o-linear-gradient(left,#a445b2,#d41872,#fa4299);
+    background: -moz-linear-gradient(left,#a445b2,#d41872,#fa4299);
+    background: linear-gradient(left,#a445b2,#d41872,#fa4299);
+    position: relative;
+    z-index: 1;
+    -webkit-transition: all .4s;
+    -o-transition: all .4s;
+    -moz-transition: all .4s;
+    transition: all .4s;
+    margin-top: 3rem;
+}
+
+.card-body .auth-btn{
+    margin-top: 0;
+}
+
+.login-btn::before{
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    border-radius: 21px;
+    background-color: #555;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    -webkit-transition: all .4s;
+    -o-transition: all .4s;
+    -moz-transition: all .4s;
+    transition: all .4s;
+
+}
+
+.login-btn:hover {
+    background-color: transparent;
+}
+
+.reset_pass{
+    position: absolute;
+    right: 2rem;
+}
+.reset_pass:hover{
+    text-decoration: none;
+    color: #bd59d4;
+}
+
+
+.linkedin-btn{
+    background-color: #bd59d4;
+    margin-top: 3rem;
+    padding: 0rem 1rem;
+    cursor: pointer;
+}
+.linkedin-btn:hover{
+    text-decoration: none;
+    color: #fff;
+}
+.form-group{
+   
+}
+.form-check .form-check-inline{
+
+}
+.styled-label{
+
+}
+.select-role{
+margin: 0 5rem;
+}
+.form-check-input{
+ position: absolute !important;
+}
+
+.form-check-label{
+    margin-left: 1rem;
+}
+
+
+.register-btn{
+    margin: 0 auto;
+}
+
+.invalid-feedback {
+    position: absolute;
+    bottom: -1rem;
+    display: block;
+}
+
+.navbar-brand{
+    padding: 0;
+    margin: 0;
+    font-size: 0;
+}
