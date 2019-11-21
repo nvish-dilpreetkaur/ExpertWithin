@@ -6,7 +6,7 @@
 
 <div class="login-wrapper">
 	<div class="left-wrapper">
-		<a href="/"><img src="{{ URL::asset('images/Logo.svg') }}" class="img-responsive"></a>        
+		<img src="images/login-image.png" class="img-responsive">
 	</div>
 
 	<div class="right-wrapper">
@@ -67,15 +67,11 @@
 										@endif
 									@enderror
 				<input id="tab_id" type="hidden" name="tab_id" value="signin">
-
-				
 			<button type="submit" class="login-btn">
-			{{ __('Log In') }}
+			{{ __('Sign In') }}
 			</button>
-				
 
-			<a class="reset_pass" href="{{route('password.reset')}}">Recover Password</a>
-			<!-- <a href="{{ url('/redirect') }}" class="linkedin-btn">Login With Linkedin</a> -->
+			<?php /*<a class="reset_pass" href="{{route('password.reset')}}">Forgot password?</a> */ ?>
 									
 								</div>
 							</div>
@@ -113,19 +109,15 @@
 					@endif
 				@enderror
 				
-				<div class="row">
-					<div class="col-md-6">
 					<input id="password" type="password" placeholder="Password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-						</div>
+
 				@error('password')
 					<span class="invalid-feedback" role="alert">
 						<strong>{{ $message }}</strong>
 					</span>
 				@enderror
-				<div class="col-md-6">
+				
 					<input id="password-confirm"  placeholder="Confirm Password" type="password" class="form-control @error('password') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password">
-					</div>
-				</div>
 
 					<div class="form-group row">
 					<div class="select-role">

@@ -10,8 +10,8 @@ return [
 
     // Users List Pagination
     'enablePagination'                 => true,
-    'paginateListSize'                 => 5,
-    'searchResultLimit'                 => 5,
+    'paginateListSize'                 => 35,
+    'searchResultLimit'                 => 35,
 
     // Enable Search Users- Uses jQuery Ajax
     'enableSearchUsers'                => true,

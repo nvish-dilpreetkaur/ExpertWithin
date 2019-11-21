@@ -113,30 +113,76 @@ class Opportunity extends Model
      */
     function myAppliedOpp($filters = array()){
 
-	$where[] = " t2.org_uid = '".$filters['loggedUserID']."' " ;
-	$where[] = " t2.apply = '1' " ;
-	$where[] = " t1.status != '".config('kloves.OPP_DELETE')."' " ;
+		$where[] = " t2.org_uid = '".$filters['loggedUserID']."' " ;
+		$where[] = " t2.apply = '1' " ;
+		$where[] = " t1.status != '".config('kloves.OPP_DELETE')."' " ;
 
-	if( !empty($where) )
-		$where = " WHERE ".implode(" AND ", $where );
-	else
-		$where = " ";
+		if( !empty($where) )
+			$where = " WHERE ".implode(" AND ", $where );
+		else
+			$where = " ";
 
-	$query = "SELECT t1.id , t1.opportunity, t1.status, t2.apply
-	, ( SELECT action_status FROM ".DB::getTablePrefix()."org_opportunity_user_actions
-	 WHERE id IN (SELECT MAX(id) FROM ".DB::getTablePrefix()."org_opportunity_user_actions WHERE applicant_id = '".$filters['loggedUserID']."' AND action_type = 1 AND oid = t1.id GROUP BY oid)  ) AS application_status
-	FROM ".DB::getTablePrefix()."org_opportunity AS t1
-	LEFT JOIN ".DB::getTablePrefix()."org_opportunity_users AS t2 
-	ON (t2.oid = t1.id AND t2.org_uid = '".$filters['loggedUserID']."') "
-	.$where
-	." ORDER BY t1.id DESC"
-	." LIMIT 3";
+		$query = "SELECT t1.id , t1.opportunity, t1.status, t2.apply
+		, ( SELECT action_status FROM ".DB::getTablePrefix()."org_opportunity_user_actions
+		WHERE id IN (SELECT MAX(id) FROM ".DB::getTablePrefix()."org_opportunity_user_actions WHERE applicant_id = '".$filters['loggedUserID']."' AND action_type = 1 AND oid = t1.id GROUP BY oid)  ) AS application_status
+		FROM ".DB::getTablePrefix()."org_opportunity AS t1
+		LEFT JOIN ".DB::getTablePrefix()."org_opportunity_users AS t2 
+		ON (t2.oid = t1.id AND t2.org_uid = '".$filters['loggedUserID']."') "
+		.$where
+		." ORDER BY t1.id DESC"
+		." LIMIT 3";
 
-	$opportunitiesResult = DB::select( DB::raw($query) );  //prd($opportunitiesResult);
-  
-	return $opportunitiesResult;
+		$opportunitiesResult = DB::select( DB::raw($query) );  //prd($opportunitiesResult);
+	
+		return $opportunitiesResult;
 
-}
+	}
+
+	/**
+	 * get data for opportunity by ID .
+	 *
+	 * @param  $filters
+	 * @return Response
+	 */
+	function getOpportunityDetailsByID($filters = array()){
+
+		$where[] = " t1.org_id = '".auth()->user()->org_id."' " ;
+		$where[] = " t1.id = '".$filters['id']."' " ;
+
+		if( !empty($where) )
+			$where = " WHERE ".implode(" AND ", $where );
+		else
+			$where = " ";
+
+		$query = "SELECT t1.id AS opp_id, t1.opportunity, t1.opportunity_desc, t1.rewards, t1.tokens
+		, t1.incentives, t1.start_date, t1.end_date, t1.apply_before, t2.firstName AS uname, t3.department
+		FROM ".DB::getTablePrefix()."org_opportunity AS t1 
+		LEFT JOIN  ".DB::getTablePrefix()."users AS  t2 ON (t2.id = t1.org_uid)
+		LEFT JOIN   ".DB::getTablePrefix()."user_profiles AS  t3 ON (t3.user_id = t1.org_uid)"
+		.$where;
+
+		//prd($query);
+		$opportunitiesResult = DB::select( DB::raw($query) )[0]; 
+
+		/** get skills */
+		$skillQuery = "SELECT t1.tid , t2.name  
+		FROM ".DB::getTablePrefix()."org_opportunity_terms_rel AS t1
+		LEFT JOIN ".DB::getTablePrefix()."taxonomy_term_data AS t2 ON (t2.tid = t1.tid) 
+		WHERE t1.oid = '".$filters['id']."' AND t1.vid = '".config('kloves.SKILL_AREA')."' ";
+		$skillResult = DB::select( DB::raw($skillQuery) );  //prd($skillResult);
+
+		/** get skills */
+		$focusQuery = "SELECT t1.tid , t2.name  
+		FROM ".DB::getTablePrefix()."org_opportunity_terms_rel AS t1
+		LEFT JOIN ".DB::getTablePrefix()."taxonomy_term_data AS t2 ON (t2.tid = t1.tid) 
+		WHERE t1.oid = '".$filters['id']."' AND t1.vid = '".config('kloves.FOCUS_AREA')."' ";
+		$focusResult = DB::select( DB::raw($focusQuery) );  //prd($focusQuery);
+
+		$opportunitiesResult->skills = $skillResult;
+		$opportunitiesResult->focus = $focusResult; //prd($opportunitiesResult);
+		return $opportunitiesResult;
+
+	}
 
 	
 	

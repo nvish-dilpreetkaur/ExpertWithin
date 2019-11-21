@@ -34,6 +34,8 @@ Route::group( ['middleware' => ['auth']], function() {
 
 	Route::post('/sort-widget', 'IndexController@sortWidget')->name('sort-widget');
 	Route::post('/feed-action', 'FeedController@feedAction')->name('feed-action');
+
+	Route::get('view-opportunity/{id}','OpportunityController@view')->name('view-opportunity');
 	/*
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::any('search', 'IndexController@searchOpportunity')->name('search');

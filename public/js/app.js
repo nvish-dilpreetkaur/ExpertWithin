@@ -20,7 +20,7 @@
         $('.fixme').css({
             position: 'fixed',
             top: '5rem',
-            'max-width':'21rem'
+            'width':'21%'
         });
         } else {
         $('.fixme').css({
@@ -37,7 +37,8 @@
     $('.fixme-rite-sec').css({
         position: 'fixed',
         top: '5rem',
-        'max-width':'21rem'
+        width:'23%'
+        // 'max-width':'21rem'
     });
     } else {
     $('.fixme-rite-sec').css({

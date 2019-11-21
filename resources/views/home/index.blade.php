@@ -6,14 +6,14 @@
 	<div class="main-contnt-body" id="main-page">
 		<div class="row">
 		<!--LEFT-SECTION-->
-				<div class="col-md-4 col-lg-4 main-page__left-section--outer">
+				<div class="main-page__left-section--outer">
 					<div class="main-page__cmmn-card">
 					<div class="main-page__cmmn-card--heading"><i class="fas fa-newspaper"></i><span>Daily Digest – {{ $todatTime = Carbon\Carbon::now()->format('D, F d, Y') }}</span></div>
 							<ul>
 								<li>You have <span class="blue-txt-clr">1 Open Opportunity in draft.</span></li>
-								<li><span class="blue-txt-clr">Acknowledge </span>Mock Choi for completing an opp</li>
+								<li><span class="blue-txt-clr">Acknowledge </span> Mock Choi for completing an opp</li>
 								<li><span class="blue-txt-clr">Natasha Vargas</span> acknowledged you.</li>
-								<li>There are <span class="blue-txt-clr">2 new opportunities </span>related to your skill sets, focus areas</li>
+								<li>There are <span class="blue-txt-clr">2 new opportunities </span> related to your skill sets, focus areas</li>
 							</ul>
 							<div class="main-page__cmmn-card--footer">
 								<p class="show-more">Show More</p>
@@ -38,7 +38,7 @@
 					</div>
 				</div>
 	<!--MIDDLE-SCROLL-SECTION-->
-				<div class="col-md-4 col-lg-4 for-null-paddng main-page__middle-section--outer">
+				<div class="main-page__middle-section--outer">
 					<div class="middle-scroll-section__outer">
 						<div class="middle-section__cmmn-card">
 							<p>What would you like to do?</p>
@@ -78,7 +78,8 @@
 						</div>
 						<!-------->
 						<div class="to-sort-feed">
-							<p>Sort feed by</p>
+							<span>Sort feed by</span>
+							<i class="fas fa-sliders-h"></i>
 						</div>
 						<!----1-->
 						<div id="home-feed">
@@ -88,7 +89,7 @@
 					</div>
 				</div>
 	<!--RIGHT-SECTION-->
-				<div class="col-md-4 col-lg-4 main-page__right-section--outer">
+				<div class="main-page__right-section--outer">
 					<div class="main-page__cmmn-card main-page__user-info-card">
 						<div class="container">
 						<div class="row clearfix">
@@ -380,13 +381,12 @@ $(document).ready(function() {
 
 
 	function remove_feed(feed_id){
-		alert(feed_id)
 		$.ajax({
             url: "{{ route('feed-action') }}",
             type: "POST",
             data: {
 			'feed_id': feed_id,
-			'removed_feed': 1
+			'action': 'remove_feed'
             },
             beforeSend: function() {
             },
@@ -395,8 +395,10 @@ $(document).ready(function() {
             success: function() {
             },
             complete: function(data) {
-                var obj = $.parseJSON(data.responseText); console.log(obj)
-                //$('#load_more_wrapper').remove();
+                var obj = $.parseJSON(data.responseText); //console.log(obj)
+			if(obj.type='success'){
+				$('#parent-'+feed_id).html(obj.feed_html);
+			}
                //$('#home-feed').append(obj.html);
             },
         });

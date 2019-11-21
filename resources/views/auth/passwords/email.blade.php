@@ -5,7 +5,7 @@
 <div class="auth-section-wrap">
         <div class="auth-bg-container">
             <div class="expert-within-logo">
-                    <a href="/"><img src="{{ URL::asset('images/Logo.svg') }}"></a>
+                <img src="/images/Logo.svg">
             </div>
         <div class="auth-bg-picture" id="auth-page-frgt">
         
@@ -13,7 +13,7 @@
 <div class="row justify-content-center">  
         <div class="col-md-8 auth-page-frgt">
             <div class="card">
-                <div class="card-header">{{ __('Enter recovery Email address') }}</div>
+                <div class="card-header">{{ __('Forgot Password') }}</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -42,7 +42,7 @@
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary auth-btn">
-                                    {{ __('Send Recovery Link') }}
+                                    {{ __('Send Password Reset Link') }}
                                 </button>
                             </div>
                         </div>
@@ -53,11 +53,7 @@
     </div>
 </div>
 </div>
-        <!-- <div class="footer my-opportunities-page inner-profile-page">
-            <div class="container">
-                <div class="footer-text">© 2020 ExpertWithin™ All rights reserved.</div>
-            </div>
-        </div> -->
+      
  </div>
  </div>
 @endsection

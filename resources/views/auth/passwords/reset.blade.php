@@ -4,7 +4,7 @@
 <div class="auth-section-wrap">
         <div class="auth-bg-container">
             <div class="expert-within-logo">
-                <a href="/"><img src="{{ URL::asset('images/Logo.svg') }}"></a>
+                <img src="/images/Logo.svg">
             </div>
         <div class="auth-bg-picture" id="auth-page-frgt">
        
@@ -70,11 +70,7 @@
     </div>
 </div>
 </div>
-        <div class="footer my-opportunities-page inner-profile-page">
-            <div class="container">
-                <div class="footer-text">© 2019 ExpertWithin™ All rights reserved.</div>
-            </div>
-        </div>
+   
 <div>
 </div>
 @endsection

@@ -27,10 +27,12 @@ h3, p{
     margin: 0 auto;
     padding: 1rem 0;;
     margin-top: 4.4rem;
-   
+   display: flex;
+   flex-wrap: wrap;
 }
 .container{
     position: relative;
+    max-width: 76.5rem;
 }
 /* .container-fluid{
     background-color: #FFFFFF;
@@ -88,7 +90,7 @@ h3, p{
     padding-right: 16px;
 }
 body.modal-open {
-    overflow: auto !important;
+    overflow: initial !important;
     height: 100%;
     padding-right: 0 !important;
 }
@@ -322,6 +324,7 @@ button:focus{
 }
 .main-logo{
     margin-top: 1.5rem;
+    width: 35%;
 }
 
 .header-search-box{
@@ -350,8 +353,9 @@ button:focus{
     padding-bottom: 0;
 }
 .header-dropdown__profile--user-info{
-
+    transform: translate3d(0rem, 0.4rem, 0rem) !important;
 }
+
 .header-dropdown__profile--user-name{
     font-size: 0.75rem;
 }
@@ -399,7 +403,7 @@ button:focus{
 .header-dropdown__profile--user-info .expert-tokens__stats--sub-title p, 
 .header-dropdown__profile--user-info .expert-tokens__stats--numbers p{
     margin-left: 0rem;
-    font-size: 0.5rem;
+    font-size: 0.6rem;
 }
 .header-dropdown__profile-card__stats--number a{
     text-decoration: none;
@@ -427,22 +431,45 @@ button:focus{
 /* ---------------------------------------------------
    MAIN PAGE CONTENT STYLE START
 ----------------------------------------------------- */
+/* .main-page__left-section--outer,
+.main-page__right-section--outer{
+    display: none;
+}
+
+.main-page__middle-section--outer{
+    width: 90%;
+    margin: 0 auto;
+} */
+/* @media screen and (min-width: 768px){ */
 .main-page__left-section--outer{
-    max-width: 23rem;
+    /* max-width: 23rem;*/
+    /* max-width: 21.8rem ; */
+    flex-basis: 29%;
+    padding: 0 0 0 1rem;
    
 }
 
 .main-page__middle-section--outer{
-    max-width: 27.1rem;
-    /* overflow: auto;
+    /* max-width: 27.1rem;    
+    overflow: auto;
     height: 100vh; */
-}
+    max-width: 31rem; 
+    /* flex-basis: 40%; */
+    padding: 0 1rem 0rem 1.2rem;
 
-.main-page__right-section--outer{
-    max-width: 23rem;
-   
-    
+
 }
+.middle-scroll-section__outer{
+  
+}
+.main-page__right-section--outer{
+    /*max-width: 23rem;*/
+     /* max-width: 21.3rem ; */
+    flex-basis: 30.3%;
+    padding: 0rem;
+   }
+
+/* } */
 #main-page{
     /* padding: 1rem 0; */
     /* margin-top: 4.5rem; */
@@ -510,14 +537,6 @@ button:focus{
     cursor: pointer;
 }
 
-/****DOTS--DROPDOWN--START(LEFT_SECTION)*****/
-
-.dots__options-list--for-left-section{
-    transform: translate3d(13.9rem, 2.4rem, 0rem) !important;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    min-width: 7rem !important;
-
-}
 
 
 
@@ -525,9 +544,18 @@ button:focus{
 
 /****DOTS--DROPDOWN--START(RIGHT_SECTION)*****/
 .dots__options-list{
+    transform: translate3d(16.5rem, 2.4rem, 0rem) !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    min-width: 7rem !important;
+}
+
+/****DOTS--DROPDOWN--START(LEFT_SECTION)*****/
+
+.dots__options-list--for-left-section{
     transform: translate3d(13.9rem, 2.4rem, 0rem) !important;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     min-width: 7rem !important;
+
 }
 
 .dots__options-list ul,
@@ -540,7 +568,22 @@ button:focus{
 .dots__options-list ul li,
 .dots__options-list--for-feed ul li{
     font-size: 0.75rem;
-    margin-left: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+.dots__options-list ul li:hover,
+.dots__options-list--for-feed ul li:hover{
+ background-color: #DEDEDE;
+}
+
+.dots__options-list ul li:active,
+.dots__options-list ul li a:active,
+.dots__options-list--for-feed ul li:active,
+.dots__options-list--for-feed ul li a:active,
+.dots__options-list--for-left-section ul li:active,
+.dots__options-list--for-left-section ul li a:active{
+    background-color: #006097;
+    color: #fff;
 }
 
 .dots__options-list ul li a,
@@ -553,10 +596,10 @@ button:focus{
 
 /****DOTS--DROPDOWN--START(MIDDLE_SECTION__FEED)*****/
 .dots__options-list--for-feed{
-    transform: translate3d(17rem, 2.4rem, 0rem) !important;
+    transform: translate3d(20rem, 2.4rem, 0rem) !important;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     min-width: 7rem !important;
-    padding: 0 1rem 0 0;
+    padding: 0.5rem 0rem 0.5rem 0rem;
 }
 
 /****DOTS--DROPDOWN--END*****/
@@ -787,7 +830,7 @@ button:focus{
     background-size: auto !important;
     height: 2rem !important;
     background-repeat: no-repeat !important;
-    top: 25% !important;
+    top: 55% !important;
     width: 28px !important;
 }
 .swiper-button-prev, .swiper-container-rtl .swiper-button-next{
@@ -814,6 +857,7 @@ button:focus{
     border-radius: 4px;
     padding: 1rem 1rem 1.5rem 1rem;
     margin-bottom: .6rem;
+    position: relative;
 }
 
 .middle-section__cmmn-card p{
@@ -851,6 +895,7 @@ button:focus{
 
 .to-sort-feed{
     text-align: right;
+	font-size: 0.75rem;
 }
 .to-sort-feed p{
     font-size: 0.75rem;
@@ -884,6 +929,12 @@ button:focus{
     font-size: 0.875rem;
     margin-top: 3rem;
 }
+
+.main-page-cmmn-feed-card__heading.blue-txt-clr a{
+    text-decoration: none;
+    color: #0057A7;
+}
+
 .main-page-cmmn-feed-card__desc{
     font-size: 0.75rem;
     margin-top: .8rem;
@@ -919,6 +970,7 @@ button:focus{
 .main-page-cmmn-feed-card__footer--social-icons i{
     margin-left: 1rem;
     cursor: pointer;
+    color: #202124;
 }
 
 .yellow-cmmn-feed-card{
@@ -1198,10 +1250,218 @@ button:focus{
    PROFILE PAGE STYLE END
 ----------------------------------------------------- */
 
+/* ---------------------------------------------------
+  OPPORTUNITY_DETAIL_PAGE_STYLE_START
+----------------------------------------------------- */
+.opportunity-details__wrapper{
+    /* overflow: hidden;
+    height: 80vh; */
+}
+
+.opportunity-detail__left-section--outer{
+
+}
+
+   
+
+.opportunity-detail__righ-section--outer{
+ /* height: 70vh;
+ overflow: auto;
+ box-shadow: 0px 2px 2px #0000000D;
+ border: 1px solid #DEDEDE;
+ border-radius: 4px; */
+}
+
+.opportunity-details__wrapper .main-page__cmmn-card--footer {
+    margin-top: 0.5rem;
+    padding: .5rem 0 0 0;
+
+} 
+
+
+.opportunity-details__wrapper .main-page__cmmn-card--footer p{
+    font-size: 0.75rem;
+
+} 
+.oppor-detail__cmmn-card{
+
+}
+
+.oppor-detail__cmmn-card .main-page-cmmn-feed-card__top-blue-banner{
+
+}
+
+.oppor-detail__cmmn-card .main-page-cmmn-feed-card__top-blue-banner p{
+    font-size: 0.625rem;
+}
+
+
+.dots__options-list--oppor-detail{
+    transform: translate3d(14rem, 2.4rem, 0rem) !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    min-width: 7rem !important;
+}
+.opportunity-detail__righ-section--outer p{
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: .3rem;
+}
+
+.opportunity-detail-page__card{
+    background-color: #FFFFFF;
+    padding: 0;
+}
+.opportunity-detail-page__card--top-bottom{
+    padding: 0.5rem 2rem;
+    border: 1px solid #DEDEDE;
+    background-color: #F1F3F4;
+    border-top: none;
+}
+
+.opportunity-detail-page__card--apply-btn{
+    background: #FFFFFF;
+    border: 1px solid #DEDEDE;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.75rem;
+    float: right;
+    padding: 0.2rem 0;
+    opacity: 0.8;
+    transition: 0.3s;
+}
+.opportunity-detail-page__card--apply-btn:hover{
+    background-color: #DEDEDE;
+    opacity: 1;
+}
+.opportunity-detail-page__card--apply-btn a{
+    color: #202124;
+    text-decoration: none;
+    padding: 0.2rem 3rem;
+}
+
+.opportunity-detail-page__card .main-page-cmmn-feed-card__footer--social-icons{
+    text-align: left;
+}
+.opportunity-detail-page__card--content{
+    margin: 2.1rem 2rem;
+}
+.opportunity-detail-page__card--social-icons{
+
+}
+
+.opportunity-detail-page__card--social-icons i{
+    border: 1px solid #dedede;
+    border-radius: 4px;
+    padding: .5rem;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: .8rem;
+    opacity: 0.8;
+    transition: 0.3s;
+}
+.opportunity-detail-page__card--social-icons i:hover{
+    background-color: #DEDEDE;
+    opacity: 1;
+}
+
+.oppor-create-card__heading{
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.oppor-create-card__left-content{
+    font-size: 0.75rem;
+}
+
+.for-fnt-weight{
+    font-weight: 600;
+}
+.oppor-create-card__content-rewards {
+    margin: 0.4rem 0 1rem 0;
+}
+.oppor-create-card__content-rewards span{
+    background-color: #0057A7;
+    color: #fff;
+    font-size: 0.625rem;
+    padding: 0 0.4rem;
+}
+.oppor-create-card__content-rewards i{
+    margin-left: 1rem;
+}
+.oppor-create-card__content-rewards i span{
+    color: #0057A7;
+    background-color: transparent;
+    font-size: 0.8rem;
+}
+.oppor-create-card__content--cmmn-heading{
+    color: #202124;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+.oppor-create-card__content-summary{
+
+}
+.oppor-create-card__content-summary p{
+    margin-bottom: 2rem;
+}
+
+.red-colr-txt{
+   color: #E30A0A;
+   font-size: 0.75rem;
+   font-weight: 600;
+}
+
+.cmmn__pills ul{
+    list-style: none;
+    margin-bottom: 2rem;
+    padding: 0;
+}
+
+.cmmn__pills ul li{
+    display: inline-block;
+    border: 1px solid #0057A7;
+    border-radius: 34px;  
+    margin-right: .2rem;
+    margin-bottom: 0rem;
+    font-size: .7rem;
+    padding: 4px 8px;
+    opacity: 0.8;
+    transition: ease 0.5s;
+    
+}
+
+.cmmn__pills ul li a{
+    text-decoration: none;
+    color: #0057A7;
+    padding: 4px 8px;
+}
+
+.cmmn__pills ul li a:hover{
+    color: #fff;
+    
+}
+.cmmn__pills ul li:hover{
+    background-color: #0057A7;
+    opacity: 1;
+    color: #fff;
+}
+
+.oppor-create-card__footer .main-page-cmmn-feed-card__footer--social-icons i{
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+}
+
+
+/* ---------------------------------------------------
+  OPPORTUNITY_DETAIL_PAGE_STYLE_END
+----------------------------------------------------- */
+
 
 @media screen and (min-width: 768px){
-
+    .main-logo{
+        width: 100%;
     }
+}
 
 @media screen and (min-width: 992px){
 

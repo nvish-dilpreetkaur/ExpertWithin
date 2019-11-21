@@ -1,4 +1,4 @@
-@if ($myAppliedOpp != null)
+
 <div class="main-page__cmmn-card cmmn-card__-title-subtitle">
 	<div class="card-option-dots" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		<i class="fas fa-ellipsis-h"></i>
@@ -14,11 +14,14 @@
 		</div>
 	</div>
 	<div class="main-page__cmmn-card--heading"><i class="fas fa-briefcase"></i><span>My applied opportunities</span></div>
+	@if ($myAppliedOpp != null)
 	@foreach($myAppliedOpp as $rowApp)
 	<div class="cmmn-card-point-nd-status">
 		<p class="blue-txt-clr">{{ $rowApp->opportunity }}</p>
 		<p class="blue-highlit-txt"> {{ get_opp_application_status_label($rowApp->application_status) }}</p>
 	</div>
 	@endforeach
+	@else 
+		<p class="">No applied opportunities</p>
+	@endif
 </div>
-@endif

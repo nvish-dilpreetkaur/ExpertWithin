@@ -70,19 +70,22 @@ class Feed extends Model{
             
             // echo "<pre>"; print_r($where); 
             // die;
-            $query = "SELECT t1.id,t1.feed_type, t1.key_id, t2.opportunity, t2.opportunity_desc, t2.rewards, t2.tokens, t3.message AS ack_message, t4.firstName AS ack_user, t5.firstName AS ack_added_by, t6.department, t7.firstName AS opp_added_by, t8.department AS opp_dept, COALESCE(t9.liked_feed,0) AS liked_feed,  COALESCE(t9.marked_as_fav,0) AS marked_as_fav
-            FROM ".DB::getTablePrefix()."feeds AS t1
-            LEFT JOIN ".DB::getTablePrefix()."org_opportunity AS t2 ON (t2.id = t1.key_id AND t2.status =  '".config('kloves.OPP_APPROVED')."' AND t2.org_id = '". auth()->user()->org_id."')
-            LEFT JOIN ".DB::getTablePrefix()."acknoledgement AS t3 ON (t3.id = t1.key_id AND t3.status = 1) 
-            LEFT JOIN ".DB::getTablePrefix()."users AS t4 ON (t4.id = t3.user_id) 
-            LEFT JOIN ".DB::getTablePrefix()."users AS t5 ON (t5.id = t3.created_by) 
-            LEFT JOIN ".DB::getTablePrefix()."user_profiles AS t6 ON (t6.user_id = t3.created_by) 
-            LEFT JOIN ".DB::getTablePrefix()."users AS t7 ON (t7.id = t2.org_uid) 
-            LEFT JOIN ".DB::getTablePrefix()."user_profiles AS t8 ON (t8.user_id = t2.org_uid) 
-            LEFT JOIN ".DB::getTablePrefix()."feeds_user_action AS t9 ON (t9.feed_pk_id = t1.id) "
+            $query = "SELECT * FROM (
+                  SELECT t1.id,t1.feed_type, t1.key_id, t2.opportunity, t2.opportunity_desc, t2.rewards, t2.tokens, t3.message AS ack_message, t4.firstName AS ack_user, t5.firstName AS ack_added_by, t6.department, t7.firstName AS opp_added_by, t8.department AS opp_dept, COALESCE(t9.liked_feed,0) AS liked_feed,  COALESCE(t9.marked_as_fav,0) AS marked_as_fav
+                  ,  COALESCE(t9.removed_feed,0) AS removed_feed, t1.created_at
+                  FROM ".DB::getTablePrefix()."feeds AS t1
+                  LEFT JOIN ".DB::getTablePrefix()."org_opportunity AS t2 ON (t2.id = t1.key_id AND t2.status =  '".config('kloves.OPP_APPROVED')."' AND t2.org_id = '". auth()->user()->org_id."')
+                  LEFT JOIN ".DB::getTablePrefix()."acknoledgement AS t3 ON (t3.id = t1.key_id AND t3.status = 1) 
+                  LEFT JOIN ".DB::getTablePrefix()."users AS t4 ON (t4.id = t3.user_id) 
+                  LEFT JOIN ".DB::getTablePrefix()."users AS t5 ON (t5.id = t3.created_by) 
+                  LEFT JOIN ".DB::getTablePrefix()."user_profiles AS t6 ON (t6.user_id = t3.created_by) 
+                  LEFT JOIN ".DB::getTablePrefix()."users AS t7 ON (t7.id = t2.org_uid) 
+                  LEFT JOIN ".DB::getTablePrefix()."user_profiles AS t8 ON (t8.user_id = t2.org_uid) 
+                  LEFT JOIN ".DB::getTablePrefix()."feeds_user_action AS t9 ON (t9.feed_pk_id = t1.id AND t9.user_id = '". auth()->user()->id."') "
             .$where
-            ." ORDER BY t1.created_at DESC"
-            ." LIMIT  $offset, $limit "; 
+            ." )  AS t001 WHERE t001.removed_feed = 0
+                  ORDER BY t001.created_at DESC"
+                  ." LIMIT  $offset, $limit "; 
             //echo "<pre>"; print_r($query);  die; 
             $queResult = DB::select( DB::raw($query) );  //prd($queResult);
             
@@ -97,7 +100,7 @@ class Feed extends Model{
      */
     public function record_feeds_user_action($data = array()){
             try{ 
-                  $last_insert_id = DB::table('feeds')->insertGetId($data);
+                  $last_insert_id = DB::table('feeds_user_action')->insertGetId($data);
                   DB::commit();
                   return $last_insert_id;
             }catch(\Exception $e){
@@ -105,5 +108,6 @@ class Feed extends Model{
                   return false;
             }
       }
+
 }
 ?>

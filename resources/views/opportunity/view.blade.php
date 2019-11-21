@@ -1,491 +1,214 @@
 @extends('layouts.app')
 @section('content')   
-
-<!-- filters html -->
-@include('common.top-nav')
-@include('home.filters-section')
-<!-- filters html -->
-
-<div id="pageBodyWrapCls">
-	<!-- Details start -->
-	<section class="section-details" >
-	<div class="jumbotron jumbotron-fluid header-section-details">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-9">
-					<div class="block-left">
-					<div class="card-title-area">
-						<img src="{{ URL::asset('images/open-book-yellow.svg') }}" class="card-book-pic">
-						<div class="">
-							@foreach($opp_focus_list as $focRow)
-								{{ $loop->first ? '' : ', ' }}
-								{{$focRow->name }}
-							@endforeach
+<div class="container">
+	<div class="row clearfix">
+	   <div class="main-contnt-body">
+		   <div class="opportunity-details__wrapper">
+		<div class="row">
+		  
+		   <!--LEFT-SECTION-->
+		   <div class="col-md-8 col-lg-8 opportunity-detail__left-section--outer">
+			<div class="main-page__cmmn-card opportunity-detail-page__card">
+			   <div class="opportunity-detail-page__card--top-bottom">
+				   <div class="row clearfix">
+					   <div class="col-md-1">
+						<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+					   </div>
+					   <div class="col-md-2 for-null-paddng">
+						<div class="main-page-cmmn-feed-card__footer-area--desg">{{ $opportunity_data->uname }}</div>
+						<div class="main-page-cmmn-feed-card__footer-area--dept">{{ $opportunity_data->department }}</div>
+					   </div>
+					   <div class="col-md-4 for-null-paddng">
+						<div class="opportunity-detail-page__card--social-icons">
+						   <i class="far fa-thumbs-up" aria-hidden="true"></i>
+						   <i class="far fa-heart" aria-hidden="true"></i>
+						   <i class="far fa-comment" aria-hidden="true"></i>
+						   <i class="far fa-share-square" aria-hidden="true"></i>
 						</div>
+					   </div>
+					   <div class="col-md-5">
+						<div class="opportunity-detail-page__card--apply-btn">
+						   <a href="#">Apply</a>
+						</div>
+					   </div>
 					</div>
-					<p class="">{{ $opportunity_data->opportunity }}</p>
-					</div>
+			   </div>
+
+			   
+			   <div class="opportunity-detail-page__card--content">
+				<div class="row clearfix">
+				   <div class="col-md-6">
+					   <div class="opportunity-detail-page__card--content__left-section">
+						<div class="oppor-create-card__heading">
+							{{ $opportunity_data->opportunity }}
+						</div>   
+						<div class="oppor-create-card__left-content">
+						   <span>Est start <span class="for-fnt-weight">{{ date("d M, Y",strtotime($opportunity_data->start_date)) }}</span>  |  Est end <span class="for-fnt-weight">{{ date("d M, Y",strtotime($opportunity_data->end_date)) }}</span></span>
+						   <div class="oppor-create-card__content-rewards">
+						    <span><span class="for-fnt-weight"> Rewards</span> <span> {{ $opportunity_data->rewards }}</span> </span> 
+						     <i class="fas fa-coins gold-coins-color" aria-hidden="true"><span>{{ $opportunity_data->tokens }}</span></i>
+						   </div>
+						   <div class="oppor-create-card__content-summary">
+							<div class="oppor-create-card__content--cmmn-heading">Summary</div>
+							<p>{{ $opportunity_data->opportunity_desc }}</p>
+						   </div>
+						   <div class="oppor-create-card__content--cmmn-heading">What are the incentives?</div>
+						   <p>{{ $opportunity_data->incentives }}</p>
+						</div>                                        
+					   </div>                                      
+				   </div>
+				   <div class="col-md-6">
+					   <div class="opportunity-detail-page__card--content__right-section">
+						   <div class="oppor-create-card__heading red-colr-txt">
+							   Last day to apply: {{ date("d M, Y",strtotime($opportunity_data->apply_before)) }}
+						   </div>
+						   <div class="oppor-create-card__content--cmmn-heading">Skills</div>
+						   <div class="cmmn__pills">
+							<ul>
+								@foreach($opportunity_data->skills as  $skillrow)
+									<li><a href="javascript:void(0)">{{ $skillrow->name }}</a></li>
+								@endforeach
+							</ul>
+						   </div>
+
+						   <div class="oppor-create-card__content--cmmn-heading">Focus areas</div>
+						   <div class="cmmn__pills">
+							<ul>
+								@foreach($opportunity_data->focus as  $focusrow)
+									<li><a href="javascript:void(0)">{{ $focusrow->name }}</a></li>
+								@endforeach
+							</ul>
+						   </div>
+					   </div>                                      
+				   </div> 
 				</div>
-				<div class="col-lg-3">
-						<div class="block-right">
-							<div class="btn-group-action" id="detailActWrapper" data-likeurl="{{ url('opportunity/like', Crypt::encrypt($opportunity_data->id)) }}" data-unlikeurl="{{ url('opportunity/not_like', Crypt::encrypt($opportunity_data->id)) }}" data-likeimgurl="{{ URL::asset('images/thumbs-up-r.svg') }}" data-unlikeimgurl="{{ URL::asset('images/thumbs-up.svg') }}" data-favurl="{{ url('opportunity/favourite', Crypt::encrypt($opportunity_data->id)) }}" data-unfavurl="{{ url('opportunity/not_favourite', Crypt::encrypt($opportunity_data->id)) }}" data-favimgurl="{{ URL::asset('images/heart-fill.svg') }}" data-unfavimgurl="{{ URL::asset('images/heart-outline.svg') }}">
-								<!-- mark like -->
-								@if(!$loggedInUserID)
-									<a class="" href="{{ ($loggedInUserID) ? '' : route('login') }}">
-										<img src="{{ URL::asset('images/thumbs-up.svg') }}"><p>Like</p></a>
-								@elseif($opportunity_data->like == 0)
-									<a  href="javascript:void(0)"  class="likeBtn{{$opportunity_data->id}}" data-action="like"  data-page="OPD">
-									<img src="{{ URL::asset('images/thumbs-up.svg') }}"><p>Like</p>
-									</a>
-								@else
-								<a  href="javascript:void(0)"  class="likeBtn{{$opportunity_data->id}}" data-action="unlike" data-page="OPD">
-										<img src="{{ URL::asset('images/thumbs-up-r.svg') }}"><p>Like</p>
-									</a>
-								@endif
-								<!-- mark fav -->
-								@if(!$loggedInUserID)
-									<a class="" href="{{ ($loggedInUserID) ? '' : route('login') }}"><img src="{{ URL::asset('images/heart-outline.svg') }}"><p>Favorite</p></a>
-								@elseif($opportunity_data->favourite == 0)
-								<a  href="javascript:void(0)"  class="favBtn{{$opportunity_data->id}}" data-action="fav"  data-page="OPD">
-								<img src="{{ URL::asset('images/heart-outline.svg') }}" ><p>Favorite</p>
-								</a>
-								@else
-								<a   href="javascript:void(0)"  class="favBtn{{$opportunity_data->id}}" data-action="unfav"  data-page="OPD">
-								<img src="{{ URL::asset('images/heart-fill.svg') }}"><p>Favorite</p>
-								</a>
-					@endif
+			   </div>
+			   <div class="opportunity-detail-page__card--top-bottom">
+				   <div class="row clearfix">                                        
+					   <div class="col-md-12">
+						<div class="opportunity-detail-page__card--apply-btn">
+						   <a href="#">Apply</a>
+						</div>
+					   </div>
+					</div>
+			   </div>
+
+			</div>
+					<!------->
+
+				</div>
+		   <!--MIDDLE-SCROLL-SECTION-->
+		   <div class="col-md-4 col-lg-4 opportunity-detail__righ-section--outer">
+			<p>You may also like</p>
+			<div class="middle-scroll-section__outer">
+
+			   <!--------->
+
+			   <!-------->
+
+			   <!----1-->
+			   <div class="main-page-cmmn-feed-card main-page__cmmn-card oppor-detail__cmmn-card dropdown">
+				<div class="card-option-dots" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							 <i class="fas fa-ellipsis-h"></i>
 							</div>
-							
-						</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="bottom-section-details fixed-bottom">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-9">
-					<div class="block-left"> 
-						<p class="">{{ $opportunity_data->opportunity }}</p>
-						<p class="">{{ $opportunity_data->opportunity_desc }}</p>
-					</div>
-				</div>
-				<div class="col-lg-3">
-						<div class="block-right">
-						@if($loggedInUserID != $opportunity_data->org_uid)
-							@if(!$loggedInUserID)
-								<a href="{{ ($loggedInUserID) ? '' : route('login') }}" class="common-card-apply-btn">Apply</a>
-							@elseif($opportunity_data->apply == 0)
-								<a class="applyBtn{{$opportunity_data->id}} common-card-apply-btn"  data-oid="{{$opportunity_data->id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->id)) }}">Apply</a>
-							@else
-								<a class="applyBtn{{$opportunity_data->id}} common-card-apply-btn appliedOpp{{$opportunity_data->id}}" href="javascript:void(0)">{{ __('Applied') }}</a>
-							@endif
-						@endif
-						</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	@php $showApplicantTab = false  @endphp
-	@if( (in_array(config('kloves.ROLE_MANAGER'),explode(",",Auth::user()->roles))  && Auth::user()->id== $opportunity_data->org_uid ) || ($opportunity_data->apply==1) )
-		@php $showApplicantTab = true  @endphp
-	@endif
-	<div class="tab-nav-cont">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<ul class="nav nav-tabs" id="myTab" role="tablist">
-						<li class="nav-item">
-							<a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Details</a>
-						</li>
-						@if($showApplicantTab)
-						<li class="nav-item">
-							<a class="nav-link" id="applicants-tab" data-toggle="tab" href="#applicants" data-href="{{ url('opp-applicants', Crypt::encrypt($opportunity_data->id)) }}" role="tab" aria-controls="applicants" aria-selected="false">Applicants</a>
-						</li>
-						@endif
+				   <div class="dropdown-menu dots__options-list--for-feed dots__options-list--oppor-detail">
+					<ul>
+					   <li><a href="https://www.google.com/">Sort by</a></li>
+					   <li><a href="https://www.google.com/">Draft</a></li>
+					   <li><a href="https://www.google.com/">Publish</a></li>
+					   <li><a href="https://www.google.com/">Screen</a></li>
+					   <li><a href="https://www.google.com/">Complete</a></li>
+					   <li><a href="https://www.google.com/">Cancel</a></li>
 					</ul>
+				   </div>
+				<!-- </div> -->
+				<div class="main-page-cmmn-feed-card__top-blue-banner">
+				   <p>$150 Gift Card</p>
 				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tab-content-cont">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="tab-content">
-						<div class="tab-pane active" id="details" role="tabpanel" aria-labelledby="details-tab">
-							<div class="container-fluid">
-								<div class="row">
-									<div class="col-lg-9">
-										<h3>Opportunity summary</h3>
-										<p>{{ $opportunity_data->opportunity_description }}</p>
-
-										<!--<h3>Make a difference- incentive</h3>
-										<p>Klove research is developing a proof-of-concept prototype and will evaluate end-to-end system performance. Gain industry skill in this project.</p>-->
-
-										<h3>Reward</h3>
-										<p>{{ $opportunity_data->rewards }}</p>
-										<div class="skills-cont">
-											<h3>Skills</h3>
-											<p>
-												@foreach($opp_skill_list as $oppSkill)
-													<span class="badge-light">{{ $oppSkill->name }}</span>
-												@endforeach
-											</p>
-										</div>
-
-										<div class="comment-cont">
-											<h3>Comment opportunity</h3>
-											<form class="public-comment-form" method="POST" action="{{ url('post-opp-comment') }}">
-												<div class="form-group clearfix">
-												<textarea class="form-control char-limit" id="commentTextarea" placeholder="" name="comment_content" data-char-limit="500" required></textarea>
-												<div class="char-limit-text"></div>
-												</div>
-												@csrf
-												<input type="hidden" name="oid" value="{{  Crypt::encrypt($opportunity_data->id) }}">
-												<input type="hidden" name="to_id" value="{{  Crypt::encrypt($opportunity_data->org_uid) }}">
-												<input type="hidden" name="from_id" value="{{  Crypt::encrypt(Auth::user()->id) }}">
-												<input type="hidden" name="comment_type" value="2">
-												<button class="btn btn-light" type="submit">Post</button>
-											</form>
-										</div>
-										<div class="public-comment-section">
-											@include('opportunity.comment_listing')
-										</div>
-									</div>
-									<div class="col-lg-3">
-										<ul class="timeline-opportunity">
-											<li>
-												<h3>Apply Before:</h3>
-												<p>{{ date('m-d-y', strtotime($opportunity_data->apply_before)) }}</p>
-											</li>
-											<li>
-												<h3>Start:</h3>
-												<p>{{ date('m-d-y', strtotime($opportunity_data->start_date)) }}</p>
-											</li>
-											<li>
-												<h3>End:</h3>
-												<p>{{ date('m-d-y', strtotime($opportunity_data->end_date)) }}</p>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-						@if($showApplicantTab)
-						<div class="tab-pane" id="applicants" role="tabpanel" aria-labelledby="applicants-tab">
-							@include('opportunity.oppo_applicant_list')
-						</div>
-						@endif
+				<div class="main-page-cmmn-feed-card__heading blue-txt-clr">
+				   Collaborate on new storyline for Chelos
+				</div>
+				<div class="main-page-cmmn-feed-card__desc">
+				   Assist in providing hardware and software solutions enabling delivery of the latest Kloves technologies…
+				</div>
+				<div class="main-page-cmmn-feed-card__coins-info">
+				   <i class="fas fa-coins gold-coins-color"></i><span>25</span>
+				</div>
+				<div class="main-page-cmmn-feed-card__footer-area--border"></div>
+				<div class="main-page-cmmn-feed-card__footer-area oppor-create-card__footer">
+				   <div class="row clearfix">
+					<div class="col-md-1">
+					   <i class='fas fa-user-circle fa-2x'></i>
 					</div>
+					<div class="col-md-5">
+					   <div class="main-page-cmmn-feed-card__footer-area--desg">Vincent Lawson</div>
+					   <div class="main-page-cmmn-feed-card__footer-area--dept">IT Department</div>
+					</div>
+					<div class="col-md-5">
+					   <div class="main-page-cmmn-feed-card__footer--social-icons">
+						<i class="far fa-thumbs-up"></i>
+						<i class="far fa-heart"></i>
+						<i class="far fa-comment"></i>
+						<i class="far fa-share-square"></i>
+					   </div>
+					</div>
+				   </div>
 				</div>
+			   </div>
+			   <!------FEED-CARD-ENDS-HERE-->
+			   <!---------->
+			   <!---2--->
+			   <div class="main-page-cmmn-feed-card main-page__cmmn-card oppor-detail__cmmn-card">
+				<i class="fas fa-ellipsis-h card-option-dots"></i>
+				<div class="main-page-cmmn-feed-card__top-blue-banner">
+				   <p>$150 Gift Card</p>
+				</div>
+				<div class="main-page-cmmn-feed-card__heading blue-txt-clr">
+				   Audio Technology for TV
+				</div>
+				<div class="main-page-cmmn-feed-card__desc">
+				   Help to maintain the QA environment, assist in design, write & execute tests of audio coding & audio processing…
+				</div>
+				<div class="main-page-cmmn-feed-card__coins-info">
+				   <i class="fas fa-coins gold-coins-color"></i><span>25</span>
+				</div>
+				<div class="main-page-cmmn-feed-card__footer-area--border"></div>
+				<div class="main-page-cmmn-feed-card__footer-area oppor-create-card__footer">
+				   <div class="row clearfix">
+					<div class="col-md-1">
+					   <i class='fas fa-user-circle fa-2x'></i>
+					</div>
+					<div class="col-md-5">
+					   <div class="main-page-cmmn-feed-card__footer-area--desg">Vincent Lawson</div>
+					   <div class="main-page-cmmn-feed-card__footer-area--dept">IT Department</div>
+					</div>
+					<div class="col-md-5">
+					   <div class="main-page-cmmn-feed-card__footer--social-icons">
+						<i class="far fa-thumbs-up"></i>
+						<i class="far fa-heart"></i>
+						<i class="far fa-comment"></i>
+						<i class="far fa-share-square"></i>
+					   </div>
+					</div>
+				   </div>
+				</div>
+			   </div>
+			   <!------FEED-CARD-ENDS-HERE-->
+		
+			   <!------FEED-CARD-ENDS-HERE-->
+		
+			   <!-------CARD-ENDS-HERE-->
 			</div>
+			<div class="col-md-12">
+			<div class="main-page__cmmn-card--footer">
+				<p class="show-more">Show More</p>
+			</div>
+		   </div>
 		</div>
+		   <!--RIGHT-SECTION-->
+		</div>
+		</div><!-----opportunity-details__wrapper-END-->
+	   </div>
 	</div>
-	</section>
-	<!-- Details end -->
-	<!-------YOU MAY ALSO LIKE SECTION START---------------------->
-	<div class="recently-viewed-section-outer">
-			@include('opportunity.you-may-like')
-		</div>
-	<!-------YOU MAY ALSO LIKE SECTION START---------------------->
 </div>
-<script type="text/javascript">
-	$(document).ready(function () {
-		//$("#ajaxsuccess .ajaxsuccess-modal .modal-body .success-text").text('message');
-		//$('#ajaxsuccess').modal({show:true});
-		/** apply code : starts **/
-			$(document).on('click',"a[class^='applyBtn']",function(e){ 
-			e.stopPropagation();
-			var oppID = $(this).data('oid'); 
-			var elem = $(this); 
-			var url = $(this).attr('data-href');
-			performOpportunityAction(elem, url, oppID);
-		})
-		/** applyBtn code : ends **/
-		
-		/** like/dislike code : starts **/
-		$(document).on('click',"a[class^='likeBtn']",function(e){ 
-			e.stopPropagation();
-			var eventClass = $(this).attr('class');
-			var elem = $(this);
-			var url = $(this).attr('data-href');
-			performOpportunityAction(elem, url, eventClass);
-		})
-		/** like/dislike code : ends **/
-		
-		/** fav/unfav code : starts **/
-		$(document).on('click',"a[class^='favBtn']",function(e){
-			e.stopPropagation();
-			var eventClass = $(this).attr('class');
-			var elem = $(this);
-			var url = $(this).attr('data-href');
-			performOpportunityAction(elem, url, eventClass);
-		})
-		/** fav/unfav code : ends **/
-		
-		/** fav/unfav code : starts **/
-		$(document).on('click',".commentApplicant", function(e){  
-			$(this).closest('li').addClass('showCommentArea');
-		});
-
-		$(document).on("click", function (e) { 
-            //e.stopPropagation();
-            if (!$(e.target).is(".opp-comment-form, .opp-comment-form *, .commentApplicant")) {
-                if ($(".opp-comment-form").closest('li').hasClass("showCommentArea")) {
-                    $(".opp-comment-form").closest('li').removeClass('showCommentArea');
-                }
-		}
-        });
-		/** fav/unfav code : ends **/
-
-		/** get applicant list code : starts **/
-		/*$(document).on('click',"#applicants-tab", function(e){
-			var url = $(this).data('href');
-			getOppApplicantList(url)
-		}); */
-		/** get applicant list code : ends **/
-
-		/** perform manager action : starts **/
-		$(document).on('click',".actionMBtn", function(e){ 
-			var elem = $(this);
-			var action = elem.data('action');
-			if (confirm('Are you sure to '+action+' ?')) {
-				performOpportunityManagerAction(elem)
-			}else{
-				//do nothing
-			}
-			
-		});
-		/** perform manager action : ends **/
-
-		/** log comment action : starts **/
-		$(document).on('submit',".user-comment-form", function(e){
-			e.preventDefault();
-			postComment($(this))
-			
-		});
-		/** log comment action : ends **/
-
-		/** get latest comments : starts **/
-		$(document).on('click',".commentApplicant", function(e){
-			var elem = $(this);
-			refreshPrivateComments(elem)
-		});
-		/** get latest comments : ends **/
-
-		
-		/** log public comment action  : starts **/
-		$(document).on('keypress paste',"#commentTextarea", function(e){ 
-			$('.invalid-feedback').remove();	
-		})
-		$(document).on('submit',".public-comment-form", function(e){
-			e.preventDefault();
-			if ($.trim($('#commentTextarea').val()) == ""){
-				if($('.invalid-feedback :visible').length == 0){
-					$('#commentTextarea').after('<span class="invalid-feedback" role="alert"> <strong>Enter your comments.</strong></span>');	
-					$('.invalid-feedback').show();
-					$('.char-limit-text').html('');
-					$('#commentTextarea').val('');
-				}
-				return false;
-			}else{
-				$('.invalid-feedback').remove();	
-			}
-			postComment($(this),'PUBLIC_COMMENT')
-		});
-		/** log public comment action : ends **/
-		
-	});
-	
-	function postComment(elem,slug){
-		$.ajax({
-			url: SITE_URL+'/post-opp-comment',
-			type: "POST",
-			data:{ "formData" : elem.serialize() , "_token": "{{ csrf_token() }}",},
-			dataType: 'JSON',
-			beforeSend: function(){
-				
-			},error: function(){
-				alert('Post comment fetch ajax error!')
-			},success: function(){
-				
-			},complete: function( data ){
-				var obj = $.parseJSON( data.responseText ); 
-				if(obj.status=='1'){
-					//$("#ajaxsuccess .success-modal .modal-body .success-text").text(obj.message);
-					//$('#ajaxsuccess').modal({show:true});
-					if(obj.type=='1'){
-						//var refreshUrl = $('#applicants-tab').data('href');
-						//getOppApplicantList(refreshUrl)
-						$('.comment_content').val('');
-						refreshPrivateComments(elem)
-					}else if(obj.type=='2'){
-						$('#commentTextarea').val('');
-						$('.char-limit-text').html('');
-						refreshPublicComments()
-					}
-				}else{
-				
-				}
-			}
-		});
-		
-		return false
-	}
-
-
-	function refreshPublicComments(){
-		var id = $("input[name='oid']").val();
-		$.ajax({
-			url: SITE_URL+'/opp-comment-list/'+id,
-			type: "GET",
-			dataType: 'JSON',
-			beforeSend: function(){
-				
-			},error: function(){
-				alert('Applicant fetch ajax error!')
-			},success: function(){
-				
-			},complete: function( data ){
-				var obj = $.parseJSON( data.responseText ); 
-				if(obj.type=='success'){
-					$('.public-comment-section').html(obj.html);
-				}else{
-					//console.log( 'error in getting applicant tab' );
-				}
-			},
-		});
-	}
-
-	function performOpportunityManagerAction(elem){
-		var href = elem.data('href');
-		var action = elem.data('action');
-		var id = elem.data('oppid');
-		var applicant_id = elem.data('applicant_id');
-		$.ajax({
-			url: href,
-			type: "POST",
-			data:{
-				"action_type": 'APPLY',
-				"action": action,
-				"applicant_id": applicant_id,
-				"id": id,
-				"_token": "{{ csrf_token() }}",
-				},
-			dataType: 'JSON',
-			beforeSend: function(){
-				var action = elem.data('action')
-				if(action == 'approve' || action=='reject'){
-					var btnHTML = elem.html()
-					elem.html('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Processing')	
-				}
-			},error: function(){
-				alert('Applicant fetch ajax error!')
-			},success: function(){
-				
-			},complete: function( data ){
-				var obj = $.parseJSON( data.responseText ); 
-				if(obj.status=='1'){
-					//$("#success .success-modal .modal-body .success-text").text(obj.message);
-				//	$('#success').modal({show:true});
-					var refreshUrl = SITE_URL +'/opp-applicants/'+id;
-					getOppApplicantList(refreshUrl)
-				}else{
-				
-				}
-			},
-		});
-	}
-
-	function getOppApplicantList(url){
-		$.ajax({
-			url: url,
-			type: "GET",
-			data:{},
-			dataType: 'JSON',
-			beforeSend: function(){
-				
-			},error: function(){
-				alert('Applicant fetch ajax error!')
-			},success: function(){
-				
-			},complete: function( data ){
-				var obj = $.parseJSON( data.responseText ); 
-				if(obj.type=='success'){
-					$('#applicants').html(obj.html);
-				}else{
-					console.log( 'error in getting applicant tab' );
-				}
-			},
-		});
-	}
-
-	
-	function performOpportunityAction(elem, url, oppID){ 
-		$.ajax({
-			url: url,
-			type: "GET",
-			data:{},
-			dataType: 'JSON',
-			beforeSend: function(){
-				
-			},error: function(){
-				
-			},success: function(){
-				
-			},complete: function( data ){
-				var obj = $.parseJSON( data.responseText ); //console.log( data.responseText );
-				if(obj.status==1){
-					if(obj.action=='LIKE'){
-						var liked_img_url = $('.'+oppID).attr('data-likedImgURL');	
-						$('.'+oppID).html('<img src="'+liked_img_url+'"><p>Like</p>');
-					}else if(obj.action=='FAVOURITE'){ 
-						var fav_img_url = $('.'+oppID).attr('data-favImgURL');	
-						$('.'+oppID).html('<img src="'+fav_img_url+'"><p>Favorite</p>');
-					}else if(obj.action=='APPLY'){
-						$('a[class^="applyBtn"]').each(function( index ) {
-							if($(this).data("oid") == oppID){
-								$(this).html('Applied');
-								$(this).addClass('appliedOpp'+oppID);
-							}
-						})
-					$("#success .success-modal .modal-body .success-text").text(obj.successMessage);
-					$('#success').modal({show:true});
-					}
-				}
-			},
-		});
-	}
-
-
-	function refreshPrivateComments(elem){ 
-		var oid = $(elem).data('oppid'); 
-		var applicant_id = $(elem).data('applicant_id'); 
-		$.ajax({
-			url: SITE_URL+'/opp-user-conversation/',
-			type: "GET",
-			dataType: 'JSON',
-			data:{
-				oid : oid,
-				applicant_id : applicant_id
-			},
-			beforeSend: function(){
-				
-			},error: function(){
-				alert('Applicant fetch ajax error!')
-			},success: function(){
-				
-			},complete: function( data ){
-				var obj = $.parseJSON( data.responseText ); 
-				if(obj.type=='success'){
-					var target = $(elem).data('target');
-					$('.'+target).html(obj.html);
-				}else{
-					//console.log( 'error in getting applicant tab' );
-				}
-			},
-		});
-	}
-</script>
 @endsection
