@@ -10,7 +10,7 @@
 					<div class="main-page__cmmn-card">
 					<div class="main-page__cmmn-card--heading"><i class="fas fa-newspaper"></i><span>Daily Digest – {{ $todatTime = Carbon\Carbon::now()->format('D, F d, Y') }}</span></div>
 							<ul>
-								<li>You have <span class="blue-txt-clr">1 Open Opportunity in draft.</span></li>
+								<li>You have <span class="blue-txt-clr">1 Open Opportunity</span> in draft.</li>
 								<li><span class="blue-txt-clr">Acknowledge </span> Mock Choi for completing an opp</li>
 								<li><span class="blue-txt-clr">Natasha Vargas</span> acknowledged you.</li>
 								<li>There are <span class="blue-txt-clr">2 new opportunities </span> related to your skill sets, focus areas</li>
@@ -24,6 +24,19 @@
 						@include('home.my-applied-opp')
 						<!------->
 						<div class="main-page__cmmn-card cmmn-card__-title-subtitle">
+								<div class="card-option-dots" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="fas fa-ellipsis-h"></i>
+									<div class="dropdown-menu dots__options-list dots__options-list--for-left-section">
+										<ul>
+											<li><a href="#">Sort by</a></li>
+											<li><a href="#">Draft</a></li>
+											<li><a href="#">Publish</a></li>
+											<li><a href="#">Screen</a></li>
+											<li><a href="#">Complete</a></li>
+											<li><a href="#">Cancel</a></li>
+										</ul>
+									</div>
+								</div>
 								<div class="main-page__cmmn-card--heading"><i class="fas fa-briefcase"></i><span>Job openings for you</span></div>
 								<p class="blue-txt-clr">Solutions Architect</p>
 								<p class="grey-txt-clr"> Operations</p>
@@ -95,7 +108,7 @@
 						<div class="row clearfix">
 							<div class="col-md-3">
 								<div class="main-page__user-info-card__picture">
-									<i class='fas fa-user-circle fa-4x'></i>
+									<i class=''></i>
 								</div>
 							</div>
 	
@@ -274,7 +287,8 @@
 		  </div>
 		</div>
 	  </div>
-
+	  
+<script src="{{ URL::asset('js/jm.spinner.js') }}"></script>
 <script type="text/javascript">
 $("#acknowledgeForm").submit(function(e) {
 	e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -333,6 +347,7 @@ function sortWidget(slug,sortby){
 $(document).ready(function() {
 
     function load_feed_data(page_no, total_page) {
+		
         $.ajax({
             url: "{{ route('home') }}",
             type: "POST",
@@ -350,26 +365,42 @@ $(document).ready(function() {
 
             },
             complete: function(data) {
-                var obj = $.parseJSON(data.responseText);
-                //$('#load_more_wrapper').remove();
-                $('#home-feed').append(obj.html);
+				
+					var obj = $.parseJSON(data.responseText);
+					//$('#load_more_wrapper').remove();
+					if(obj.feed == true) {
+						$('#home-feed').append(obj.html);
+						var cur_page = $('#cur_page').val(page_no); 
+					} else {
+						if(!$('#caught_up').length){
+							//$('#home-feed').append('<div id="caught_up" class="col-md-12 text-center">You\'re All Caught Up</div>');
+						}		
+					}
+					$('.box').jmspinner(false);
             },
         });
     }
 
-   	/*$(window).scroll(function() {
-	if($(window).scrollTop() == $(document).height() - $(window).height()) {
-		// ajax call get data from server and append to the div
+   	$(window).on('scroll', function() {
+		if(Math.ceil($(window).scrollTop()) + Math.ceil($(window).height()) >= Math.ceil($(document).height())) {
+			$('.box').jmspinner('small');
 			var cur_page = $('#cur_page').val(); 
 			var total_page = $('#total_page').val(); //console.log('cur_page'+cur_page) ;  console.log('total_page'+total_page);
-			var page_no = parseInt(cur_page) + 1;
-			load_feed_data(page_no, total_page);
+			setTimeout(function(){
+				console.log(cur_page);
+				var page_no = parseInt(cur_page)+1;
+				if(cur_page != page_no) {
+					load_feed_data(page_no, total_page);
+				}	
+			}, 500);	
 		}
-	}); */
+	});
+	
+	
  	$(document).on('click', '#load_more_button', function() {
-        	var cur_page = $(this).data('cur_page');
+        var cur_page = $(this).data('cur_page');
 		var total_page = $(this).data('total_page');
-		var page_no = parseInt(cur_page) + 1;
+		//var page_no = parseInt(cur_page) + 1;
 		$('#load_more_button').html('<b>Loading...</b>');
 		load_feed_data(page_no, total_page);
 	});

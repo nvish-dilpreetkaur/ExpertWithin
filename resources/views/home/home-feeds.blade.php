@@ -4,7 +4,7 @@
 		<input type="hidden" value="{{ @$totalPages }}" name="total_page" id="total_page">
 	@endif
 	@foreach($feedData as $feedKey => $feedVal)
-		<div id="parent-{{ $feedVal->id }}">
+		<div id="parent-{{ $feedVal->id }}" class="{{ $feedVal->feed_type.'_wrapper' }} ">
 		@if ($feedVal->feed_type == 'new_ack_added')
 			
 				<div class="main-page-cmmn-feed-card yellow-cmmn-feed-card">
@@ -83,14 +83,15 @@
 		</div>
 	@endforeach
 	@if($totalPages > $page_no)
-		 <div id="load_more_wrapper" class="">
+		 <div id="load_more_wrapper" class="hidden">
 				<button type="button" name="load_more_button" class="" data-cur_page="{{ $page_no }}" data-total_page="{{ $totalPages }}" id="load_more_button">Load More</button>
 		</div> 
 	@else
-		<div class="col-md-12 text-center">
+		<!--div id="caught_up" class="col-md-12 text-center">
 			You're All Caught Up
-		</div>
+		</div-->
 	@endif
+	<div class="box well"></div>
 @else
 <div class="col-md-12 text-center">
 	You're All Caught Up

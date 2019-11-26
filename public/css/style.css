@@ -89,6 +89,9 @@ h3, p{
     overflow: hidden;
     padding-right: 16px;
 }
+
+.hidden {display:none;}
+
 body.modal-open {
     overflow: initial !important;
     height: 100%;
@@ -346,14 +349,14 @@ button:focus{
 
 .header-profile-dropdown-modal{
     margin-top: 2rem;
-    transform: translate3d(14rem, 2.6rem, 0rem) !important;
+    transform: translate3d(13.6875rem, 3rem, 0rem) !important;
     width: 53%;
     border: 1px solid #DEDEDE;
     border-radius: 4px;
     padding-bottom: 0;
 }
 .header-dropdown__profile--user-info{
-    transform: translate3d(0rem, 0.4rem, 0rem) !important;
+    /*transform: translate3d(0rem, 0.4rem, 0rem) !important;*/
 }
 
 .header-dropdown__profile--user-name{
@@ -453,7 +456,7 @@ button:focus{
     /* max-width: 27.1rem;    
     overflow: auto;
     height: 100vh; */
-    max-width: 31rem; 
+    max-width: 32.5rem; 
     /* flex-basis: 40%; */
     padding: 0 1rem 0rem 1.2rem;
 
@@ -465,7 +468,7 @@ button:focus{
 .main-page__right-section--outer{
     /*max-width: 23rem;*/
      /* max-width: 21.3rem ; */
-    flex-basis: 30.3%;
+    flex-basis: 28.3%;
     padding: 0rem;
    }
 
@@ -515,7 +518,7 @@ button:focus{
 
 .blue-txt-clr{
     color: #0057A7;
-    font-weight:600;
+    font-weight:700;
     cursor: pointer;
     display: inline-block;
 }
@@ -544,7 +547,7 @@ button:focus{
 
 /****DOTS--DROPDOWN--START(RIGHT_SECTION)*****/
 .dots__options-list{
-    transform: translate3d(16.5rem, 2.4rem, 0rem) !important;
+    transform: translate3d(14.8125rem, 2.5rem, 0px) !important;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     min-width: 7rem !important;
 }
@@ -552,7 +555,7 @@ button:focus{
 /****DOTS--DROPDOWN--START(LEFT_SECTION)*****/
 
 .dots__options-list--for-left-section{
-    transform: translate3d(13.9rem, 2.4rem, 0rem) !important;
+    transform: translate3d(14rem,2.5rem, 0px) !important;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     min-width: 7rem !important;
 
@@ -563,13 +566,14 @@ button:focus{
     list-style: none;
     margin: 0;
     padding: 0;
+    transform: translate3d(0.1rem, 0rem, 0rem) !important;
 }
 
 .dots__options-list ul li,
 .dots__options-list--for-feed ul li{
     font-size: 0.75rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+  /*  padding-left: 1rem;
+    padding-right: 1rem; */
 }
 .dots__options-list ul li:hover,
 .dots__options-list--for-feed ul li:hover{
@@ -590,13 +594,15 @@ button:focus{
 .dots__options-list--for-feed ul li a{
     text-decoration: none;
     color: #202124;
+  padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 /****DOTS--DROPDOWN--END*****/
 
 /****DOTS--DROPDOWN--START(MIDDLE_SECTION__FEED)*****/
 .dots__options-list--for-feed{
-    transform: translate3d(20rem, 2.4rem, 0rem) !important;
+    transform: translate3d(21rem, 2.5rem, 0rem) !important;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     min-width: 7rem !important;
     padding: 0.5rem 0rem 0.5rem 0rem;
@@ -606,6 +612,8 @@ button:focus{
 
 .cmmn-card__-title-subtitle p{
     margin: 0 auto;
+    font-weight: 600;
+
 }
 .cmmn-card__-title-subtitle p.show-more{
     margin: 0.4375rem 0;
@@ -620,11 +628,35 @@ button:focus{
 }
 
 .main-page__user-info-card__picture{
+    background-image: url('../images/user-pic.png') !important;
+    background-repeat: no-repeat;
+    height: 5rem;
+    width: 140%;
+}
 
+.main-page__dropdown--user-info-card__picture{
+    background-image: url(../images/user-pic.png) !important;
+    width: 100%;
+    background-repeat: no-repeat;
+    height: 2rem;
+    margin: 0rem 0rem 0rem 1rem;
+    background-size: contain;
+
+}
+
+.main-header--user-info-card__picture{
+    background-image: url(../images/user-pic.png) !important;
+    width: 100%;
+    background-repeat: no-repeat;
+    height: 2rem;
+    padding: 0rem 0rem 0rem 1rem;
+    background-size: contain;
+    vertical-align: middle;
 }
 
 .main-page__user-info-card__picture i{
     margin-left: .5rem;
+  
 }
 
 .main-page__user-info-card__about{
@@ -646,7 +678,7 @@ button:focus{
 }
 
 .main-page__user-info-card--desc{
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     line-height: 150%;
     margin-top: .5rem;
 }
@@ -670,6 +702,7 @@ button:focus{
 .user-info-card__stats--title span,
 .main-page__cmmn-card--heading span{
     margin-left: .3rem;
+    color: #202124;
 }
 
 .user-info-card__stats--numbers{
@@ -677,6 +710,7 @@ button:focus{
     color: #0C59A0;
     flex: 1 40%;
     text-align: right;
+    font-weight: 600;
 }
 
 .main-page__user-info-card__expert-tokens{
@@ -724,7 +758,7 @@ button:focus{
     margin: 0;
     margin-left: 1.6rem;
     font-weight: 400;
-    color: #0C59A0;
+    color: #202124;
     cursor: pointer;
 }
 .my-skills__title{
@@ -804,8 +838,8 @@ button:focus{
 .main-page-slider__cntnt{
     padding: 1rem;
     color: #fff;
-    font-size: 0.8rem;
-    margin-top: 0rem;
+    font-size: 0.875rem;
+    margin-top: -2rem;
    
 }
 .main-page-slider__cntnt__coins-info{
@@ -813,10 +847,11 @@ button:focus{
     position: absolute;
     bottom: .5rem;
     left: 1rem;
-    font-size: 0.8rem;
+    font-size: 1.0625rem;
 }
 .main-page-slider__cntnt__coins-info i{
     margin-right: .3rem;
+    font-size: 1rem;
 }
 
 .swiper-button-next, .swiper-container-rtl .swiper-button-prev{
@@ -870,7 +905,7 @@ button:focus{
     background-color: #fff;
     border: 1px solid #DEDEDE;
     border-radius: 8px;
-    padding: 0.5rem 0.7rem;
+    padding:0.5rem 1.2rem;
     margin: 0 0 0.5rem 0;
     cursor: pointer;
     opacity: 0.8;
@@ -882,9 +917,10 @@ button:focus{
 }
 .middle-section__top-card--cmmn-button i{
     margin-right: .3rem;
+    color: #202124;
 }
 .middle-section__top-card--cmmn-button a{
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     text-align: center;
     color: #202124;
 }
@@ -895,10 +931,15 @@ button:focus{
 
 .to-sort-feed{
     text-align: right;
-	font-size: 0.75rem;
-}
-.to-sort-feed p{
     font-size: 0.75rem;
+    margin: 1rem;
+}
+.to-sort-feed span{
+    margin-right: 0.5rem;
+}
+
+.to-sort-feed i{
+   cursor: pointer;
 }
 
 
@@ -971,6 +1012,7 @@ button:focus{
     margin-left: 1rem;
     cursor: pointer;
     color: #202124;
+    font-size: 0.875rem;
 }
 
 .yellow-cmmn-feed-card{
@@ -1297,7 +1339,7 @@ button:focus{
 
 
 .dots__options-list--oppor-detail{
-    transform: translate3d(14rem, 2.4rem, 0rem) !important;
+    transform: translate3d(16.6875rem, 2.5rem, 0px) !important;  
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     min-width: 7rem !important;
 }
@@ -1456,6 +1498,50 @@ button:focus{
   OPPORTUNITY_DETAIL_PAGE_STYLE_END
 ----------------------------------------------------- */
 
+
+/* ---------------------------------------------------
+  Loader Style Start
+----------------------------------------------------- */
+
+.spinner { position:relative; top:50%; left:44%; }
+.spinner > div {
+      width: 9px;
+	  height: 9px;
+ background-color: #049cff;
+ border-radius: 50%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% { 
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}
+
+/* ---------------------------------------------------
+  Loader Style End
+----------------------------------------------------- */
 
 @media screen and (min-width: 768px){
     .main-logo{

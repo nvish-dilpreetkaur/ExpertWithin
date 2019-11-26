@@ -50,8 +50,12 @@ class IndexController extends Controller
 		$totalPages = ($request->post('totalPages') ? $request->post('totalPages') : '') ; 
 		$feedData = $this->feed->getfeedData($feedFilters, $offset , $limit); //prd($feedData);
 		if($request->ajax()){ 
+			$response["feed"] = true;
 			$response["html"] = view('home.home-feeds', compact(['feedData','page_no','totalPages']))->render();
 			$response["type"] = "success";
+			if(!$feedData) {
+				$response["feed"] = false;
+			}
 			echo json_encode($response);
 			exit();
 		}else{
