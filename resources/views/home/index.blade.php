@@ -289,7 +289,10 @@
 	  </div>
 	  
 <script src="{{ URL::asset('js/jm.spinner.js') }}"></script>
-<script type="text/javascript">
+<script type="text/javascript">	
+var hasData = true;
+var isLoading = false;	
+	
 $("#acknowledgeForm").submit(function(e) {
 	e.preventDefault(); // avoid to execute the actual submit of the form.
 	var form = $(this);
@@ -347,7 +350,7 @@ function sortWidget(slug,sortby){
 $(document).ready(function() {
 
     function load_feed_data(page_no, total_page) {
-		
+		isLoading = true;
         $.ajax({
             url: "{{ route('home') }}",
             type: "POST",
@@ -370,12 +373,15 @@ $(document).ready(function() {
 					//$('#load_more_wrapper').remove();
 					if(obj.feed == true) {
 						$('#home-feed').append(obj.html);
-						var cur_page = $('#cur_page').val(page_no); 
+						var cur_page = $('#cur_page').val(page_no);
+						hasData=true; 
 					} else {
 						if(!$('#caught_up').length){
 							//$('#home-feed').append('<div id="caught_up" class="col-md-12 text-center">You\'re All Caught Up</div>');
-						}		
+						}
+						hasData=false;		
 					}
+					isLoading = false;
 					$('.box').jmspinner(false);
             },
         });
@@ -383,16 +389,18 @@ $(document).ready(function() {
 
    	$(window).on('scroll', function() {
 		if(Math.ceil($(window).scrollTop()) + Math.ceil($(window).height()) >= Math.ceil($(document).height())) {
-			$('.box').jmspinner('small');
-			var cur_page = $('#cur_page').val(); 
-			var total_page = $('#total_page').val(); //console.log('cur_page'+cur_page) ;  console.log('total_page'+total_page);
-			setTimeout(function(){
-				console.log(cur_page);
-				var page_no = parseInt(cur_page)+1;
-				if(cur_page != page_no) {
-					load_feed_data(page_no, total_page);
-				}	
-			}, 500);	
+			if(hasData==true && isLoading==false) {
+				$('.box').jmspinner('small');
+				var cur_page = $('#cur_page').val(); 
+				var total_page = $('#total_page').val(); //console.log('cur_page'+cur_page) ;  console.log('total_page'+total_page);
+				setTimeout(function(){
+					console.log(cur_page);
+					var page_no = parseInt(cur_page)+1;
+					if(cur_page != page_no) {
+						load_feed_data(page_no, total_page);
+					}	
+				}, 500);	
+			}	
 		}
 	});
 	
