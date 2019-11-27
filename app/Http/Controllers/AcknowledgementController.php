@@ -34,11 +34,18 @@ class AcknowledgementController extends Controller
       $loggedInUserID = $roleId = '';
       $user = \Auth::user();  
      
-      if($request->ajax()){  
+      if($request->ajax()){ 
+		  
+		   $messages = [
+				'user_id.required' => 'This field is required',     
+				'message.required' => 'This field is required.',
+				'message.max' => 'The message may not be greater than 2000 characters.'
+			  ];
+		   
           $validator = \Validator::make($request->all(), [
               'user_id' => 'required',
               'message' => 'required|max:2000'
-          ]);
+          ],$messages);
           
           if ($validator->fails())
           {

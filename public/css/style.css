@@ -622,6 +622,11 @@ button:focus{
     margin-bottom: .5rem;
 }
 
+.blue-txt-clr a{
+    text-decoration: none;
+    color: #0057A7;
+}
+
 .main-page__user-info-card{
     padding: 2rem 0 0 0;
     margin-bottom: .5rem;
@@ -841,6 +846,11 @@ button:focus{
     font-size: 0.875rem;
     margin-top: -2rem;
    
+}
+
+.main-page-slider__cntnt a{
+    text-decoration: none;
+    color: #fff;
 }
 .main-page-slider__cntnt__coins-info{
     margin-top: 2rem;
@@ -1253,6 +1263,7 @@ button:focus{
   
   .cmmn-modal-profile-sec .modal-footer .btn:hover, .btn:focus {
     background-color: #343ca2;
+    color: #fff;
   }
   
   .cmmn-modal-profile-sec .modal-footer .btn > * {

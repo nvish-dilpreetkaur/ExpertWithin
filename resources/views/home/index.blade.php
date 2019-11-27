@@ -58,8 +58,8 @@
 							<div class="middle-section__top-card--cmmn-button" data-toggle="modal" data-target="#mainPage__createOpportunity">
 								<i class="fas fa-pencil-alt"></i><a href="#">Create an Opportunity</a>
 							</div>
-							<div class="middle-section__top-card--cmmn-button" data-toggle="modal" data-target="#mainPage__acknowledgeAnExpert">
-								<i class="fas fa-pencil-alt"></i><a href="#">Acknowledge an Expert</a>
+							<div class="middle-section__top-card--cmmn-button" data-toggle="modal">
+								<i class="fas fa-pencil-alt"></i><a href="#" id="acknowledgeAnExpert">Acknowledge an Expert</a>
 							</div>
 						</div>
 						<!--------->
@@ -75,7 +75,7 @@
 													{{ $topOppRow->rewards }}
 											</div>
 											<div class="main-page-slider__cntnt">
-													{{ $topOppRow->opportunity }}
+													<a href="{{ url('view-opportunity', Crypt::encrypt($topOppRow->id)) }}">{{ $topOppRow->opportunity }}</a>
 											</div>	
 											<div class="main-page-slider__cntnt__coins-info">
 													<i class="fas fa-coins gold-coins-color"></i><span>{{ $topOppRow->tokens }}</span>
@@ -245,54 +245,63 @@
 	<div class="modal fade main-page__cmmn_modal" id="mainPage__acknowledgeAnExpert">
 		<div class="modal-dialog modal-lg">
 		  <div class="modal-content">
-		  
-			<!-- Modal Header -->
-			<div class="modal-header">
-			  <h4 class="modal-title">Brighten someone’s day with an acknowledgement</h4>
-			  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-			</div>
-			
-			<!-- Modal body -->
-			<div class="modal-body">
-					<form id="acknowledgeForm" method="post"  action="{{ route('acknowledge') }}" class="needs-validation" novalidate>
-						<div class="form-group">
-							<div class="to-cmbine-the-label-txt">
-								<label for="uname">Who do you want to recognize?</label>
-								<!--input type="text" class="form-control" id="uname" placeholder="Sonny Fernandez" name="uname" required>-->
-								<select class="js-example-basic-multiple form-control" name="user_id"  id="user_id">
-										<option value="">-- Choose --</option>
-										@foreach ($all_users as $urow)
-										<option value="{{ $urow->id }}" {{ ($urow->id==old('user_id')) ? "selected" : "" }}>{{ $urow->mname }}</option>
-										@endforeach 							  
-								</select>
-							</div>						 
-						  <div class="valid-feedback">Valid.</div>
-						  <div class="invalid-feedback"></div>
-						</div>
-						<div class="form-group">
-						  <div class="to-cmbine-the-label-txt">
-							  <label for="desc">Tell us why?</label>
-							  <textarea placeholder="Sonny provided a lot of great design workand worked well with others. He can fit into any team environment with ease and provide extraordinary results very quickly!" rows="4" cols="50" name="message" class="form-control" id="message" required></textarea>		
-						  </div> 
-						  <div class="valid-feedback">Valid.</div>
-						  <div class="invalid-feedback"></div>
-						</div>
-						<div class="form-group form-check">
-						</div>
-						<div class="main-page__form-buttons">
-							<button type="submit" class="btn btn-primary">Acknowledge</button>
-						</div>
-					  </form>
-			</div>
+		  <div id="thanks_up" class="hidden"></div>  
+		  <div id="acknowledge">
+				<!-- Modal Header -->
+				<div class="modal-header">
+				  <h4 class="modal-title">Brighten someone’s day with an acknowledgement</h4>
+				  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+				</div>
+				
+				<!-- Modal body -->
+				<div class="modal-body">
+						<form id="acknowledgeForm" method="post"  action="{{ route('acknowledge') }}" class="needs-validation" novalidate>
+							<div class="form-group">
+								<div class="to-cmbine-the-label-txt">
+									<label for="uname">Who do you want to recognize?</label>
+									<!--input type="text" class="form-control" id="uname" placeholder="Sonny Fernandez" name="uname" required>-->
+									<select class="js-example-basic-multiple form-control" name="user_id"  id="user_id">
+											<option value="">-- Choose --</option>
+											@foreach ($all_users as $urow)
+											<option value="{{ $urow->id }}" {{ ($urow->id==old('user_id')) ? "selected" : "" }}>{{ $urow->mname }}</option>
+											@endforeach 							  
+									</select>
+								</div>						 
+							  <div class="valid-feedback">Valid.</div>
+							  <div class="invalid-feedback"  id="error-user_id"></div>
+							</div>
+							<div class="form-group">
+							  <div class="to-cmbine-the-label-txt">
+								  <label for="desc">Tell us why?</label>
+								  <textarea placeholder="Sonny provided a lot of great design workand worked well with others. He can fit into any team environment with ease and provide extraordinary results very quickly!" rows="4" cols="50" name="message" class="form-control" id="message" required></textarea>		
+							  </div> 
+							  <div class="valid-feedback">Valid.</div>
+							  <div class="invalid-feedback" id="error-message"></div>
+							</div>
+							<div class="form-group form-check">
+							</div>
+							<div class="main-page__form-buttons">
+								<button type="submit" class="btn btn-primary">Acknowledge</button>
+							</div>
+						  </form>
+					</div>
+				</div>	
 		  </div>
 		</div>
 	  </div>
 	  
 <script src="{{ URL::asset('js/jm.spinner.js') }}"></script>
-<script type="text/javascript">	
+<script type="text/javascript">
 var hasData = true;
 var isLoading = false;	
-	
+
+$('#message').on('keyup',function() {
+	$('#error-message').hide();
+});
+$('#user_id').on('change',function() {
+	$('#error-user_id').hide();
+});
+
 $("#acknowledgeForm").submit(function(e) {
 	e.preventDefault(); // avoid to execute the actual submit of the form.
 	var form = $(this);
@@ -309,7 +318,10 @@ $("#acknowledgeForm").submit(function(e) {
 		},complete: function( data ){
 			var obj = $.parseJSON( data.responseText ); 
 			if(obj.type=='success'){ //console.log(obj)
-				$('#mainPage__acknowledgeAnExpert .modal-content').html(obj.success_html);
+				//$('#mainPage__acknowledgeAnExpert .modal-content').html(obj.success_html);
+				$('#acknowledge').addClass('hidden');
+				$('#thanks_up').html(obj.success_html);
+				$('#thanks_up').removeClass('hidden');
 				setTimeout(function(){ 
 					 $('#mainPage__acknowledgeAnExpert').modal('toggle')
 				}, 2000);
@@ -368,13 +380,12 @@ $(document).ready(function() {
 
             },
             complete: function(data) {
-				
 					var obj = $.parseJSON(data.responseText);
 					//$('#load_more_wrapper').remove();
 					if(obj.feed == true) {
 						$('#home-feed').append(obj.html);
-						var cur_page = $('#cur_page').val(page_no);
-						hasData=true; 
+						var cur_page = $('#cur_page').val(page_no); 
+						hasData=true;
 					} else {
 						if(!$('#caught_up').length){
 							//$('#home-feed').append('<div id="caught_up" class="col-md-12 text-center">You\'re All Caught Up</div>');
@@ -418,6 +429,15 @@ $(document).ready(function() {
 		remove_feed(feed_id);
 	});
 
+	$(document).on('click', '#acknowledgeAnExpert', function() {
+		$('#acknowledge').removeClass('hidden');
+		$('#thanks_up').addClass('hidden');
+		$('#error-message').hide();
+		$('#error-user_id').hide();
+		$('#user_id').val('');
+		$('#message').val('');
+		$('#mainPage__acknowledgeAnExpert').modal('show');
+	});
 
 	function remove_feed(feed_id){
 		$.ajax({

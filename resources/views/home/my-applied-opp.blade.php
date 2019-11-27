@@ -17,7 +17,7 @@
 	@if ($myAppliedOpp != null)
 	@foreach($myAppliedOpp as $rowApp)
 	<div class="cmmn-card-point-nd-status">
-		<p class="blue-txt-clr">{{ $rowApp->opportunity }}</p>
+		<p class="blue-txt-clr"><a href="{{ url('view-opportunity', Crypt::encrypt($rowApp->id)) }}">{{ $rowApp->opportunity }}</a></p>
 		<p class="blue-highlit-txt"> {{ get_opp_application_status_label($rowApp->application_status) }}</p>
 	</div>
 	@endforeach

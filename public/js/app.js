@@ -13,14 +13,16 @@
           },
       });
 
-    var fixmeTop = $('.fixme').offset().top - 70;
+        if($(".fixme"). length > 0){ 
+            var fixmeTop = $('.fixme').offset().top - 70;
+         }
         $(window).scroll(function() {
         var currentScroll = $(window).scrollTop();
         if (currentScroll >= fixmeTop) {
         $('.fixme').css({
             position: 'fixed',
             top: '5rem',
-            'width':'21%'
+            'width':'21.7rem'
         });
         } else {
         $('.fixme').css({
@@ -30,14 +32,17 @@
         }
     });
 
-    var fixmeTopRightSec = $('.fixme-rite-sec').offset().top - 90;
+    if($(".fixme-rite-sec"). length > 0){ 
+     var fixmeTopRightSec = $('.fixme-rite-sec').offset().top - 90;
+    }
+
     $(window).scroll(function() {
     var currentScrollRite = $(window).scrollTop();
     if (currentScrollRite >= fixmeTopRightSec) {
     $('.fixme-rite-sec').css({
         position: 'fixed',
         top: '5rem',
-        width:'23%'
+        width:'22.1rem'
         // 'max-width':'21rem'
     });
     } else {
