@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\User;
+use App\Models\Feed;
 use App\Models\OpportunityUser;
 use App\Models\Opportunity;
 use App\Models\TaxonomyTerm;
@@ -26,6 +27,7 @@ class OpportunityUserController extends Controller
     $this->opportunity_user = new OpportunityUser();
     $this->opportunity = new Opportunity();
     $this->taxonomyterm = new TaxonomyTerm();
+    $this->feed = new Feed();
   }
 
    /**
@@ -33,87 +35,102 @@ class OpportunityUserController extends Controller
 	 * @param Request
 	 * @return Response
 	*/
-  public function  actionOpportunityUser(Request $request, $opp_action, $oid)
+  public function  actionOpportunityUser(Request $request)
   { 
-	$userAction = strtoupper($opp_action);
-    $oid = Crypt::decrypt($oid);
-    $opportunityApply = config('kloves.OPPORTUNITY_APPLY');
-    $opportunityLike = config('kloves.OPPORTUNITY_LIKE');
-    $opportunityNotLike = config('kloves.OPPORTUNITY_NOT_LIKE');
-    $opportunityFavourite = config('kloves.OPPORTUNITY_FAVOURITE'); 
-    $opportunityNotFavourite = config('kloves.OPPORTUNITY_NOT_FAVOURITE'); 
-    $uid = auth()->user()->id;
-    $org_id = auth()->user()->org_id;
-    $actionstatus = 1;  $actionstatus_rollback = 0; $success_message = "";
-    $opportunity_user = array();
-    switch ($userAction) {
-      case $opportunityApply:
-        $opportunity_user[$opportunityApply] = $actionstatus;
-        $success_message = "applied";
-        $successMessage = 'You have successfully '.$success_message.' to this opportunity.';
-        break;
-      case $opportunityLike:
-         $opportunity_user[$opportunityLike] = $actionstatus;
-         $success_message = "liked";
-         $successMessage = 'You have successfully '.$success_message.' this opportunity.';
-        break;
-      case $opportunityNotLike:
-        $opportunity_user[$opportunityLike] = $actionstatus_rollback;
-        $successMessage = 'You have removed this opportunity from your like\'s section.';
-       break;
-      case $opportunityFavourite:
-        $opportunity_user[$opportunityFavourite] = $actionstatus;
-        $successMessage = 'You have successfully marked this opportunity as favourites.';
-        break;
-      case $opportunityNotFavourite:
-        $opportunity_user[$opportunityFavourite] = $actionstatus_rollback;
-        $successMessage = 'You have successfully removed this opportunity from favourites.';
-        break;
-    }
-    $opportunityuser_exists = $this->opportunity_user->opportunity_user_exists($oid, $uid, $org_id); 
-    if ($opportunityuser_exists) {
-       $opportunity_user_data = $this->opportunity_user->opportunity_user_update($opportunity_user, $oid, $uid, $org_id);
-    }else{
-      $opportunity_user_new = new OpportunityUser;
-      $opportunity_user_new->oid = $oid;
-      $opportunity_user_new->org_uid = $uid;
-      $opportunity_user_new->org_id = $org_id;
-      $opportunity_user_new->$opp_action = $actionstatus;
-      $opportunity_user_data = $opportunity_user_new->save();
-    }
-    if($userAction==$opportunityApply){
-        $data_to_save['oid'] = $oid;
-        $data_to_save['applicant_id'] = $uid;
-        $data_to_save['org_id'] = $org_id;
-        $data_to_save['action_type'] = '1'; //apply action
-        $data_to_save['action_status'] ='0';
-       $this->opportunity_user->log_opp_user_action($data_to_save); 
+    $response = array( 
+			"type" => NULL,
+			"errors" => NULL,
+			"message" => NULL,
+    );
 
-       /** @send_email : to manager to notify */
-      $filters['id'] = $oid;
-      $oppDetails = $this->opportunity->getOpportunityOneDetails($filters); 
-      $user_name  = auth()->user()->firstName;
-      $emaildata['subject'] = "New User Applied";
-      $emaildata['receiver_name'] = $oppDetails->opp_creator;
-      $emaildata['receiver_email'] = $oppDetails->opp_creator_mail;
-      $emaildata['message'] = $message = $user_name.' have applied on your opportunity <strong>'.$oppDetails->opportunity.'</strong>.';
-      $emaildata['sender_name'] = $user_name;
-      $emaildata['sender_email'] = auth()->user()->email;
-      $mailResponse =  send_email($emaildata);
-      if ($mailResponse) {
+    if($request->ajax()){ 
+
+        $action = $request->post('action');
+        $oid = $request->post('oid');
+        $uid = auth()->user()->id;
+        $org_id = auth()->user()->org_id;
+
+        $actionstatus = 1;  $actionstatus_rollback = 0; $success_message = "";
+        $opportunity_user = array();
+
        
-      }else{
-       
+        switch ($action) {
+            /*case $opportunityApply:
+              $opportunity_user[$opportunityApply] = $actionstatus;
+              $success_message = "applied";
+              $successMessage = 'You have successfully '.$success_message.' to this opportunity.';
+              break; */
+            case 'like':
+              $opp_action = 'like'; 
+              $response["action"] = "like"; 
+              $opportunity_user['like'] = $actionstatus;
+              $updateFeedData['liked_feed'] = $actionstatus; 
+              break;
+            case 'unlike':
+              $opp_action = 'like'; 
+              $response["action"] = "unlike"; 
+              $opportunity_user['like'] = $actionstatus_rollback;
+              $updateFeedData['liked_feed'] = $actionstatus_rollback; 
+            break;
+            case 'fav':
+              $opp_action = 'favourite'; 
+              $response["action"] = "fav"; 
+              $opportunity_user['favourite'] = $actionstatus;
+              $updateFeedData['marked_as_fav'] = $actionstatus; 
+              break;
+              case 'unfav':
+                $opp_action = 'favourite'; 
+                $response["action"] = "unfav"; 
+                $opportunity_user['favourite'] = $actionstatus_rollback;
+                $updateFeedData['marked_as_fav'] = $actionstatus_rollback; 
+              break;
+          }
+          $opportunityuser_exists = $this->opportunity_user->opportunity_user_exists($oid, $uid, $org_id); 
+          if ($opportunityuser_exists) {
+            $opportunity_user_data = $this->opportunity_user->opportunity_user_update($opportunity_user, $oid, $uid, $org_id);
+          }else{
+            $opportunity_user_new = new OpportunityUser;
+            $opportunity_user_new->oid = $oid;
+            $opportunity_user_new->org_uid = $uid;
+            $opportunity_user_new->org_id = $org_id;
+            $opportunity_user_new->$opp_action = $actionstatus;
+            $opportunity_user_data = $opportunity_user_new->save();
+          }
+
+          /** record action in feeds :start */
+            $feed_type_opp = config('kloves.FEED_TYPE_NEW_OPP');
+            $feedData = Feed::where('key_id',$oid)->where('feed_type',$feed_type_opp)->first(); //dd($feedData);
+		    /* $feedFilter['key_id'] = $oid;
+		    $feedFilter['feed_type'] = $feed_type_opp;
+			$feedData =  $this->feed->get_feed_by_id($feedFilter); dd($feedData); */
+             if (!empty($feedData) && DB::table('feeds_user_action')->where('feed_pk_id',$feedData->id)->where('user_id',$uid)->exists()) {
+                  $updateFeedData['updated_by'] = $uid;
+                  $updateFeedData['updated_at'] = date('Y-m-d H:i:s');
+              }else{  
+                  $saveData = [
+                    'user_id' => $uid,
+                    'feed_pk_id' => $feedData->id,
+                    'liked_feed' => 0,
+                    'marked_as_fav' => 0,
+                    'removed_feed' => 0,
+                    'created_by' => $uid,
+                  ];
+                  $this->feed->record_feeds_user_action($saveData);
+              }
+            
+              DB::table('feeds_user_action')
+              ->where('user_id', $uid)
+              ->where('feed_pk_id', $feedData->id)
+              ->update($updateFeedData);
+               //prd($request->post());
+          /** record action in feeds :ends */
+         
+          $response["type"] = "success";
       }
-       /** @send_email : to manager to notify ENDS*/
-    }
-   
-  	if($request->ajax()){
-      //$request->session()->flash('success', $successMessage);
-      return response()->json(['status'=>1,'action'=>$userAction,'successMessage' => $successMessage,'userActivity'=>'1']);
-  	}else{
-  		return back()->with('success', $successMessage);
-  	}
+      echo json_encode($response);
+      exit();
+  
+
   }
 
     /**
@@ -320,6 +337,71 @@ class OpportunityUserController extends Controller
     return view('opportunity.view-comments',compact('pvtcommentdata'));
   }
 
- 
+  /**
+	 * To Apply on opportunity
+	 * @param Request
+	 * @return Response
+	*/
+  public function applyOpportunity(Request $request, $opp_action, $oid){ 
+      $userAction = strtoupper($opp_action);
+      $oid = Crypt::decrypt($oid);
+      $opportunityApply = config('kloves.OPPORTUNITY_APPLY');
+      $uid = auth()->user()->id;
+      $org_id = auth()->user()->org_id;
+      $actionstatus = 1;  $actionstatus_rollback = 0; $success_message = "";
+      $opportunity_user = array();
+      switch ($userAction) {
+        case $opportunityApply:
+          $opportunity_user[$opportunityApply] = $actionstatus;
+          $success_message = '<strong>Hooray, a real super hero</strong><br>The opportunity manager will be in touch.';
+          break;
+      }
+      $opportunityuser_exists = $this->opportunity_user->opportunity_user_exists($oid, $uid, $org_id); 
+      if ($opportunityuser_exists) {
+        $opportunity_user_data = $this->opportunity_user->opportunity_user_update($opportunity_user, $oid, $uid, $org_id);
+      }else{
+        $opportunity_user_new = new OpportunityUser;
+        $opportunity_user_new->oid = $oid;
+        $opportunity_user_new->org_uid = $uid;
+        $opportunity_user_new->org_id = $org_id;
+        $opportunity_user_new->$opp_action = $actionstatus;
+        $opportunity_user_data = $opportunity_user_new->save();
+      }
+      if($userAction==$opportunityApply){
+          $data_to_save['oid'] = $oid;
+          $data_to_save['applicant_id'] = $uid;
+          $data_to_save['org_id'] = $org_id;
+          $data_to_save['action_type'] = '1'; //apply action
+          $data_to_save['action_status'] ='0';
+        $this->opportunity_user->log_opp_user_action($data_to_save); 
 
+        /** @send_email : to manager to notify */
+       /* $filters['id'] = $oid;
+        $oppDetails = $this->opportunity->getOpportunityOneDetails($filters); 
+        $user_name  = auth()->user()->firstName;
+        $emaildata['subject'] = "New User Applied";
+        $emaildata['receiver_name'] = $oppDetails->opp_creator;
+        $emaildata['receiver_email'] = $oppDetails->opp_creator_mail;
+        $emaildata['message'] = $message = $user_name.' have applied on your opportunity <strong>'.$oppDetails->opportunity.'</strong>.';
+        $emaildata['sender_name'] = $user_name;
+        $emaildata['sender_email'] = auth()->user()->email;
+        $mailResponse =  send_email($emaildata);
+        if ($mailResponse) {
+        
+        }else{
+        
+        }*/
+        /** @send_email : to manager to notify ENDS*/
+      }
+    
+      if($request->ajax()){
+      
+        $response["success_html"] = $success_message;
+        $response["status"] = 1; 
+        $response["action"] = $userAction;
+        return response()->json( $response );
+      }else{
+        return back()->with('success', $successMessage);
+      }
+  }
 }

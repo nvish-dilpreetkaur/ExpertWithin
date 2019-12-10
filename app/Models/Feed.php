@@ -5,6 +5,14 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 
 class Feed extends Model{
+
+      protected $table = 'feeds';
+      protected $fillable = [
+            'feed_type',
+            'key_id',
+            'org_id',
+            'status'
+      ];
       
      /**
      * add new feed
@@ -108,6 +116,37 @@ class Feed extends Model{
                   return false;
             }
       }
-
+	
+	  /**
+     * get feeds by id
+     *
+     * @param  $filters
+     * @return Response
+     */
+    public function get_feed_by_id($feedFilter = array()){
+			if( !empty($feedFilter['key_id']) )
+				$where[] = " t1.key_id = '".$feedFilter['key_id']."' ";
+			if( !empty($feedFilter['feed_type']) )
+				$where[] = " t1.feed_type = '".$feedFilter['feed_type']."' ";
+			
+            $where[] = " t1.org_id = '". auth()->user()->org_id."' " ;
+			
+          
+            if( !empty($where) )
+                  $where = " WHERE ".implode(" AND ", $where );
+            else
+                  $where = " ";
+            
+            // echo "<pre>"; print_r($where); 
+            // die;
+            $query = "SELECT *  FROM ".DB::getTablePrefix()."feeds AS t1 "
+            .$where
+           .""; 
+            //echo "<pre>"; print_r($query);  die; 
+            $queResult = DB::select( DB::raw($query) );  prd($queResult);
+            
+            return $queResult;
+      }
+	
 }
 ?>

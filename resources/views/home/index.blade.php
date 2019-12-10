@@ -63,7 +63,7 @@
 							</div>
 						</div>
 						<!--------->
-						<div class="middle-section__cmmn-card" >
+						<div class="middle-section__cmmn-card for-swiper-slider-bg" >
 								<p>{{ ($topMatchedOpportunities != null) ? "Top opportunities for you" : "No  opportunities for you" }}</p>
 
 								@if ($topMatchedOpportunities != null)
@@ -107,16 +107,18 @@
 						<div class="container">
 						<div class="row clearfix">
 							<div class="col-md-3">
-								<div class="main-page__user-info-card__picture">
-									<i class=''></i>
-								</div>
+							   @if(!empty($current_user_detail->image_name))
+									<div class="main-page__user-info-card__picture" style="background-image: url('{{$current_user_detail->image_name}}');"><i class=''></i></div>
+							   @else
+									<div class="main-page__user-info-card__picture"><i class="fas fa-user-circle fa-4x" aria-hidden="true"></i></div>
+							   @endif
 							</div>
 	
 							<div class="col-md-9">
 								<div class="main-page__user-info-card__about">
 									<div class="main-page__user-info-card--title">{{ Auth::user()->firstName }}</div>
-									<div class="main-page__user-info-card--desc">Transform high-level requirements into simple solutions.</div>
-									<div class="view-profile-link"><a href="#">My profile</a></div>
+									<div class="main-page__user-info-card--desc">{{ $current_user_detail->about }}</div>
+									<div class="view-profile-link"><a href="{{route('profile')}}">My profile</a></div>
 								</div>
 							</div>
 	
@@ -209,21 +211,20 @@
 			
 			<!-- Modal body -->
 			<div class="modal-body">
-					<form action="#" class="needs-validation" novalidate>
+					<form action="{{ route('add-opportunity') }}" method="POST" id="opportunity-create" class="needs-validation" novalidate>
+					@csrf
 						<div class="form-group">
 							<div class="to-cmbine-the-label-txt">
-								<label for="uname">Title</label>
-								<input type="text" class="form-control" id="uname" placeholder="UX/UI Designer" name="uname" required>
+								<label for="otitle">Title</label>
+								<input type="text" class="form-control" id="otitle" placeholder="UX/UI Designer" name="otitle" required>
 							</div>						 
 						  <div class="valid-feedback">Valid.</div>
 						  <div class="invalid-feedback">Please fill out this field.</div>
 						</div>
 						<div class="form-group">
 						  <div class="to-cmbine-the-label-txt">
-							  <label for="desc">Describe:</label>
-							  <textarea rows="4" cols="50" name="comment" 
-							  form="usrform" class="form-control" id="pwd" name="desc" placeholder="The UX/UI Designers will be responsible for collecting, researching, investigating and evaluating user requirements. Their responsibility is to deliver an outstanding user experience providing an exceptional and intuitive application design." required>
-								</textarea>		
+							  <label for="odesc">Describe:</label>
+							  <textarea rows="4" cols="50" class="form-control" id="odesc" name="odesc" placeholder="The UX/UI Designers will be responsible for collecting, researching, investigating and evaluating user requirements. Their responsibility is to deliver an outstanding user experience providing an exceptional and intuitive application design." required></textarea>		
 						  </div> 
 						  <div class="valid-feedback">Valid.</div>
 						  <div class="invalid-feedback">Please fill out this field.</div>
@@ -231,10 +232,10 @@
 						<div class="form-group form-check">
 						</div>
 						<div class="main-page__form-buttons">
-							<button type="submit" class="btn btn-primary">Save for later</button>
-							<button type="submit" class="btn btn-primary">Continue</button>
+							<button type="submit" id="btn-opr-later" class="btn btn-primary" value="save-for-later">Save for later</button>
+							<button type="submit" id="btn-opr-cont" class="btn btn-primary" value="continue">Continue</button>
 						</div>
-					  </form>
+					</form>
 			</div>
 		  </div>
 		</div>
@@ -289,11 +290,58 @@
 		  </div>
 		</div>
 	  </div>
+
+	  
+
+	  <div class="modal fade main-page__cmmn_modal" id="opportunity__success">
+		<div class="modal-dialog modal-lg">
+		  <div class="modal-content">
+		  <div id="thanks_up" class="hidden"></div>
+				<!-- Modal body -->
+				<div class="modal-body text-center"><b>Opportunity Saved Successfully!</b></div>
+		  </div>
+		</div>
+	  </div>
 	  
 <script src="{{ URL::asset('js/jm.spinner.js') }}"></script>
 <script type="text/javascript">
 var hasData = true;
-var isLoading = false;	
+var isLoading = false;
+
+
+$("#opportunity-create").submit(function(e) {
+	e.preventDefault();
+});
+
+$( "button#btn-opr-later, button#btn-opr-cont" ).on( "click", function() {
+	var data_array = $("#opportunity-create").serializeArray();
+	let btnVal = $(this).val();
+	  $.ajax({
+		type: "POST",
+		url: SITE_URL+"/add-opportunity",
+		data: data_array,
+		success: function(data){
+			$('.invalid-feedback').hide()
+			if(data.status==false) {
+				$.each(data.message, function( index, value ) {
+					var error_elem =  $("#"+index).closest(".form-group").find(".invalid-feedback");
+					error_elem.show()
+					error_elem.text(value);
+				});
+			} else if(data.status==true) {
+				if(btnVal=="continue") {
+					window.location.href = SITE_URL+"/create-opportunity/"+data.enc_oid;
+				} else {
+					$('#mainPage__createOpportunity').modal('hide');
+					$('#opportunity__success').modal('show');
+				}
+			}
+		},
+		error: function(){
+			alert('ACK ajax error!')
+		}
+	});
+});
 
 $('#message').on('keyup',function() {
 	$('#error-message').hide();

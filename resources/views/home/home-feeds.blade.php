@@ -18,7 +18,7 @@
 						</ul>
 					</div>
 					<div class="main-page-cmmn-feed-card__desc">
-					{{ '@'.$feedVal->ack_user.' '.$feedVal->ack_message }}
+					{{ ($feedVal->ack_message) ? '@'.$feedVal->ack_user.' '.char_trim($feedVal->ack_message,105) : '' }}
 					</div>
 					<div class="main-page-cmmn-feed-card__coins-info">
 						<i class="fas fa-coins gold-coins-color"></i><span>25</span>
@@ -58,7 +58,7 @@
 					<a href="{{ url('view-opportunity', Crypt::encrypt($feedVal->key_id)) }}">{{ $feedVal->opportunity }}</a>
 				</div>
 				<div class="main-page-cmmn-feed-card__desc">
-					{{ char_trim($feedVal->opportunity_desc,105) }}
+					{{ ($feedVal->opportunity_desc) ? char_trim($feedVal->opportunity_desc,105) : '' }}
 				</div>
 				<div class="main-page-cmmn-feed-card__coins-info">
 					<i class="fas fa-coins gold-coins-color"></i><span>{{ $feedVal->tokens }}</span>

@@ -1,13 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\User;
 use App\UserProfile;
+use App\Models\UserInterest;
 use App\Models\TaxonomyTerm;
+use App\Http\Requests;
+use App\Http\Requests\ProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use DB;
+use Exception;
+use Config;
 class UserController extends Controller
 {
 	/**
@@ -106,13 +112,17 @@ class UserController extends Controller
             $action_type = 'SELF-EDIT';
         }
         $user = new User;
-	    $users = $user->getUserProfileDataById($user_id);  
+	    $users = $user->getUserProfileDataById($user_id);
+	    //pre( $users); exit;  
         $focus = TaxonomyTerm::where('vid', config('kloves.FOCUS_AREA'))->where('status',config('kloves.RECORD_STATUS_ACTIVE'))->select('name', 'tid')->orderBy('name')->get();
         $skills = TaxonomyTerm::where('vid', config('kloves.SKILL_AREA'))->where('status',config('kloves.RECORD_STATUS_ACTIVE'))
-        ->select('name', 'tid')->orderBy('name')->get();
-        $managers = $user->getManagerDdlList($user_id); 
-	  
-	    return view('users.profile', compact(['users', 'skills', 'focus','managers','action_type']));
+        ->select('name', 'tid')->orderBy('name')->get()->toArray();
+        $managers = $user->getManagerDdlList($user_id);
+        $user_skills = UserInterest::with(["term_data"])->where('user_id',$user_id)->where('vid',1)->get()->toArray();
+        $user_focus = UserInterest::with(["term_data"])->where('user_id',$user_id)->where('vid',3)->get()->toArray();
+      
+        
+	    return view('users.profile', compact(['users', 'skills', 'focus','managers','user_skills','user_focus','action_type']));
     }
 
    
@@ -214,5 +224,147 @@ class UserController extends Controller
         return view('users.dashboard', compact([]));
     }
 	
+	
+	function save_user_interests(ProfileRequest $request) {
+		$response['status'] = false;
+		if($request->ajax()){
+			$user = \Auth::user();
+			$terms = array();
+			if(!empty($user)){
+				$loggedInUserID = $user->id;
+				$action = $request->post('action');
+				if($action == 1) {
+					$skills = $request->post('skills');
+				} else {
+					$skills = $request->post('focus');
+				}	
+				if($skills) {
+					foreach($skills as $skill) {
+						$chk_taxonomy_term = TaxonomyTerm::where('tid', '=', $skill)->where('vid', '=', $action)->count();
+						if ($chk_taxonomy_term > 0) {
+							$chkskill = UserInterest::where('tid', '=', $skill)->where('vid', '=', $action)->where('user_id', '=', $loggedInUserID)->first();							
+							if ($chkskill === null) {
+								$pdata = array(
+									'tid' => $skill,
+									'vid' => $action,
+									'user_id' => $loggedInUserID
+								);
+								UserInterest::create($pdata);
+							}
+							$terms[] = $skill;
+						} else {
+							$chkskill = TaxonomyTerm::where('name', '=', $skill)->where('vid', '=', $action)->first();
+							if ($chkskill === null) {
+								$taxmony_data = array(
+									'vid' => $action,
+									'name' => $skill,
+									'description' => $skill,
+									'status' => 1
+								);
+								$term_id = TaxonomyTerm::create($taxmony_data);
+								if($term_id->tid > 0) {
+									$pdata = array(
+										'tid' => $term_id->tid,
+										'vid' => $action,
+										'user_id' => $loggedInUserID
+									);
+									UserInterest::create($pdata);
+								}
+								$terms[] = $term_id->tid;
+							} else {
+								TaxonomyTerm::where('tid', '=', $chkskill->tid)->update(['status' => 1]);
+								$chskill = UserInterest::where('tid', '=', $chkskill->tid)->where('user_id', '=', $loggedInUserID)->first();							
+								if ($chskill === null) {
+									$pdata = array(
+										'tid' => $chkskill->tid,
+										'vid' => $action,
+										'user_id' => $loggedInUserID
+									);
+									UserInterest::create($pdata);
+								}
+								$terms[] = $chkskill->tid;
+							}
+						}
+					}
+					$user_taxonomy = TaxonomyTerm::where('vid',$action)->get()->toArray();
+					if($user_taxonomy) {
+						foreach($user_taxonomy as $taxonomy) {
+							$terms_taxonomy[] = $taxonomy['tid'];
+						}
+					}					
+					$result = array_diff($terms_taxonomy, $terms);
+					if($result) {
+						UserInterest::where('user_id',$loggedInUserID)->whereIn('tid',$result)->delete();
+					}
+					$user_interest = UserInterest::with(["term_data"])->where('user_id',$loggedInUserID)->where('vid',$action)->get()->toArray();
+					if($user_interest) {
+						$term_data = [];
+						foreach($user_interest as $interest) {
+							if($interest['term_data']) {
+								$term_data[] = $interest['term_data'];
+							}
+						}	
+						$response['status'] = true;					
+						$response['term_data'] = $term_data;
+					}
+				} else {
+					$response['status'] = false;
+					$response['term_data'] = array();
+				}
+			} else {
+				$response['status'] = false;
+				$response['term_data'] = array();
+			}
+		}
+		return json_encode($response);
+	}
+	
+	function save_user_profile(ProfileRequest $request) {
+		$response['status'] = false;
+		if($request->ajax()){
+			$user = \Auth::user();
+			$terms = array();
+			if(!empty($user)){
+				$loggedInUserID = $user->id;
+				$action = $request->post('action');
+				if(!empty($action)) {
+					$details['image_name'] = '';
+					switch($action) {
+						case 'activity':
+							$details = $request->post('activity');
+							UserProfile::where('user_id', '=', $loggedInUserID)->update(['activities' => $details]);
+							$response['details'] = $request->post();
+						break;
+						case 'certificate':
+							$details = $request->post('certificate');
+							UserProfile::where('user_id', '=', $loggedInUserID)->update(['certificate' => $details]);
+							$response['details'] = $request->post();
+						break;
+						case 'profile':
+							$details = $request->post();
+							if($profile_image = $request->file('profile_images')){
+								$file_name =  substr(preg_replace('/[^a-zA-Z0-9\']/', '', $profile_image->getClientOriginalName()),0,10);
+								$ext = pathinfo($profile_image->getClientOriginalName(), PATHINFO_EXTENSION);
+								$filename = $file_name . "_" . time() . "." . $ext;
+								$profile_image->move(public_path('uploads'), $filename);
+								$details['image_name'] = url('/uploads/').Config('constants.DS').$filename;
+							} else {
+								 $users = $user->getUserProfileDataById($loggedInUserID);
+								 $filename = $users->image_name;
+								  if(!empty($filename)) {
+									$details['image_name'] = url('/uploads/').Config('constants.DS').$filename;
+								 }
+							}	
+							UserProfile::where('user_id', '=', $loggedInUserID)->update(['image_name' => $filename, 'designation' => $details['designation'],'department' => $details['dept'],'aspirations' => $details['aspirations'],'availability' => $details['availability'],'about' => $details['about'],'manager' => $details['manager']]);
+							User::where('id', '=', $loggedInUserID)->update(['firstName' => $details['uname']]);
+							 $response['details'] = $details;	
+						break;
+					}
+					$response['status'] = true;			
+				}
+			}	
+		}
+		return json_encode($response);
+	}
 	
 }

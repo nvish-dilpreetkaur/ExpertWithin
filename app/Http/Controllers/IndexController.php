@@ -68,13 +68,13 @@ class IndexController extends Controller
 
 		$ufilters['not_in_users'] = $loggedInUserID;
 		$all_users = $this->user->getAllUserDdlList($ufilters); 
-		
+		$current_user_detail = $user->getUserProfileDataById($loggedInUserID);
 		$page_no = 1;
 		$feedCount = $this->feed->getfeedCount($feedFilters);
 		$totalPages = ceil($feedCount / $limit);
 		return view('home.index', compact(
 		[
-			'topMatchedOpportunities','loggedInUserID','myOppForCandidates','myAppliedOpp','all_users','feedData','page_no','totalPages'
+			'topMatchedOpportunities','loggedInUserID','myOppForCandidates','myAppliedOpp','all_users','feedData','page_no','totalPages', 'current_user_detail'
 		]) );
 		
 	} 

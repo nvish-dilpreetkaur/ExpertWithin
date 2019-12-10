@@ -36,6 +36,18 @@ Route::group( ['middleware' => ['auth']], function() {
 	Route::post('/feed-action', 'FeedController@feedAction')->name('feed-action');
 
 	Route::get('view-opportunity/{id}','OpportunityController@view')->name('view-opportunity');
+	Route::any('add-opportunity','OpportunityController@addOpportunity')->name('add-opportunity');
+	Route::any('create-opportunity/{oid}','OpportunityController@createOpportunity')->name('create-opportunity');
+	Route::any('store-opportunity','OpportunityController@storeOpportunity')->name('store-opportunity');
+	Route::get('draft-opportunity/{oid}','OpportunityController@draftOpportunity')->name('draft-opportunity');
+	
+	Route::post('opportunity-action', 'OpportunityUserController@actionOpportunityUser')->name('opportunity-action');
+	Route::get('opportunity/{action}/{id}', 'OpportunityUserController@applyOpportunity')->name('opportunity-apply');
+	
+	Route::post('user_interests','UserController@save_user_interests')->name('user_interests');
+	Route::post('save_user_profile','UserController@save_user_profile')->name('save_user_profile');
+	
+	
 	/*
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::any('search', 'IndexController@searchOpportunity')->name('search');

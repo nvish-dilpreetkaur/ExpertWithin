@@ -13,9 +13,9 @@
 	</div>
 	</div>
 	<div class="main-page__cmmn-card--heading"><i class="fas fa-briefcase"></i><span>My opportunities for candidates</span></div>
-	@foreach ($myOppForCandidates as $oppCandRow)	
+	@foreach ($myOppForCandidates as $oppCandRow)
 	<div class="cmmn-card-point-nd-status">
-		<p class="blue-txt-clr"><a href="{{ url('view-opportunity', Crypt::encrypt($oppCandRow->id)) }}">{{ $oppCandRow->opportunity }}</a></p>
+		<p class="blue-txt-clr"><a href="{{ url('create-opportunity', Crypt::encrypt($oppCandRow->id)) }}">{{ $oppCandRow->opportunity }}</a></p>
 	<p class="blue-highlit-txt">{{ get_opp_status_label($oppCandRow->status) }}</p>
 	</div>
 	@endforeach

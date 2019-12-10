@@ -11,24 +11,46 @@
 			<div class="main-page__cmmn-card opportunity-detail-page__card">
 			   <div class="opportunity-detail-page__card--top-bottom">
 				   <div class="row clearfix">
-					   <div class="col-md-1">
-						<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+					   @if(!empty($opportunity_data->image_name))
+						<div class="col-md-1">
+						 <img src="{{$opportunity_data->image_name}}" style="width: 100%;">
 					   </div>
+					   @else
+						<div class="col-md-1">
+						 <i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+					   </div>
+					   @endif
 					   <div class="col-md-2 for-null-paddng">
 						<div class="main-page-cmmn-feed-card__footer-area--desg">{{ $opportunity_data->uname }}</div>
 						<div class="main-page-cmmn-feed-card__footer-area--dept">{{ $opportunity_data->department }}</div>
 					   </div>
 					   <div class="col-md-4 for-null-paddng">
 						<div class="opportunity-detail-page__card--social-icons">
-						   <i class="far fa-thumbs-up" aria-hidden="true"></i>
-						   <i class="far fa-heart" aria-hidden="true"></i>
+							@if($opportunity_data->like == 1)
+								<a href="javascript:void(0)" class="likeOppBtn{{$opportunity_data->opp_id}}" data-action="unlike"  data-oid="{{$opportunity_data->opp_id}}"><i class="fas fa-thumbs-up"></i></a>
+							@else
+								 <a href="javascript:void(0)" class="likeOppBtn{{$opportunity_data->opp_id}}" data-action="like"  data-oid="{{$opportunity_data->opp_id}}"><i class="far fa-thumbs-up"></i></a>
+							@endif
+
+							@if($opportunity_data->favourite == 1)
+								<a href="javascript:void(0)" class="favOppBtn{{$opportunity_data->opp_id}}" data-action="unfav"  data-oid="{{$opportunity_data->opp_id}}"><i class="fas fa-heart"></i></a>
+							@else
+								<a href="javascript:void(0)" class="favOppBtn{{$opportunity_data->opp_id}}" data-action="fav"  data-oid="{{$opportunity_data->opp_id}}"> <i class="far fa-heart"></i></a>
+							@endif
+						 
 						   <i class="far fa-comment" aria-hidden="true"></i>
 						   <i class="far fa-share-square" aria-hidden="true"></i>
 						</div>
 					   </div>
 					   <div class="col-md-5">
 						<div class="opportunity-detail-page__card--apply-btn">
-						   <a href="#">Apply</a>
+							@if(Auth::user()->id !=  $opportunity_data->org_uid) 
+								@if($opportunity_data->apply == 0)
+									<a class="applyBtn{{$opportunity_data->opp_id}}"  data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">Apply</a>
+								@else
+									<a class="appliedOpp{{$opportunity_data->opp_id}}" href="javascript:void(0)">{{ __('Applied') }}</a>
+								@endif
+							@endif	
 						</div>
 					   </div>
 					</div>
@@ -60,7 +82,7 @@
 				   <div class="col-md-6">
 					   <div class="opportunity-detail-page__card--content__right-section">
 						   <div class="oppor-create-card__heading red-colr-txt">
-							   Last day to apply: {{ date("d M, Y",strtotime($opportunity_data->apply_before)) }}
+							   Last day to apply: {{ ($opportunity_data->apply_before) ? date("d M, Y",strtotime($opportunity_data->apply_before)) : '-'}}
 						   </div>
 						   <div class="oppor-create-card__content--cmmn-heading">Skills</div>
 						   <div class="cmmn__pills">
@@ -87,7 +109,13 @@
 				   <div class="row clearfix">                                        
 					   <div class="col-md-12">
 						<div class="opportunity-detail-page__card--apply-btn">
-						   <a href="#">Apply</a>
+						@if(Auth::user()->id !=  $opportunity_data->org_uid) 
+							@if($opportunity_data->apply == 0)
+								<a class="applyBtn{{$opportunity_data->opp_id}} common-card-apply-btn"  data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">Apply</a>
+							@else
+								<a class="applyBtn{{$opportunity_data->opp_id}} common-card-apply-btn appliedOpp{{$opportunity_data->opp_id}}" href="javascript:void(0)">{{ __('Applied') }}</a>
+							@endif
+						@endif	
 						</div>
 					   </div>
 					</div>
@@ -101,109 +129,15 @@
 		   <div class="col-md-4 col-lg-4 opportunity-detail__righ-section--outer">
 			<p>You may also like</p>
 			<div class="middle-scroll-section__outer">
-
-			   <!--------->
-
-			   <!-------->
-
-			   <!----1-->
-			   <div class="main-page-cmmn-feed-card main-page__cmmn-card oppor-detail__cmmn-card dropdown">
-				<div class="card-option-dots" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							 <i class="fas fa-ellipsis-h"></i>
-							</div>
-				   <div class="dropdown-menu dots__options-list--for-feed dots__options-list--oppor-detail">
-					<ul>
-					   <li><a href="https://www.google.com/">Sort by</a></li>
-					   <li><a href="https://www.google.com/">Draft</a></li>
-					   <li><a href="https://www.google.com/">Publish</a></li>
-					   <li><a href="https://www.google.com/">Screen</a></li>
-					   <li><a href="https://www.google.com/">Complete</a></li>
-					   <li><a href="https://www.google.com/">Cancel</a></li>
-					</ul>
-				   </div>
-				<!-- </div> -->
-				<div class="main-page-cmmn-feed-card__top-blue-banner">
-				   <p>$150 Gift Card</p>
-				</div>
-				<div class="main-page-cmmn-feed-card__heading blue-txt-clr">
-				   Collaborate on new storyline for Chelos
-				</div>
-				<div class="main-page-cmmn-feed-card__desc">
-				   Assist in providing hardware and software solutions enabling delivery of the latest Kloves technologies…
-				</div>
-				<div class="main-page-cmmn-feed-card__coins-info">
-				   <i class="fas fa-coins gold-coins-color"></i><span>25</span>
-				</div>
-				<div class="main-page-cmmn-feed-card__footer-area--border"></div>
-				<div class="main-page-cmmn-feed-card__footer-area oppor-create-card__footer">
-				   <div class="row clearfix">
-					<div class="col-md-1">
-					   <i class='fas fa-user-circle fa-2x'></i>
-					</div>
-					<div class="col-md-5">
-					   <div class="main-page-cmmn-feed-card__footer-area--desg">Vincent Lawson</div>
-					   <div class="main-page-cmmn-feed-card__footer-area--dept">IT Department</div>
-					</div>
-					<div class="col-md-5">
-					   <div class="main-page-cmmn-feed-card__footer--social-icons">
-						<i class="far fa-thumbs-up"></i>
-						<i class="far fa-heart"></i>
-						<i class="far fa-comment"></i>
-						<i class="far fa-share-square"></i>
-					   </div>
-					</div>
-				   </div>
-				</div>
-			   </div>
-			   <!------FEED-CARD-ENDS-HERE-->
-			   <!---------->
-			   <!---2--->
-			   <div class="main-page-cmmn-feed-card main-page__cmmn-card oppor-detail__cmmn-card">
-				<i class="fas fa-ellipsis-h card-option-dots"></i>
-				<div class="main-page-cmmn-feed-card__top-blue-banner">
-				   <p>$150 Gift Card</p>
-				</div>
-				<div class="main-page-cmmn-feed-card__heading blue-txt-clr">
-				   Audio Technology for TV
-				</div>
-				<div class="main-page-cmmn-feed-card__desc">
-				   Help to maintain the QA environment, assist in design, write & execute tests of audio coding & audio processing…
-				</div>
-				<div class="main-page-cmmn-feed-card__coins-info">
-				   <i class="fas fa-coins gold-coins-color"></i><span>25</span>
-				</div>
-				<div class="main-page-cmmn-feed-card__footer-area--border"></div>
-				<div class="main-page-cmmn-feed-card__footer-area oppor-create-card__footer">
-				   <div class="row clearfix">
-					<div class="col-md-1">
-					   <i class='fas fa-user-circle fa-2x'></i>
-					</div>
-					<div class="col-md-5">
-					   <div class="main-page-cmmn-feed-card__footer-area--desg">Vincent Lawson</div>
-					   <div class="main-page-cmmn-feed-card__footer-area--dept">IT Department</div>
-					</div>
-					<div class="col-md-5">
-					   <div class="main-page-cmmn-feed-card__footer--social-icons">
-						<i class="far fa-thumbs-up"></i>
-						<i class="far fa-heart"></i>
-						<i class="far fa-comment"></i>
-						<i class="far fa-share-square"></i>
-					   </div>
-					</div>
-				   </div>
-				</div>
-			   </div>
-			   <!------FEED-CARD-ENDS-HERE-->
-		
-			   <!------FEED-CARD-ENDS-HERE-->
-		
-			   <!-------CARD-ENDS-HERE-->
+				@include('opportunity.you-may-like-section')
 			</div>
+			@if ($youMayLikeOpp != null)
 			<div class="col-md-12">
 			<div class="main-page__cmmn-card--footer">
 				<p class="show-more">Show More</p>
 			</div>
-		   </div>
+			</div>
+			@endif
 		</div>
 		   <!--RIGHT-SECTION-->
 		</div>
@@ -211,4 +145,140 @@
 	   </div>
 	</div>
 </div>
+<script type="text/javascript">
+/** like/dislike opportunity code : starts **/
+	$(document).on('click',"a[class^='likeOppBtn']",function(e){
+		e.stopPropagation();
+		var action = $(this).attr('data-action')
+		var oid = $(this).attr('data-oid')
+		var elem = $(this)
+		
+		var pdata = { 'action' : action, 'oid': oid };
+		//console.log(url)
+		performOppAction(elem,pdata);
+	}); 
+/** like/dislike opportunity code : ends **/
+
+/** fav/unfav opportunity code : starts **/
+	$(document).on('click',"a[class^='favOppBtn']",function(e){
+		e.stopPropagation();
+		var action = $(this).attr('data-action')
+		var oid = $(this).attr('data-oid')
+		var elem = $(this)
+		
+		var pdata = { 'action' : action, 'oid': oid };
+		//console.log(url)
+		performOppAction(elem,pdata);
+	}); 
+/** fav/unfav opportunity code : ends **/
+/** apply code : starts **/
+	$(document).on('click',"a[class^='applyBtn']",function(e){ 
+		e.stopPropagation();
+		var oppID = $(this).data('oid'); 
+		var elem = $(this); 
+		var url = $(this).attr('data-href');
+		performOpportunityAction(elem, url, oppID);
+	})
+/** applyBtn code : ends **/
+function performOpportunityAction(elem, url, oppID){
+	$.ajax({
+		url: url,
+		type: "GET",
+		data:{},
+		dataType: 'JSON',
+		beforeSend: function(){
+			var btnHtml = elem.html()
+			if(btnHtml=='Apply'){
+				elem.html('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Processing')
+			}
+		},error: function(){
+			
+		},success: function(){
+			
+		},complete: function( data ){
+			var obj = JSON.parse( data.responseText );  console.log(obj);
+			if(obj.status==1){
+				if(obj.action=='APPLY'){
+					$('a[class^="applyBtn"]').each(function( index ) {
+						if($(this).data("oid") == oppID){
+							$(this).html('Applied');
+							$(this).removeClass();
+							$(this).addClass('appliedOpp'+oppID);
+							
+						}
+					})
+				}
+				$('#thumbUpModel').modal('show');
+				$('#success_message_thumbupWrapper').html(obj.success_html);
+				/*setTimeout(function(){ 
+					 $('#thumbUpModel').modal('toggle')
+				}, 2000);*/
+			}
+		},
+	});
+}
+	function performOppAction(elem,pdata){
+		$.ajax({
+			url: SITE_URL+'/opportunity-action',
+			type: "POST",
+			data:pdata,
+			dataType: 'JSON',
+			beforeSend: function(){
+
+			},error: function(){
+				
+			},success: function(){
+				
+			},complete: function( data ){
+				var obj = JSON.parse( data.responseText ); 
+				if(obj.type=='success'){
+					if(obj.action=='like'){
+						elem.html('<i class="fas fa-thumbs-up"></i>');
+						elem.attr('data-action','unlike')
+					}else if(obj.action=='unlike'){
+						elem.html('<i class="far fa-thumbs-up"></i>');
+						elem.attr('data-action','like')
+					}else if(obj.action=='fav'){
+						elem.html('<i class="fas fa-heart"></i>');
+						elem.attr('data-action','unfav')
+					}else if(obj.action=='unfav'){
+						elem.html('<i class="far fa-heart"></i>');
+						elem.attr('data-action','fav')
+					}
+				}
+			},
+		});
+	}
+	/** REMOVE FEED : STARTS **/
+	$(document).on('click', '.remove_feed_link', function() {
+		var feed_id = $(this).data('id'); 
+		remove_feed(feed_id);
+	});
+
+	function remove_feed(feed_id){
+		$.ajax({
+            url: "{{ route('feed-action') }}",
+            type: "POST",
+            data: {
+			'feed_id': feed_id,
+			'action': 'remove_feed'
+            },
+            beforeSend: function() {
+            },
+            error: function() {
+            },
+            success: function() {
+            },
+            complete: function(data) {
+                var obj = $.parseJSON(data.responseText); //console.log(obj)
+			if(obj.type='success'){
+				$('#parent-'+feed_id).html(obj.feed_html);
+			}
+               //$('#home-feed').append(obj.html);
+            },
+        });
+	}
+	/** REMOVE FEED : ENDS **/
+</script>
 @endsection
+

@@ -239,5 +239,20 @@ if (! function_exists('get_opp_application_status_label')) {
 	}
   }
 
+  /**
+	 * To get logged in user default profile details
+	 * @param args
+	 * @return response
+  */
+if (! function_exists('get_user_profile_details')) {
+	function get_user_profile_details() {
+		$users = array();
+		$user = \Auth::user();
+		if(!empty($user)){
+			$users = $user->getUserProfileDataById($user->id);
+		}	
+		return $users;
+	}
+}
 
 ?>

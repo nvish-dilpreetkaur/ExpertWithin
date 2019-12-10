@@ -1,4 +1,4 @@
-
+@php $current_user_detail = get_user_profile_details(); @endphp
 <!-- header :start-->
 <div class="container-fluid for-container-fluid">
     <div class="container header-bg">
@@ -21,21 +21,31 @@
                   <li><a href="#"><i class="fas fa-user-friends"></i><p>My Team</p></a></li>
                   <li><a href="#"><i class="fas fa-heart"></i><p>Favorites</p></a></li>
                   <li><a href="#"><i class="fas fa-bell"></i><p>Notifications</p></a></li>
-                  <li id="header-profile__dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><a href="#"><i class='fas fa-user-circle'></i><p>Me</p></a></li>
+                  <li id="header-profile__dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   @if(!empty($current_user_detail->image_name))
+						<a href="#" class="main-header--user-info-card__picture cur_image" style="background-image: url('{{$current_user_detail->image_name}}') !important;"><i class='' id="def_pic"></i><p>Me</p></a></li>
+				   @else
+						<a href="#" class="main-header--user-info-card__picture cur_image"><i class="fas fa-user-circle for-header-user__default-pic def_pic" id="def_pic" aria-hidden="true"></i><p>Me</p></a></li>
+				   @endif
+                  </li>
                   <!-----modal-content-->
                   <div class="dropdown-menu header-profile-dropdown-modal" aria-labelledby="header-profile__dropdown-view">
                       <div class="header-dropdown__profile--user-info">
                       <div class="container">
                         <div class="row">
                           <div class="col-md-4 for-null-paddng">
-                            <div class="">
-                              <i class='fas fa-user-circle fa-2x'></i>
-                            </div>
+                            @if(!empty($current_user_detail->image_name))
+								<div class="main-page__dropdown--user-info-card__picture cur_image " style="background-image: url('{{$current_user_detail->image_name}}') !important;">
+								  <i class=''></i>
+								</div>
+							@else
+									<div class="main-page__user-info-card__picture cur_image"><i class="fas fa-user-circle fa-2x def_pic" aria-hidden="true"></i></div>
+							@endif	
                           </div>
                           <div class="col-md-8 for-null-paddng">
                             <div class="">
                               <div class="header-dropdown__profile--user-name">{{ Auth::user()->firstName }}</div>								
-                              <div class="header-dropdown__profile--user-profl"><a href="#">My profile</a></div>
+                              <div class="header-dropdown__profile--user-profl"><a href="{{route('profile')}}">View profile</a></div>
                             </div>
                           </div>
                         </div><!----row-ends-->

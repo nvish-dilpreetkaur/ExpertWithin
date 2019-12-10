@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\PasswordReset; 
 use DB;
+use Config;
 
 class User extends Authenticatable
 {
@@ -70,12 +71,14 @@ class User extends Authenticatable
     }
 	
 	function getUserProfileDataById($user_id = null){
-
+		$file_path = url('/uploads/');
 		$status = config('kloves.RECORD_STATUS_ACTIVE');
 		$query = " SELECT u1.id, u1.firstName, u1.status, u1.mobile, u1.linkedin_id, u1.org_id
-		, u2.designation, u2.aspirations, u2.availability, u2.notes, u2.status, u2.activities
-		, (SELECT GROUP_CONCAT(DISTINCT tid) FROM ".DB::getTablePrefix()."user_interests WHERE vid = 1 AND user_id = '".$user_id."') AS skills
-		, (SELECT GROUP_CONCAT(DISTINCT tid) FROM ".DB::getTablePrefix()."user_interests WHERE vid = 3 AND user_id = '".$user_id."') AS focus
+		, u2.designation, u2.aspirations, u2.availability, u2.notes, u2.status, u2.activities, u2.certificate, u2.about, u2.manager, u2.department, 
+		CASE
+            WHEN u2.image_name != '' THEN CONCAT('".$file_path."', '".Config('constants.DS')."', u2.image_name)
+            ELSE ''
+        END AS image_name
 		FROM ".DB::getTablePrefix()."users AS u1
 		LEFT JOIN  ".DB::getTablePrefix()."user_profiles AS u2 ON (u1.id = u2.user_id)
 		WHERE u1.id = '".$user_id."' AND u1.status = '".$status."' "; 
@@ -411,5 +414,8 @@ class User extends Authenticatable
 		$dataResult = DB::select( DB::raw($query) );  //prd($dataResult);
 		return $dataResult;
 	}
+	
+	
+	
 
 }	
