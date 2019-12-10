@@ -299,6 +299,14 @@ button:focus{
     position: relative;
     color: #FFFFFF;
 }
+.main-header--user-info-card__picture.cur_image i {
+    position: relative;
+    top: 0;
+}
+.main-header--user-info-card__picture.cur_image p {
+    position: absolute;
+    top: 1.4rem;
+}
 
 .header-rite-icons ul li a i{
     margin: 0 auto;
@@ -673,7 +681,7 @@ button:focus{
 
 .main-page__user-info-card__picture{
     background-repeat: no-repeat;
-	height: 5rem;
+	/* height: 5rem; */
 	width: 135%;
 	background-size: contain;
 	border-radius: 50%;
@@ -692,11 +700,12 @@ button:focus{
     /* background-image: url(../images/user-pic.png) !important; */
     width: 100%;
     background-repeat: no-repeat;
-    height: 2rem;
-    padding: 0rem 0rem 0rem 1rem;
+    /* height: 2rem; */
+    padding: 0rem 0rem 0rem 0rem;
     background-size: contain;
     vertical-align: middle;
     border-radius:50%;
+    display: inline-block;
 }
 
 .main-page__user-info-card__picture i{
@@ -1441,7 +1450,7 @@ button:focus{
     font-family: 'FontAwesome';
     color: #757575;
     position: absolute;
-    top: 10px;
+    top: 5px;
     left: 0;
     right: 0;
     text-align: center;
@@ -1510,12 +1519,16 @@ button:focus{
     display: inline-block;
 }
 
+#user_name_text {
+    margin-top: 1rem;
+}
 
 .profile-sec__cmmn-tile p {
     font-size: .8rem;
     text-align: justify;
     line-height: 200%;
-    margin-top: 0.5rem;
+    margin-top: 0rem;
+    margin-bottom: 0.2rem;
 }
 
 .profile-sec__cmmn-tile.top-section__user-info{
@@ -1524,7 +1537,8 @@ button:focus{
 
 .profile-sec__edit-icon--optimize {
     cursor: pointer;
-    float: right;
+    position: absolute;
+    right: 3rem;
     display: inline-block;
     background: #FFFFFF;
     border: 1px solid #DEDEDE;
@@ -1552,13 +1566,15 @@ button:focus{
 
 .profile-sec__user-details--left {
     display: flex;
-    flex: 25%;
-    padding: 0 0 0 3rem;
+    flex: 30%;
+    padding: 0 5rem 0 3rem;
+    order: 1;
 }
 
 .profile-sec__user-details--middle {
     display: flex;
     flex: 15%;
+    order: 2;
 }
 
 .profile-sec__user-details--middle ul{
@@ -1570,9 +1586,10 @@ button:focus{
 
 .profile-sec__user-details--middle ul li{
     padding: 0 0 0 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     width: 47%;
     display: inline-block;
+    vertical-align: middle;
 }
 
 .profile-sec__user-details--middle ul li a{
@@ -1595,6 +1612,15 @@ button:focus{
 
 }
 
+.user-profile-page--for-userInfo .invalid-feedback{
+
+}
+.profile-sec__user-details--middle ul li input,
+.form-group input{
+    font-size: 0.75rem;
+}
+
+
 .profile-sec__user-details--right{
 
 }
@@ -1607,7 +1633,7 @@ button:focus{
 }
 
 .profile-sec__user-details--right ul li{
-
+    word-break: break-all;
 }
 
 .profile-sec__user-details--right ul li a{
@@ -1619,7 +1645,7 @@ button:focus{
 }
 
 .profile-sec__user-details--right .profile-sec__card-content--content{
-
+    width: 100%;
 }
 
 .profile-sec__card-content--heading {
@@ -1640,6 +1666,7 @@ button:focus{
     flex-direction: column;
     flex-basis: 100%;
     flex: 1;
+    
 }
 
 .profile-sec__card-content--content {
@@ -1650,8 +1677,10 @@ button:focus{
 
 .profile-sec__user-details--right {
     display: flex;
-    flex: 19%;
-    margin: 0 4rem;
+    flex: 16%;
+    margin: 0 1rem;
+    width: 30%;
+    order: 3;
 }
 
 .profile-sec__cmmn-tiles--wrapper {
@@ -1851,8 +1880,8 @@ button:focus{
     color: #0057A7;
     text-decoration: none;
     font-size: 0.75rem;
-    padding: 1rem;
-
+    padding: 0.1rem 0.8rem;
+    display: block;
 }
 
 .profile-sec__cmmn-pills ul li a:hover {
@@ -1877,7 +1906,7 @@ button:focus{
 .user-profile-page .select2-container--default.select2-container--focus .select2-selection--multiple,
 .user-profile-page  .select2-container--default .select2-selection--multiple{
     border: 1px solid #DEDEDE !important;
-    height: 6rem;
+    height: 9rem;
     margin-top: .7rem;
     overflow: auto;
 }
@@ -2420,7 +2449,7 @@ button:focus{
     }
 
   #opportunity-store .invalid-feedback{
-        font-size: 0.4rem;
+        font-size: 0.6rem;
     }
     
     .form-create-opportunity label{
@@ -2895,8 +2924,8 @@ button:focus{
 
 }
 
-@media screen and (min-width: 1024px) and (max-width:1200px){
+@media screen and (min-width: 992px) and (max-width:1200px){
     .main-contnt-body{
-        margin-top: 6.4rem;
+        margin-top: 5.4rem;
     }
 }
