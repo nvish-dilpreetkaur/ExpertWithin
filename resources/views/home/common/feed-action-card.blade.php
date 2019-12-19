@@ -12,5 +12,6 @@
       @endif
       
       <i class="far fa-comment"></i>
-      <i class="far fa-share-square"></i>
+       <a href="#mainPage__sharetoExpert" class="shareBtn{{$feedVal->id}}" data-remote="{{ url('share-feed', Crypt::encrypt($feedVal->id)) }}" data-toggle="modal" data-target="#mainPage__sharetoExpert" data-share_type="feed"><i class="far fa-share-square"></i></a> 
+       <?php /* <a href="javascript:void(0)" class="shareBtn{{$feedVal->id}}" data-remote="{{ url('share-feed', Crypt::encrypt($feedVal->id)) }}"  ><i class="far fa-share-square"></i></a>*/ ?>
 </div>

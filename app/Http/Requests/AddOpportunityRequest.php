@@ -65,8 +65,8 @@ class AddOpportunityRequest extends FormRequest
     public function messages()
     {
         return [
-            'otitle.required' => "Title is required.",
-			'odesc.required' => "Description is required."
+            'otitle.required' => "This field is required.",
+			'odesc.required' => "This field is required."
         ];
     }
 

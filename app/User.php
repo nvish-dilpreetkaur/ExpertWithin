@@ -47,7 +47,13 @@ class User extends Authenticatable
     protected $appends = [ 'roles' ];
   	 function __construct() {
         //$this->dbPrefix = DB::getTablePrefix();
-   	 }
+		}
+		
+	public function role(){
+		return $this->belongsTo('App\Models\UserRoles', "id", "user_id");
+	}
+
+
 	/**
 	 * To get user role by id
 	 *
@@ -56,9 +62,12 @@ class User extends Authenticatable
 	*/    
    	public function getRolesAttribute()
 	{
-		$roles = DB::table('vw_user_roles')->select('roles')->where(['user_id'=> auth()->user()->id])->first();
-		return $roles->roles;
+		return auth()->user()->role->where("user_id", auth()->user()->id)->where("status", 1)->pluck("role")->toArray();
 	}
+
+	public function profile_image() {
+        return $this->hasOne('App\UserProfile', "user_id", "id")->select(["user_id", "image_name as profile_image"]);
+    }
 	
 	 /**
      * User Profile Relationships.
@@ -69,6 +78,15 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\UserProfile');
     }
+	/**
+     * User Notification Relationships.
+     *
+     * @var array
+     */
+    public function notifications()
+    {
+        return $this->hasMany('App\Models\Notification', 'recipient_id', 'id')->orderBy('id','DESC');
+    }
 	
 	function getUserProfileDataById($user_id = null){
 		$file_path = url('/uploads/');
@@ -78,7 +96,7 @@ class User extends Authenticatable
 		CASE
             WHEN u2.image_name != '' THEN CONCAT('".$file_path."', '".Config('constants.DS')."', u2.image_name)
             ELSE ''
-        END AS image_name
+        END AS image_name, u2.image_name as img_name
 		FROM ".DB::getTablePrefix()."users AS u1
 		LEFT JOIN  ".DB::getTablePrefix()."user_profiles AS u2 ON (u1.id = u2.user_id)
 		WHERE u1.id = '".$user_id."' AND u1.status = '".$status."' "; 

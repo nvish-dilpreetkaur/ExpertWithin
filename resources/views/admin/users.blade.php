@@ -1,13 +1,12 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 @section('content')  
-@include('common.admin-nav') 
-<script src="{{ URL::asset('js/bootstrap-confirm-delete.js') }}"></script>
-<script src="{{ URL::asset('js/datatables.min.js') }}"></script>
-<link href="{{ URL::asset('css/datatables.css') }}" rel="stylesheet"/>
+<link rel="stylesheet" href="{{ URL::asset('css/style.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('css/old_style.css') }}">
+<!-- <link rel="stylesheet" href="{{ URL::asset('css/user-style.css') }}"> -->
 <script src="{{ URL::asset('js/bootstrap-confirm-delete.js') }}"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css"href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-<section class="main-body" id="list-opportunities-page">
+<section class="main-contnt-body" id="list-opportunities-page">
   <div class="container">
   <div class="opportunity-page-redesign user-mgmt">
     <div class="row clearfix">
@@ -113,7 +112,7 @@
                       { data: 'action', name: 'action', orderable: false},
                    ],
              initComplete: function () { 
-                     this.api().columns().every(function (value , i) {
+                  /*   this.api().columns().every(function (value , i) {
                       var column = this;
                     
                       var oldHTML = $("#u-searchTable tr").html();
@@ -129,7 +128,7 @@
                     
                       $(td).appendTo($("#u-searchTable tr"));
                      
-                  }); 
+                  }); */
               }, 
             order: [0, 'asc']
           });

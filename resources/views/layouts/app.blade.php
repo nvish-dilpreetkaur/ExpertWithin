@@ -17,7 +17,10 @@
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/css/swiper.min.css"> 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
 	<script src="{{ URL::asset('js/kit.fontawesome.js') }}" crossorigin="anonymous"></script>
+
+	
 	<script type="text/javascript">
 		var SITE_URL = "{{ URL::to('/') }}";
 		$.ajaxSetup({
@@ -31,9 +34,9 @@
 	@include('common.search-top')
 	<div class="main-content-container">  <!-- wraps whole page -->
 		@include('common.header')
-		@include('common.flash-message')
 		@yield('content')
-	@include('common.footer')
+		@include('common.footer')
+		@include('common.flash-message')
 	</div>
 </body>
 </html>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth;
 use App\Models\Feed;
+use App\User;
 use DB;
 
 class AcknowledgementController extends Controller
@@ -18,6 +19,7 @@ class AcknowledgementController extends Controller
     //parent::__construct();
     //$this->opportunity = new Opportunity();
     $this->feed = new Feed();
+    $this->user = new User;
   }
   
 	/**
@@ -77,6 +79,28 @@ class AcknowledgementController extends Controller
       exit();
   }
 
+/**
+	 * render acknoledgement view
+	 * @param  Request
+	 * @return Response
+	*/
+	public function ackForm(Request $request){
+		$response = array( 
+			"type" => NULL,
+			"errors" => NULL,
+			"message" => NULL,
+		);
 
+    $page_title = "";
+    $user = \Auth::user(); 
+		if(!empty($user)){
+			$loggedInUserID = $user->id;
+		}
+    $all_users = $user->where('id', '<>', $loggedInUserID)->get(); //prd($all_users);
+		$response["html"] = view('home.common.ack-form', compact(['all_users']))->render();
+		$response["type"] = "success";
+		echo json_encode($response);
+		exit();
+	}
   
 }

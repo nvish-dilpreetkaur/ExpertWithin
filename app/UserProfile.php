@@ -25,4 +25,14 @@ class UserProfile extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function getProfileImageAttribute($value)
+    {
+        if(!empty($value)) {
+            $value = url('/uploads/') . "/" . $value;
+        } else {
+            $value = "";
+        }
+        return $value;
+    }
+
 }

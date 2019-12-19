@@ -8,16 +8,7 @@
 		<!--LEFT-SECTION-->
 				<div class="main-page__left-section--outer">
 					<div class="main-page__cmmn-card">
-					<div class="main-page__cmmn-card--heading"><i class="fas fa-newspaper"></i><span>Daily Digest – {{ $todatTime = Carbon\Carbon::now()->format('D, F d, Y') }}</span></div>
-							<ul>
-								<li>You have <span class="blue-txt-clr">1 Open Opportunity</span> in draft.</li>
-								<li><span class="blue-txt-clr">Acknowledge </span> Mock Choi for completing an opp</li>
-								<li><span class="blue-txt-clr">Natasha Vargas</span> acknowledged you.</li>
-								<li>There are <span class="blue-txt-clr">2 new opportunities </span> related to your skill sets, focus areas</li>
-							</ul>
-							<div class="main-page__cmmn-card--footer">
-								<p class="show-more">Show More</p>
-							</div>
+						@include('home.common.daily-digest')
 					</div>
 					<div class="fixme">
 						<!----My applied opportunities--->
@@ -28,7 +19,7 @@
 									<i class="fas fa-ellipsis-h"></i>
 									<div class="dropdown-menu dots__options-list dots__options-list--for-left-section">
 										<ul>
-											<li><a href="#">Sort by</a></li>
+											<li>Sort by</li>
 											<li><a href="#">Draft</a></li>
 											<li><a href="#">Publish</a></li>
 											<li><a href="#">Screen</a></li>
@@ -55,11 +46,14 @@
 					<div class="middle-scroll-section__outer">
 						<div class="middle-section__cmmn-card">
 							<p>What would you like to do?</p>
+							@if (in_array(config('kloves.ROLE_MANAGER'), $userRoles) || in_array(config('kloves.ROLE_ADMIN'), $userRoles))
 							<div class="middle-section__top-card--cmmn-button" data-toggle="modal" data-target="#mainPage__createOpportunity">
-								<i class="fas fa-pencil-alt"></i><a href="#">Create an Opportunity</a>
+							<i class="fas fa-door-open" aria-hidden="true"></i><sup>+</sup><a href="#"></a>
 							</div>
+							@endif
 							<div class="middle-section__top-card--cmmn-button" data-toggle="modal">
-								<i class="fas fa-pencil-alt"></i><a href="#" id="acknowledgeAnExpert">Acknowledge an Expert</a>
+							<!-- <i class="fas fa-trophy"></i><sup>+</sup><a href="#" id="acknowledgeAnExpert" data-target="mainPage__acknowledgeAnExpert"></a> -->
+							<a href="#" id="acknowledgeAnExpert" data-target="mainPage__acknowledgeAnExpert"><i class="fas fa-trophy"></i><sup>+</sup></a>
 							</div>
 						</div>
 						<!--------->
@@ -77,9 +71,9 @@
 											<div class="main-page-slider__cntnt">
 													<a href="{{ url('view-opportunity', Crypt::encrypt($topOppRow->id)) }}">{{ $topOppRow->opportunity }}</a>
 											</div>	
-											<div class="main-page-slider__cntnt__coins-info">
+											<!-- <div class="main-page-slider__cntnt__coins-info">
 													<i class="fas fa-coins gold-coins-color"></i><span>{{ $topOppRow->tokens }}</span>
-											</div>							
+											</div> -->
 										</div>
 									@endforeach
 									</div>
@@ -106,18 +100,18 @@
 					<div class="main-page__cmmn-card main-page__user-info-card">
 						<div class="container">
 						<div class="row clearfix">
-							<div class="col-md-3">
-							   @if(!empty($current_user_detail->image_name))
-									<div class="main-page__user-info-card__picture" style="background-image: url('{{$current_user_detail->image_name}}');"><i class=''></i></div>
+							<div class="col-md-4">
+							   @if(!empty($current_user_detail['profile']['image_name']))
+									<div class="main-page__user-info-card__picture" style="background-image: url('uploads/{{$current_user_detail['profile']['image_name']}}');"><i class=''></i></div>
 							   @else
 									<div class="main-page__user-info-card__picture"><i class="fas fa-user-circle fa-4x" aria-hidden="true"></i></div>
 							   @endif
 							</div>
 	
-							<div class="col-md-9">
+							<div class="col-md-8 for-null-paddng-right">
 								<div class="main-page__user-info-card__about">
 									<div class="main-page__user-info-card--title">{{ Auth::user()->firstName }}</div>
-									<div class="main-page__user-info-card--desc">{{ $current_user_detail->about }}</div>
+									<div class="main-page__user-info-card--desc">{{ $current_user_detail['profile']['about'] }}</div>
 									<div class="view-profile-link"><a href="{{route('profile')}}">My profile</a></div>
 								</div>
 							</div>
@@ -137,12 +131,12 @@
 											<span>6</span>
 									</div>
 	
-									<div class="user-info-card__stats--title">
+									<!-- <div class="user-info-card__stats--title">
 										<i class="fas fa-user-plus"></i><span>Following:</span>
 									</div>
 									<div class="user-info-card__stats--numbers">
 										<span>8</span>
-									</div>
+									</div> -->
 							</div>
 	
 							<div class="main-page__user-info-card__expert-tokens">
@@ -206,7 +200,7 @@
 			<!-- Modal Header -->
 			<div class="modal-header">
 			  <h4 class="modal-title">Let’s begin</h4>
-			  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			
 			<!-- Modal body -->
@@ -251,46 +245,18 @@
 				<!-- Modal Header -->
 				<div class="modal-header">
 				  <h4 class="modal-title">Brighten someone’s day with an acknowledgement</h4>
-				  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				
 				<!-- Modal body -->
 				<div class="modal-body">
-						<form id="acknowledgeForm" method="post"  action="{{ route('acknowledge') }}" class="needs-validation" novalidate>
-							<div class="form-group">
-								<div class="to-cmbine-the-label-txt">
-									<label for="uname">Who do you want to recognize?</label>
-									<!--input type="text" class="form-control" id="uname" placeholder="Sonny Fernandez" name="uname" required>-->
-									<select class="js-example-basic-multiple form-control" name="user_id"  id="user_id">
-											<option value="">-- Choose --</option>
-											@foreach ($all_users as $urow)
-											<option value="{{ $urow->id }}" {{ ($urow->id==old('user_id')) ? "selected" : "" }}>{{ $urow->mname }}</option>
-											@endforeach 							  
-									</select>
-								</div>						 
-							  <div class="valid-feedback">Valid.</div>
-							  <div class="invalid-feedback"  id="error-user_id"></div>
-							</div>
-							<div class="form-group">
-							  <div class="to-cmbine-the-label-txt">
-								  <label for="desc">Tell us why?</label>
-								  <textarea placeholder="Sonny provided a lot of great design workand worked well with others. He can fit into any team environment with ease and provide extraordinary results very quickly!" rows="4" cols="50" name="message" class="form-control" id="message" required></textarea>		
-							  </div> 
-							  <div class="valid-feedback">Valid.</div>
-							  <div class="invalid-feedback" id="error-message"></div>
-							</div>
-							<div class="form-group form-check">
-							</div>
-							<div class="main-page__form-buttons">
-								<button type="submit" class="btn btn-primary">Acknowledge</button>
-							</div>
-						  </form>
+					
 					</div>
 				</div>	
 		  </div>
 		</div>
 	  </div>
-
+	
 	  
 
 	  <div class="modal fade main-page__cmmn_modal" id="opportunity__success">
@@ -350,7 +316,7 @@ $('#user_id').on('change',function() {
 	$('#error-user_id').hide();
 });
 
-$("#acknowledgeForm").submit(function(e) {
+$(document).on('submit',"#acknowledgeForm",function(e){
 	e.preventDefault(); // avoid to execute the actual submit of the form.
 	var form = $(this);
 
@@ -478,13 +444,35 @@ $(document).ready(function() {
 	});
 
 	$(document).on('click', '#acknowledgeAnExpert', function() {
-		$('#acknowledge').removeClass('hidden');
+		/*$('#acknowledge').removeClass('hidden');
 		$('#thanks_up').addClass('hidden');
 		$('#error-message').hide();
 		$('#error-user_id').hide();
 		$('#user_id').val('');
 		$('#message').val('');
-		$('#mainPage__acknowledgeAnExpert').modal('show');
+		$('#mainPage__acknowledgeAnExpert').modal('show'); */
+
+	
+		var modal = $(this).data("target")
+		//console.log(modal)
+		$.ajax({
+			url: SITE_URL+'/ack-form',
+			type: "GET",
+			data: {
+			},
+			beforeSend: function() {
+				$(modal).find('.modal-body').html('<i class="fa fa-spinner" aria-hidden="true"></i>');
+			},
+			error: function() {
+			},
+			success: function() {
+			},
+			complete: function(data) {
+				var obj = $.parseJSON(data.responseText); //console.log(obj.html)
+				$('#'+modal).find('.modal-body').html(obj.html);
+				$('#'+modal).modal('show');
+			},
+		});
 	});
 
 	function remove_feed(feed_id){
@@ -511,5 +499,61 @@ $(document).ready(function() {
         });
 	}
 });
+
+
+
+function initVueComponent(){
+	//<![CDATA[
+      // $shareUserList['all']
+      vm = new Vue({
+            el: '#vueComponent',
+            data: {
+			search : '',
+			selectedList : [],
+			postIDs : [],
+                  items: {!! $shareUserJsonList !!},
+            },
+          /*created: function () {
+            // `this` points to the vm instance
+            console.log('a is: ' + this.a)
+            },*/
+            computed: {
+                  filteredList() {
+                        return this.items.filter(itemVal => {
+                        return itemVal.firstName.toLowerCase().includes(this.search.toLowerCase())
+                        })
+                  }
+		},
+            methods: {
+                 selectRecord( item ){
+				var indexOfSelectedItem = this.items.indexOf(item);
+				if (indexOfSelectedItem > -1) {
+					this.items.splice(indexOfSelectedItem, 1);
+					this.selectedList.push( item );
+					this.postIDs.push( item.id );
+					$("#checkedUsers").val(this.postIDs.toString());
+					//$("#checkedUsers").val(($("#checkedUsers").val() + ', ' + item.id).replace(/^, /, ''));
+				}
+				this.search = '';
+		     },
+		     removeRecord( item ){ 
+				var indexOfSelectedItem = this.selectedList.indexOf(item); 
+				if (indexOfSelectedItem > -1) {  //console.log('sss'+indexOfSelectedItem)
+					this.items.push( item );
+
+					this.selectedList.splice(indexOfSelectedItem, 1);
+					this.postIDs.splice(indexOfSelectedItem, 1);
+					$("#checkedUsers").val(this.postIDs.toString());
+				}
+				this.search = '';
+		     },
+		     sendInAjax(){
+
+		     }
+            }
+	});
+	//]]>
+}
+
 </script>
 @endsection

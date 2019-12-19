@@ -3,7 +3,7 @@
 	<i class="fas fa-ellipsis-h"></i>
 	<div class="dropdown-menu dots__options-list">
 		<ul>
-			<li><a href="javascript:void(0)">Sort by</a></li>
+			<li>Sort by</li>
 			<li><a href="javascript:void(0)" onclick="javascript:sortWidget('opp-for-candidate',{{ config('kloves.OPP_APPLY_NEW') }})">Draft</a></li>
 			<li><a href="javascript:void(0)" onclick="javascript:sortWidget('opp-for-candidate',{{ config('kloves.OPP_APPLY_APPROVED') }})">Publish</a></li>
 			<!--<li><a href="javascript:void(0)">Screen</a></li>
@@ -15,7 +15,7 @@
 	<div class="main-page__cmmn-card--heading"><i class="fas fa-briefcase"></i><span>My opportunities for candidates</span></div>
 	@foreach ($myOppForCandidates as $oppCandRow)
 	<div class="cmmn-card-point-nd-status">
-		<p class="blue-txt-clr"><a href="{{ url('create-opportunity', Crypt::encrypt($oppCandRow->id)) }}">{{ $oppCandRow->opportunity }}</a></p>
+		<p class="blue-txt-clr"><a href="{{ url('create-opportunity', Crypt::encrypt($oppCandRow->id)) }}">{{  ($oppCandRow->opportunity) ? char_trim($oppCandRow->opportunity,40) : '' }}</a></p>
 	<p class="blue-highlit-txt">{{ get_opp_status_label($oppCandRow->status) }}</p>
 	</div>
 	@endforeach

@@ -39,7 +39,7 @@
 							@endif
 						 
 						   <i class="far fa-comment" aria-hidden="true"></i>
-						   <i class="far fa-share-square" aria-hidden="true"></i>
+						   <a href="#mainPage__sharetoExpert" class="shareBtn{{$opportunity_data->opp_id}}" data-remote="{{ url('share-feed', Crypt::encrypt($opportunity_data->opp_id)) }}" data-toggle="modal" data-target="#mainPage__sharetoExpert" data-share_type="OPP"><i class="far fa-share-square"></i></a> 
 						</div>
 					   </div>
 					   <div class="col-md-5">
@@ -146,31 +146,6 @@
 	</div>
 </div>
 <script type="text/javascript">
-/** like/dislike opportunity code : starts **/
-	$(document).on('click',"a[class^='likeOppBtn']",function(e){
-		e.stopPropagation();
-		var action = $(this).attr('data-action')
-		var oid = $(this).attr('data-oid')
-		var elem = $(this)
-		
-		var pdata = { 'action' : action, 'oid': oid };
-		//console.log(url)
-		performOppAction(elem,pdata);
-	}); 
-/** like/dislike opportunity code : ends **/
-
-/** fav/unfav opportunity code : starts **/
-	$(document).on('click',"a[class^='favOppBtn']",function(e){
-		e.stopPropagation();
-		var action = $(this).attr('data-action')
-		var oid = $(this).attr('data-oid')
-		var elem = $(this)
-		
-		var pdata = { 'action' : action, 'oid': oid };
-		//console.log(url)
-		performOppAction(elem,pdata);
-	}); 
-/** fav/unfav opportunity code : ends **/
 /** apply code : starts **/
 	$(document).on('click',"a[class^='applyBtn']",function(e){ 
 		e.stopPropagation();
@@ -196,7 +171,7 @@ function performOpportunityAction(elem, url, oppID){
 		},success: function(){
 			
 		},complete: function( data ){
-			var obj = JSON.parse( data.responseText );  console.log(obj);
+			var obj = JSON.parse( data.responseText );  //console.log(obj);
 			if(obj.status==1){
 				if(obj.action=='APPLY'){
 					$('a[class^="applyBtn"]').each(function( index ) {
@@ -217,38 +192,7 @@ function performOpportunityAction(elem, url, oppID){
 		},
 	});
 }
-	function performOppAction(elem,pdata){
-		$.ajax({
-			url: SITE_URL+'/opportunity-action',
-			type: "POST",
-			data:pdata,
-			dataType: 'JSON',
-			beforeSend: function(){
-
-			},error: function(){
-				
-			},success: function(){
-				
-			},complete: function( data ){
-				var obj = JSON.parse( data.responseText ); 
-				if(obj.type=='success'){
-					if(obj.action=='like'){
-						elem.html('<i class="fas fa-thumbs-up"></i>');
-						elem.attr('data-action','unlike')
-					}else if(obj.action=='unlike'){
-						elem.html('<i class="far fa-thumbs-up"></i>');
-						elem.attr('data-action','like')
-					}else if(obj.action=='fav'){
-						elem.html('<i class="fas fa-heart"></i>');
-						elem.attr('data-action','unfav')
-					}else if(obj.action=='unfav'){
-						elem.html('<i class="far fa-heart"></i>');
-						elem.attr('data-action','fav')
-					}
-				}
-			},
-		});
-	}
+	
 	/** REMOVE FEED : STARTS **/
 	$(document).on('click', '.remove_feed_link', function() {
 		var feed_id = $(this).data('id'); 
@@ -279,6 +223,61 @@ function performOpportunityAction(elem, url, oppID){
         });
 	}
 	/** REMOVE FEED : ENDS **/
+
+
+	/** Share Opp Fxn : STARTS **/
+	function initVueComponent(){
+		// $shareUserList['all']
+		vm = new Vue({
+			el: '#vueComponent',
+			data: {
+				search : '',
+				selectedList : [],
+				postIDs : [],
+				items: {!! $shareUserJsonList !!},
+			},
+		/*created: function () {
+			// `this` points to the vm instance
+			console.log('a is: ' + this.a)
+			},*/
+			computed: {
+				filteredList() {
+					return this.items.filter(itemVal => {
+					return itemVal.firstName.toLowerCase().includes(this.search.toLowerCase())
+					})
+				}
+			},
+			methods: {
+			selectRecord( item ){
+					var indexOfSelectedItem = this.items.indexOf(item);
+					if (indexOfSelectedItem > -1) {
+						this.items.splice(indexOfSelectedItem, 1);
+						this.selectedList.push( item );
+						this.postIDs.push( item.id );
+						$("#checkedUsers").val(this.postIDs.toString());
+						//$("#checkedUsers").val(($("#checkedUsers").val() + ', ' + item.id).replace(/^, /, ''));
+					}
+					this.search = '';
+			},
+			removeRecord( item ){ 
+					var indexOfSelectedItem = this.selectedList.indexOf(item); 
+					if (indexOfSelectedItem > -1) {  //console.log('sss'+indexOfSelectedItem)
+						this.items.push( item );
+
+						this.selectedList.splice(indexOfSelectedItem, 1);
+						this.postIDs.splice(indexOfSelectedItem, 1);
+						$("#checkedUsers").val(this.postIDs.toString());
+					}
+					this.search = '';
+			},
+			sendInAjax(){
+
+			}
+			}
+		});
+		
+	}
+	/** Share Opp Fxn : ENDS **/
 </script>
 @endsection
 

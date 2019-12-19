@@ -4,7 +4,7 @@
 		<i class="fas fa-ellipsis-h"></i>
 		<div class="dropdown-menu dots__options-list dots__options-list--for-left-section">
 			<ul>
-				<li><a href="#">Sort by</a></li>
+				<li>Sort by</li>
 				<li><a href="#">Draft</a></li>
 				<li><a href="#">Publish</a></li>
 				<li><a href="#">Screen</a></li>

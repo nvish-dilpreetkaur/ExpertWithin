@@ -9,7 +9,10 @@ use App\Models\Opportunity;
 use App\Models\OpportunityTermsRelationship;
 use App\Models\TaxonomyTerm;
 use App\Models\Feed;
+use App\Models\OpportunityUser;
+use App\Models\OpportunityUserActions;
 use App\User;
+use App\UserInterest;
 use Config;
 use Exception;
 use Illuminate\Http\Request;
@@ -29,6 +32,7 @@ class OpportunityController extends Controller
         //parent::__construct();
         $this->opportunity = new Opportunity();
         $this->taxonomyterm = new TaxonomyTerm();
+		$this->user = new User();
     }
 
     /**
@@ -187,19 +191,39 @@ class OpportunityController extends Controller
         $oppForCanFilters['loggedUserID'] = auth()->user()->id;
         $myOppForCandidates = $this->opportunity->myOppForCandidates($oppForCanFilters);
 
+        
+        $usersApplied = OpportunityUser::select(["oid", "org_uid", "approve"])
+            ->with("user_details", "profile_image")
+            ->where("apply", config('kloves.RECORD_STATUS_ACTIVE'))
+            ->where("oid", $oid)
+            ->orderBy("created_at", "DESC")
+            ->get()->toArray();
+
         $data = array(
             "opportunity" => $opportunityData,
             "skills" => $skillsData,
             "focusArea" => $focusAreaData,
             "selectedSkills" => $selectedSkills,
             "selectedFocusAr" => $selectedFocusAr,
-            "myOppForCandidates" => $myOppForCandidates
+            "myOppForCandidates" => $myOppForCandidates,
+            "usersApplied" => $usersApplied,
+            "encryptOid" => Crypt::encrypt($oid)
         );
         return view('opportunity.create', $data);
     }
 
+    protected function storeDraftOpportunity(Request $request) {
+        $result = $this->saveOpportunity($request);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
     protected function storeOpportunity(StoreOpportunityRequest $request)
     {
+        $result = $this->saveOpportunity($request);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
+    protected function saveOpportunity(Request $request) {
         $opportunity = array(
             "opportunity" => $request->post('otitle'),
             "opportunity_desc" => $request->post('odesc'),
@@ -219,22 +243,84 @@ class OpportunityController extends Controller
         
         OpportunityTermsRelationship::where("oid", $request->post('oid'))->delete();
 
-        foreach($request->post("skills") as $skill) {
-          $skillInsArr = array(
-              "oid" => $request->post('oid'),
-              "vid" => config('kloves.SKILL_AREA'),
-              "tid" => $skill,
-          );
-          OpportunityTermsRelationship::create($skillInsArr);
+        if($request->has("skills")) {
+            foreach($request->post("skills") as $skill) {
+                $chk_taxonomy_term = TaxonomyTerm::where('tid', '=', $skill)->where('vid', '=', config('kloves.SKILL_AREA'))->count();
+                if ($chk_taxonomy_term > 0) {
+                    $skillInsArr = array(
+                        "oid" => $request->post('oid'),
+                        "vid" => config('kloves.SKILL_AREA'),
+                        "tid" => $skill,
+                    );
+                    OpportunityTermsRelationship::create($skillInsArr);
+                } else {
+                    $chkskill = TaxonomyTerm::where('name', '=', $skill)->where('vid', '=',  config('kloves.SKILL_AREA'))->first();
+                    if ($chkskill === null) {
+                        $taxmony_data = array(
+                                'vid' => config('kloves.SKILL_AREA'),
+                                'name' => $skill,
+                                'description' => $skill,
+                                'status' => 1
+                        );
+                        $term_id = TaxonomyTerm::create($taxmony_data);
+                        if($term_id->tid > 0) {
+                            $skillInsArr = array(
+                            "oid" => $request->post('oid'),
+                            "vid" => config('kloves.SKILL_AREA'),
+                            "tid" => $term_id->tid,
+                        );
+                        OpportunityTermsRelationship::create($skillInsArr);
+                        }
+                    } else {
+                        $skillInsArr = array(
+                            "oid" => $request->post('oid'),
+                            "vid" => config('kloves.SKILL_AREA'),
+                            "tid" => $chkskill->tid,
+                        );
+                        OpportunityTermsRelationship::create($skillInsArr);
+                    }
+                }
+            }
         }
 
-        foreach($request->post("focus_area") as $focusAr) {
-          $skillInsArr = array(
-              "oid" => $request->post('oid'),
-              "vid" => config('kloves.FOCUS_AREA'),
-              "tid" => $focusAr,
-          );
-          OpportunityTermsRelationship::create($skillInsArr);
+        if($request->has("focus_area")) {
+            foreach($request->post("focus_area") as $focusAr) {
+                $chk_taxonomy_term = TaxonomyTerm::where('tid', '=', $focusAr)->where('vid', '=', config('kloves.FOCUS_AREA'))->count();
+                if ($chk_taxonomy_term > 0) {
+                    $skillInsArr = array(
+                        "oid" => $request->post('oid'),
+                        "vid" => config('kloves.FOCUS_AREA'),
+                        "tid" => $focusAr,
+                    );
+                    OpportunityTermsRelationship::create($skillInsArr);
+                } else {
+                    $chkskill = TaxonomyTerm::where('name', '=', $focusAr)->where('vid', '=',  config('kloves.FOCUS_AREA'))->first();
+                    if ($chkskill === null) {
+                        $taxmony_data = array(
+                                'vid' => config('kloves.FOCUS_AREA'),
+                                'name' => $focusAr,
+                                'description' => $focusAr,
+                                'status' => 1
+                        );
+                        $term_id = TaxonomyTerm::create($taxmony_data);
+                        if($term_id->tid > 0) {
+                            $skillInsArr = array(
+                                "oid" => $request->post('oid'),
+                                "vid" => config('kloves.FOCUS_AREA'),
+                                "tid" => $term_id->tid,
+                            );
+                            OpportunityTermsRelationship::create($skillInsArr);
+                        }
+                    } else {
+                        $skillInsArr = array(
+                            "oid" => $request->post('oid'),
+                            "vid" => config('kloves.FOCUS_AREA'),
+                            "tid" => $chkskill->tid,
+                        );
+                        OpportunityTermsRelationship::create($skillInsArr);
+                    }
+                }
+            }
         }
 
         if($request->post('status')==1) {
@@ -259,12 +345,166 @@ class OpportunityController extends Controller
           "select_skills" => $request->post("skills"),
           "select_focus_area" => $request->post("focus_area"),
         );
-        return response()->json($result, Config::get('constants.STATUS_OK'));
+        return $result;
+    }
+
+    protected function publishedOpportunity($oid, Request $request) {
+        $oid = Crypt::decrypt($oid);
+        $opportunityData = Opportunity::select([
+            "id",
+            "opportunity",
+            "opportunity_desc",
+            "incentives",
+            "rewards",
+            "tokens",
+            "expert_qty",
+            "start_date",
+            "end_date",
+            "apply_before",
+            "status",
+        ])
+        ->with("user_actions")
+        ->where("id", $oid)->first();
+
+        $selectedSkills = OpportunityTermsRelationship::where('oid', $oid)->where("vid", config('kloves.SKILL_AREA'))->pluck('tid')->toArray();
+
+        $selectedFocusAr = OpportunityTermsRelationship::where('oid', $oid)->where("vid", config('kloves.FOCUS_AREA'))->pluck('tid')->toArray();
+
+        $skillsData = TaxonomyTerm::select(["tid", "name"])
+            ->where("vid", config('kloves.SKILL_AREA'))
+            ->where("status", config('kloves.RECORD_STATUS_ACTIVE'))
+            ->get();
+
+        $focusAreaData = TaxonomyTerm::select(["tid", "name"])
+            ->where("vid", config('kloves.FOCUS_AREA'))
+            ->where("status", config('kloves.RECORD_STATUS_ACTIVE'))
+            ->get();
+
+        $usersApplied = OpportunityUser::select(["oid", "org_uid", "approve"])
+            ->with("user_details", "profile_image")
+            ->where("apply", config('kloves.RECORD_STATUS_ACTIVE'))
+            ->where("oid", $oid)
+            ->orderBy("created_at", "DESC")
+            ->get()->toArray();
+
+        $usersApproved = OpportunityUser::select(["oid", "org_uid", "approve"])
+            ->with("user_details", "profile_image")
+            ->where("apply", config('kloves.RECORD_STATUS_ACTIVE'))
+            ->where("approve", config('kloves.RECORD_STATUS_ACTIVE'))
+            ->where("oid", $oid)
+            ->orderBy("created_at", "DESC")
+            ->get()->toArray();
+
+        $recommendations = UserInterest::select(["user_id"])
+            ->with("user_details", "profile_image")
+            ->where(function ($query) use ($selectedSkills) {
+                $query->whereIn('tid', $selectedSkills)
+                    ->where('vid', 1);
+            })
+            ->orWhere(function ($query) use ($selectedFocusAr) {
+                $query->whereIn('tid', $selectedFocusAr)
+                    ->where('vid', 3);
+            })->distinct('user_id')->limit(28)->get()->toArray();
+			
+		/** share user list */
+            $shareUserList['all'] = $this->user->where('status','=',config('kloves.RECORD_STATUS_ACTIVE'))->where('id', '<>', \Auth::user()->id)->select('id','firstName')->get()->toArray(); 
+            $shareUserJsonList = json_encode($shareUserList['all']);
+			
+        $data = array(
+            "opportunity" => $opportunityData,
+            "skills" => $skillsData,
+            "focusArea" => $focusAreaData,
+            "selectedSkills" => $selectedSkills,
+            "selectedFocusAr" => $selectedFocusAr,
+            "usersApplied" => $usersApplied,
+            "usersApproved" => $usersApproved,
+            "recommendations" => $recommendations,
+            "encryptOid" => Crypt::encrypt($oid),
+            "shareUserJsonList" => $shareUserJsonList
+        );
+        //prd($data);
+        return view('opportunity.published', $data);
     }
 
     protected function draftOpportunity($oid) {
         Opportunity::where("id", $oid)->update(array("status"=>config('kloves.RECORD_STATUS_INACTIVE')));
         Feed::where("key_id", $oid)->update(array("status"=>config('kloves.RECORD_STATUS_INACTIVE')));
+
+        $result = array('status' => true);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
+    protected function cancelOpportunity($oid) {
+        Opportunity::where("id", $oid)->update(array("status"=> 3));
+        Feed::where("key_id", $oid)->update(array("status"=>config('kloves.RECORD_STATUS_INACTIVE')));
+
+        $result = array('status' => true);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
+    protected function approveOpportunity(Request $request) {
+        $oid = $request->post("oid");
+        $org_uid = $request->post("org_uid");
+
+        OpportunityUser::where("oid", $oid)
+                ->where("org_uid", $org_uid)
+                ->where("apply", config('kloves.RECORD_STATUS_ACTIVE'))
+                ->update(["approve" => config('kloves.RECORD_STATUS_ACTIVE')]);
+
+        OpportunityUserActions::create([
+            "oid" => $oid,
+            "applicant_id" => $org_uid,
+            "action_status" => 1,
+            "approver_id" => auth()->user()->id,
+            "org_id" => auth()->user()->org_id
+        ]);
+
+        $userData = User::select(["firstName", "id"])
+            ->with("profile_image")
+            ->where("id", $org_uid)
+            ->first();
+
+        $result = array('status' => true, 'userData' => $userData);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
+    protected function disapproveOpportunity(Request $request) {
+        $oid = $request->post("oid");
+        $org_uid = $request->post("org_uid");
+
+        OpportunityUser::where("oid", $oid)
+                ->where("org_uid", $org_uid)
+                ->where("apply", config('kloves.RECORD_STATUS_ACTIVE'))
+                ->update(["approve" => 2]);
+
+        OpportunityUserActions::create([
+            "oid" => $oid,
+            "applicant_id" => $org_uid,
+            "action_status" => 2,
+            "approver_id" => auth()->user()->id,
+            "org_id" => auth()->user()->org_id
+        ]);
+
+        $result = array('status' => true);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
+    protected function dismissOpportunity(Request $request) {
+        $oid = $request->post("oid");
+        $org_uid = $request->post("org_uid");
+
+        OpportunityUser::where("oid", $oid)
+                ->where("org_uid", $org_uid)
+                ->where("apply", config('kloves.RECORD_STATUS_ACTIVE'))
+                ->update(["approve" => 0]);
+
+        OpportunityUserActions::create([
+            "oid" => $oid,
+            "applicant_id" => $org_uid,
+            "action_status" => 0,
+            "approver_id" => auth()->user()->id,
+            "org_id" => auth()->user()->org_id
+        ]);
 
         $result = array('status' => true);
         return response()->json($result, Config::get('constants.STATUS_OK'));
@@ -504,12 +744,16 @@ class OpportunityController extends Controller
             $youMayLikeOppFilter['doNotIncludeList'] = $id;
             $youMayLikeOppFilter['limit'] = 2;
             $youMayLikeOpp = $this->opportunity->getYouMayLikeOpportunities($youMayLikeOppFilter); 
+			
+			$status = config('kloves.RECORD_STATUS_ACTIVE');
+            $shareUserList['all'] = $this->user->where('status','=', $status)->where('id', '<>', $loggedInUserID)->select('id','firstName')->get()->toArray(); 
+            $shareUserJsonList = json_encode($shareUserList['all']);
             
         }
 
         $page_title = "Opportunity Details";
 
-        return view('opportunity.view', compact(['opportunity_data','youMayLikeOpp']));
+        return view('opportunity.view', compact(['opportunity_data','youMayLikeOpp','shareUserJsonList']));
     }
 
 }

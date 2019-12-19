@@ -115,7 +115,12 @@ $(document).on('click','#editSkill', function() {
 				$('#about_text').removeClass('hidden');
 				$('#aspirations_text').removeClass('hidden');
 				var imageUrl = $('#old_image').val();
-				$('#imagePreview').css('background-image', 'url(' + imageUrl + ')');
+				if(imageUrl == 'none') {
+					$('#imagePreview').removeAttr('style');
+					$('.pro_img').addClass('fas fa-user-circle fa-9x');
+				} else {
+					$('#imagePreview').css('background-image', 'url(' + imageUrl + ')');
+				}	
 			});
 			
 			$(document).on('change','#skills', function() {
@@ -128,12 +133,12 @@ $(document).on('click','#editSkill', function() {
 				$('#focus-error').css('display','none');
 			});
 			
-			$(".custom-select").each(function(index, element) {
+			/*$(".custom-select").each(function(index, element) {
 			  $(this).select2({
 				tags: true,
 				width: "100%" // just for stack-snippet to show properly
 			  });
-			});
+			});*/
 			
 			$('.save_data').click(function(){
 				var action = $(this).data('action');
@@ -307,11 +312,18 @@ $(document).on('click','#editSkill', function() {
 									$('#about_text').removeClass('hidden');
 									$('#aspirations_text').removeClass('hidden');
 									
-									if(data.details.image_name) {
-										$('.cur_image').css('background-image', 'url(' + data.details.image_name + ')');
-										if($('.def_pic').hasClass().length > 0) {
+									if(data.details.image_name != '') {
+										var imageUrl = data.details.image_name;
+										$('.cur_image').css('background-image', 'url(' + imageUrl + ')');
+										if($('#header_def_pic').length > 0) {
+											$('#header_def_pic').removeClass();
 											$('#def_pic').removeClass();
-										}	
+										}
+										if($('#header_def_image').length > 0) {
+											$('#header_def_image').addClass('user-pic__for-profile--header');	
+										}										
+										$('.pro_img').removeClass();
+											
 									}
 								break;
 							}
@@ -331,5 +343,47 @@ $(document).on('click','#editSkill', function() {
 					$('#'+attr_name+'-error').html('');
 					$('#'+attr_name+'-error').css('display','none');
 				}
+			});
+			
+			$(document).ready(function () {
+				$(".custom-select").each(function(index, element) {
+				  $(this).select2({
+						tags: true,
+						createTag: function (params) {
+							var term = $.trim(params.term);
+							var count = 0
+							var existsVar = false;
+							//check if there is any option already
+							if($('#keywords option').length > 0){
+								$('#keywords option').each(function(){
+									if ($(this).text().toUpperCase() == term.toUpperCase()) {
+										existsVar = true
+										return false;
+									}else{
+										existsVar = false
+									}
+								});
+								if(existsVar){
+									return null;
+								}
+								return {
+									id: params.term,
+									text: params.term,
+									newTag: true
+								}
+							}
+							//since select has 0 options, add new without comparing
+							else{
+								return {
+									id: params.term,
+									text: params.term,
+									newTag: true
+								}
+							}
+						},
+						maximumInputLength: 20, // only allow terms up to 20 characters long
+						closeOnSelect: true
+					  });
+				});
 			});
 			

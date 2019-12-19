@@ -1,171 +1,15 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 @section('content')
-@include('common.admin-nav')
-<style>
- #taxonomy-page .tab-content > .active{
-    padding: 0;
-}
+<link rel="stylesheet" href="{{ URL::asset('css/style.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('css/old_style.css') }}">
 
-#taxonomy-page .taxanomy-redesign{
-    margin: 8rem 0;
-}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
-#taxonomy-page .nav-link{
-    padding:.5rem 1rem .5rem 1rem;
-}
-
-#container-tab ul{
-
-}
-
-#container-tab ul li a.active,
-#container-tab ul li a.active:hover{
-background-color:#eee;
-color:#212324;
-border: 1px solid #dedede;
-}
-
-#container-tab ul li a:hover{
-    color: #FF5D60;
-}
-
-
-/* #admin-tab.nav-item.show .nav-link,
-#admin-tab.nav-item .nav-link.active,
-#admin-tab.nav-item .nav-link:hover {
-    /* color: #fff;
-    background-color: #495057;
-    border-color: #495057 #495057 #fff;
-
-} */
-/*
-#taxonomy-page .nav-tabs .nav-link:focus, {
-    border-color: #dedede;
-    color: #000;
-    background-color: #dedede;
-} */
-
-#taxonomy-page .modal-content{
-    text-align: center;
-}
-
-#taxonomy-page  .taxanomy-modal .modal-header{
-    padding: 0;
-    margin: 0 auto;
-    border-bottom: 2px solid #dedede;
-    padding-top: .7rem;
-}
-
-#taxonomy-form {
-    border: none;
-}
-
-#taxonomy-page #success .modal-footer{
-    justify-content: center;
-}
-
-#taxonomy-page .modal-header .close{
-    display: none;
-}
-
-#taxonomy-page .modal-body input{
-    border:2px solid #dedede;
-    padding: .4rem;
-}
-
-
-#taxonomy-page .custom-control-input:checked~.custom-control-label::before {
-    border-color: #007bff;
-    /* background-color: #FF5D60; */
-    background-color: #007bff;
-}
-
-#taxonomy-page .cmmn-btn.profile-btn {
-    padding: .3rem 1rem;
-}
-
-#taxonomy-page .common-card-apply-btn {
-    padding: .5rem 0;
-}
-#taxonomy-page table {
-    /* width: 69rem !important; */
-}
-
-.display-hide{
-    display:none;
-}
-
-#myTabContent .tab-pane{
-
-}
-
-
-#taxonomy-page .update-oppr-right-sec{
-    margin-right: 0;
-}
-
-#taxonomy-page .tab-content a:hover{
-    color:#FF5D60;
-}
-#taxonomy-page  .profile-btns a:hover, .cmmn-btn.profile-btn:hover{
-    font-weight:normal;
-}
-.for-administration-table thead tr th{
-    text-align: left;
-}
-
-.for-administration-table .custom-control.custom-switch{
-    text-align: right;
-}
-
-
-table.dataTable thead:first-child .sorting, 
-table.dataTable thead:first-child .sorting_asc, 
-table.dataTable thead:first-child .sorting_desc{
-    background-position-x: 17rem !important;
-}
-
-.for-administration-table .no-search-col{
-        text-align:right;
-    }
-
-@media only screen and (min-width: 768px){
-    .for-administration-table thead tr th,
-    .for-administration-table tbody tr td,
-    .for-administration-table .custom-control.custom-switch{
-        text-align: center;
-    }
-
-    .for-administration-table .no-search-col{
-        text-align:center;
-    }
-}
-
-
-
-</style>
-
-<!-- <script src="{{ URL::asset('js/bootstrap-confirm-delete.js') }}"></script>
-<script src="{{ URL::asset('js/datatables.min.js') }}"></script> -->
-<!----------new-links-to-test-start------------------->
-
-<!-- <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
-
-<script src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
-
-<link rel="stylesheet" type="text/css"href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">  -->
-<script src="{{ URL::asset('js/bootstrap-confirm-delete.js') }}"></script>
-<script src="{{ URL::asset('js/datatables.min.js') }}"></script>
-<link href="{{ URL::asset('css/datatables.css') }}" rel="stylesheet"/>
 <script src="{{ URL::asset('js/bootstrap-confirm-delete.js') }}"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css"href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
 <!----------new-links-to-test-end------------------->
-
-<section class="main-body" id="taxonomy-page">
+<div class="main-contnt-body" id="taxonomy-page">
     <div class="container">
         <div class="favorite-page-redesign taxanomy-redesign">
             <div class="row clearfix">
@@ -283,7 +127,7 @@ table.dataTable thead:first-child .sorting_desc{
             </div>
         </div>
     </div>
-</section>
+</div>
 <!-- Modal -->
 <table id="dummy-term-row">
     <tr class="term-row">
@@ -329,5 +173,178 @@ table.dataTable thead:first-child .sorting_desc{
         @endforeach
         
       });
+
+
+
+/*************************************Taxonomy*************************************/
+var taxonomy_item_id=0, vocab_id=0,tax_item="", vocab_tab = "",vocab_table="";
+
+$(document).ready(function(){
+	$("#taxonomy-form").submit(function(ev){ 
+		ev.preventDefault();
+
+		var item_name = $("#item-name").val();
+		var form  = $(this).attr("id");
+
+		$.ajax({
+				url: SITE_URL+"/taxonomy",
+				type: "POST",
+				data: { "taxonomy_item_id":taxonomy_item_id,"item-name": item_name, "vocab_id": vocab_id },
+				dataType: 'JSON',
+				   beforeSend: function(){
+				},error: function(data){
+					validation_errors(data,form)
+				}, success: function(){
+				}, complete: function( data ){
+					var obj = $.parseJSON(data.responseText); 
+					
+					if(obj.type=='success'){
+						if(isNaN(taxonomy_item_id)){
+							var new_term_row = $("#dummy-term-row tr").clone();
+							new_term_row.find(".term-name>a").text(item_name)
+							new_term_row.find(".term-name>a").attr("data-item-id", obj.id);
+
+							new_term_row.find(".term-status").attr("data-item-id", obj.id);
+							new_term_row.find(".term-status").attr("id", "customSwitch"+obj.id);
+
+							new_term_row.find(".custom-control-label")	.attr("for", "customSwitch"+obj.id);
+							
+
+							var date = moment(obj.date).format("YYYY-MM-DD H:mm:ss"); //changed back from ISO format
+							new_term_row.find("td:last").text(date);
+
+							var t = vocab_table.closest("table").DataTable();
+					        t.row.add(new_term_row).draw(true);
+					        t.order([2, 'desc']).draw();					       
+						} else {		
+							tax_item.closest(".term-row").find("td.term-name>a").text(item_name);
+						}
+						
+						$("#success").modal("hide");
+						$("#ajaxsuccess .modal-body p.success-text").text(obj.html);
+						$("#ajaxsuccess").modal("show");
+					} 
+				}
+		});
+	});
+});
+
+$(document).on("click", ".term-status", function(){
+	
+	var status = $(this).prop("checked");
+	var vocab_id = $(this).closest(".vocab-tab").data("vocab-id");
+
+	taxonomy_item_id  = parseInt($(this).data("item-id"));
+
+	$.ajax({
+			url: SITE_URL+"/taxonomy/status",
+			type: "POST",
+			data: { "taxonomy_item_id":taxonomy_item_id,"status":status,"vocab_id":vocab_id},
+			dataType: 'JSON',
+			   beforeSend: function(){
+				
+			}, error: function(){	
+				alert('Applicant fetch ajax error!')
+			}, success: function(){
+				
+			}, complete: function( data ){
+
+				var obj = $.parseJSON(data.responseText); 
+				
+				if(obj.type=='success'){
+					$("#ajaxsuccess .modal-body p.success-text").text(obj.html);
+					$("#ajaxsuccess").modal("show");
+			}
+		}
+	});
+})
+
+$(document).on("click",".open-modal", function(){
+
+		form = "taxonomy-form";
+
+		if($(this).hasClass("add-item")){
+			v_id = $(this).data("vocab-id");
+			tax_item = $("#my-opp-table-"+v_id);
+		} else {
+			tax_item  = $(this);
+		}
+		
+		vocab_tab = tax_item.closest(".vocab-tab");
+		vocab_table = tax_item.closest(".vocab-tab").find("table tbody");
+
+		vocab_id = parseInt(vocab_tab.data("vocab-id"));
+		var vocab_name = vocab_tab.data("vocab-name");
+		taxonomy_item_id = parseInt(tax_item.data("item-id"));
+
+		var tax_name  = tax_item.closest(".term-row").find("td.term-name>a").text().trim();
+
+		if(tax_name!=''){
+			$("#item-name").val(tax_name);	
+			$("#taxonomyModalLabel").text("Edit "+vocab_name);			
+		} else {
+			$("#taxonomyModalLabel").text("Add "+vocab_name);
+			$("#item-name").val('');	
+		}
+		
+		var all = ["item-name"];
+		var valid = [];
+		clear_validation_errors(all,valid);
+		
+		$("#success").modal("show");
+});
+
+$(document).ready(function(){
+	$("#myTab.nav-tabs a").on("shown.bs.tab", function(){		
+		$($.fn.dataTable.tables(true)).DataTable()
+			.columns.adjust();
+		var button = $(this).closest(".row").find("a.open-modal");
+
+		button.data("vocab-id",$(this).data("vocab-id"));
+		button.find("span").text("Add "+$(this).data("vocab-name"));
+	})
+})
+
+
+
+function clear_validation_errors(all, valid){
+
+	var diff = $(all).not(valid).get();
+	
+	$.each( diff, function(key, value){
+	 		$("#"+value).removeClass("is-invalid");
+            $("#"+value).closest(".form-group").find(".input-error-msg").text("");
+	});
+}
+
+function validation_errors(data, form){
+
+	var obj = $.parseJSON(data.responseText); 
+
+	var all = [];
+	$("#"+form+" .is-invalid").each(function(){
+			all.push($(this).attr("id"));
+	});
+
+	if(obj.hasOwnProperty('errors')){
+
+		var valid = [];
+
+        $.each( obj.errors, function( key, value ) {
+
+     		  valid.push(key);
+              $("#"+key).addClass("is-invalid");
+              $("#"+key).closest(".form-group").find(".input-error-msg").text(value[0]);
+     	});
+        
+        clear_validation_errors(all, valid);
+
+    } else {
+    	alert('Applicant fetch ajax error!');
+    }
+}
+/*************************************Taxonomy*************************************/
+
+
 </script>
 @endsection

@@ -103,6 +103,9 @@ if (! function_exists('get_opp_status_label')) {
 			case 2:
 				$label = 'Deleted';
 				break;
+			case 3:
+				$label = 'Cancel';
+				break;
 			default:
 				$label = 'Unknown';
 		  }
@@ -116,7 +119,9 @@ if (! function_exists('get_opp_status_label')) {
 	 * @return true/false
   */
   function send_email($emaildata){
-	if(config('mail.SEND_LIVE_EMAILS')){
+	if(config('mail.SEND_EMAILS')==false){
+		return true;
+	}elseif(config('mail.SEND_LIVE_EMAILS')){
 		$to = $emaildata['receiver_email'];
 		$from = !empty($emaildata['sender_email']) ? $emaildata['sender_email'] : '';
 	}else{

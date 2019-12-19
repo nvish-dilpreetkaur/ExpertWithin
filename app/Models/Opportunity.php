@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Config;
+use App\Http\Controllers\Auth;
+
 class Opportunity extends Model
 {
     
@@ -33,7 +35,11 @@ class Opportunity extends Model
         'apply_before',
         'created_at',
         'updated_at'        
-    ];
+	];
+	
+	function user_actions() {
+		return $this->hasOne('App\Models\OpportunityUser', "oid", "id")->where("org_uid", auth()->user()->id);
+	}
 	
     
     /**
@@ -61,7 +67,6 @@ class Opportunity extends Model
 		if(!empty($filters['loggedUserID'])){
 			$whereCondRole = "";
 			$query = "SELECT  out2.id, out2.opportunity, out2.rewards, out2.tokens
-					, (SELECT GROUP_CONCAT(DISTINCT tid) FROM ".DB::getTablePrefix()."org_opportunity_terms_rel WHERE vid = 3 AND oid = out1.oid ) AS focus_areas
 					FROM ".DB::getTablePrefix()."vw_user_matched_opp AS out1
 					LEFT JOIN ".DB::getTablePrefix()."org_opportunity AS out2 ON (out2.id = out1.oid) "
 					.$where; 

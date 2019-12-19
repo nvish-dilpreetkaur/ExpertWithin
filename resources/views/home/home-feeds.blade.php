@@ -3,6 +3,10 @@
 		<input type="hidden" value="{{ @$page_no }}" name="cur_page" id="cur_page">
 		<input type="hidden" value="{{ @$totalPages }}" name="total_page" id="total_page">
 	@endif
+
+	<?php /**** new card HTML : starts **/ ?>
+		@include('home.common.new-card-html')
+	<?php /**** new card HTML : ends **/ ?>
 	@foreach($feedData as $feedKey => $feedVal)
 		<div id="parent-{{ $feedVal->id }}" class="{{ $feedVal->feed_type.'_wrapper' }} ">
 		@if ($feedVal->feed_type == 'new_ack_added')
@@ -82,6 +86,8 @@
 		@endif
 		</div>
 	@endforeach
+
+	
 	@if($totalPages > $page_no)
 		 <div id="load_more_wrapper" class="hidden">
 				<button type="button" name="load_more_button" class="" data-cur_page="{{ $page_no }}" data-total_page="{{ $totalPages }}" id="load_more_button">Load More</button>

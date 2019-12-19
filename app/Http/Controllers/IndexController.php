@@ -65,16 +65,24 @@ class IndexController extends Controller
 		$topMatchedOpportunities = $this->opportunity->getTopMatchedOpportunities($topMatchedFilter);
 		$myOppForCandidates = $this->opportunity->myOppForCandidates($oppForCanFilters);
 		$myAppliedOpp = $this->opportunity->myAppliedOpp($appliedOppFilters);
+		$userRoles = $this->userRoles();
 
 		$ufilters['not_in_users'] = $loggedInUserID;
 		$all_users = $this->user->getAllUserDdlList($ufilters); 
-		$current_user_detail = $user->getUserProfileDataById($loggedInUserID);
+		$current_user_detail = $user->where('id', '=', $loggedInUserID)->with(['profile','notifications'=> function($q) { $q->take(3);
+		},'notifications.sender','notifications.opportunity'])->first()->toArray();
+		//$current_user_detail = $user->getUserProfileDataById($loggedInUserID); //prd($current_user_detail);
 		$page_no = 1;
 		$feedCount = $this->feed->getfeedCount($feedFilters);
 		$totalPages = ceil($feedCount / $limit);
+		
+		$status = config('kloves.RECORD_STATUS_ACTIVE');
+		$shareUserList['all'] = $this->user->where('status','=', $status)->where('id', '<>', $loggedInUserID)->select('id','firstName')->get()->toArray(); 
+		$shareUserJsonList = json_encode($shareUserList['all']);
+
 		return view('home.index', compact(
 		[
-			'topMatchedOpportunities','loggedInUserID','myOppForCandidates','myAppliedOpp','all_users','feedData','page_no','totalPages', 'current_user_detail'
+			'topMatchedOpportunities','loggedInUserID','myOppForCandidates','myAppliedOpp','all_users','feedData','page_no','totalPages', 'current_user_detail', 'userRoles', 'shareUserJsonList'
 		]) );
 		
 	} 

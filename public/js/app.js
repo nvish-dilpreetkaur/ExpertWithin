@@ -21,8 +21,8 @@
         if (currentScroll >= fixmeTop) {
         $('.fixme').css({
             position: 'fixed',
-            top: '5rem',
-            'width':'21.7rem'
+            top: '4rem',
+            'width':'18.75rem'
         });
         } else {
         $('.fixme').css({
@@ -41,8 +41,8 @@
     if (currentScrollRite >= fixmeTopRightSec) {
     $('.fixme-rite-sec').css({
         position: 'fixed',
-        top: '5rem',
-        width:'22.1rem'
+        top: '4rem',
+        width:'17rem'
         // 'max-width':'21rem'
     });
     } else {
@@ -53,6 +53,55 @@
     }
 });
 
+
+$(document).on('keyup change','.frminput', function() {
+	var attr_name =$(this).attr('name');
+	var val = $(this).val();
+	if(val != '') {
+		$('#'+attr_name+'-error').html('');
+		$('#'+attr_name+'-error').css('display','none');
+	}
+});
+
+$(document).on('change','#focus_area', function() {
+	$('#focus_area-error').html('');
+	$('#focus_area-error').css('display','none');
+});
+
+
+/* allow only decimals on a Input element*/
+$(document).on("keypress",".inp-num", function(e){		
+	if ((e.which < 48 || e.which > 57) && e.which != 8 && e.which != 0) {
+		e.preventDefault();
+	}
+});
+
+$('.nonzero').keyup(function(e){ 
+	if (this.value.length == 1 && e.which == 48 ){
+	   $(this).val('');
+       return false;
+   }
+});
+
+/* allow only numbers and commas on a Input element*/
+$(document).on("keypress",".inp-numcomma", function(e){		
+	 if ((e.which < 48 || e.which > 57) && e.which != 8 && e.which != 0) {
+		e.preventDefault();
+	}
+
+});
+
+
+
+/* restrict hyphens and spaces*/
+$(document).on("keypress",".nohyphen", function(e){
+	
+		var name = $(this).val();
+        var dname_without_space = name.replace(/ /g, "");
+		var name_without_special_char = dname_without_space.replace(/[^a-zA-Z 0-9]+/g, "");
+		$(this).val(name_without_special_char);
+
+});
 
 //FOR DATE FORM - ON CREATE - OPPORTUNITY
 var date = new Date();
@@ -113,6 +162,7 @@ function readURL(input) {
           $('#imagePreview').fadeIn(650);
       }
       reader.readAsDataURL(input.files[0]);
+      $('.pro_img').removeClass('fas fa-user-circle fa-9x');
   }
 }
 $("#imageUpload").change(function() {
@@ -144,7 +194,7 @@ $("#imageUpload").change(function() {
         // Check if the slide animation is happening (BUG fix)
         var inTransition = false;
         // Bootstrap design
-        $('body').bootstrapMaterialDesign();
+       //$('body').bootstrapMaterialDesign();
         /** Click functions **/
         // Previous button
         $('#prev-button').click(function(e) { 
@@ -304,11 +354,24 @@ $("#imageUpload").change(function() {
 					var actPosition = $("#tile-1 .nav-tabs .active").position();
 					if($("#tile-1 .slider"). length > 0){ 
 					 $("#tile-1 .slider").css({"left":+ actPosition.left,"width": actWidth});
-					}
+                    }
+                    
 
-			});
+
+//FOR DROPDOWN TOGGLE
+
+                $('.dropdown-for__user-infor-card').click(function(event){
+                    event.stopPropagation();
+                    $( ".dropdown-for__user-infor-card--view" ).toggle();
+                });
+                $(".dropdown-for__user-infor-card--view").on("click", function (event) {
+                    event.stopPropagation();
+                });
+
+
+			});//Document Ready ClOSED
 	
-	
 
-
- 
+        $(document).on("click", function () {
+            $(".dropdown-for__user-infor-card--view").hide();
+        });

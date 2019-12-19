@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+
       <div class="container">
         <div class="row clearfix">
           <div class="main-contnt-body" id="create__opportunity-page">
@@ -13,11 +14,11 @@
               </div>
               <!--LEFT-SECTION-END-->
               <!--MIDDLE-SCROLL-SECTION-->
-              <div class="col-md-8 col-lg-8 main-page__middle-section--outer">
+              <div class="col-md-9 col-lg-9 main-page__middle-section--outer create-opportunity__section">
                 <div class="middle-scroll-section__outer">
                   <div class="step-slider-create-oppor">
                     <div class="center">
-                      <div class="for-step-bar__titles">
+                      <div class="for-step-bar__titles" style="display:none">
                         <!-- Step progress bar -->
                         <ul class="step-progress-bar">
                           <li class="step-item current"><a href="#">Draft</a></li>
@@ -54,9 +55,7 @@
                                     <div class="form-group">
                                         <label for="oexperts">How many experts do you need for this opportunity?</label>
                                         <div class="number experts">
-                                        <span class="plus">+</span>
-                                        <input type="text" class="form-control" id="oexperts" placeholder="" name="oexperts" value="{{ ($opportunity->expert_qty>0)?$opportunity->expert_qty:1 }}" required>
-                                        <span class="minus">-</span>
+                                        <input type="text" class="form-control inp-num nonzero" id="oexperts" placeholder="" name="oexperts" value="{{ ($opportunity->expert_qty>0)?$opportunity->expert_qty:1 }}" pattern="^0*[1-9]\d*$" maxlength="5" required>
                                         </div>
                                         <div class="valid-feedback">Valid.</div>
                                         <div class="invalid-feedback">Please fill out this field.</div>
@@ -66,67 +65,67 @@
                                   <div class="form-group" id="create-oppor-dates">
                                     <div class="input-group date" id="startDate">
                                       <label for="start_dm">Start Date</label>
-                                      <input type="text" class="form-control" id="start_dm" name="start_dm" value="{{ date_format(date_create($opportunity->start_date),'m/d') }}">
+                                      <input type="text" class="form-control frminput" id="start_dm" name="start_dm" value="{{ date_format(date_create($opportunity->start_date),'m/d') }}" readonly="readonly">
                                       <span class="input-group-addon">
                                       <i class="fas fa-calendar-alt"></i>
                                       </span>
                                     </div>
                                     <div class="create-oppor-dates__selected" id="start_date_frmt">{{ date_format(date_create($opportunity->start_date),"D, M d, Y") }}</div>
-                                    <input type="hidden" id="start_date" name="start_date" value="{{ date_format(date_create($opportunity->start_date),'Y-m-d H:i:s') }}">
+                                    <input type="hidden" id="start_date" name="start_date" value="{{ date_format(date_create($opportunity->start_date),'Y-m-d H:i:s') }}" readonly="readonly">
                                     <div class="valid-feedback">Valid.</div>
-                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                    <div class="invalid-feedback" id="start_dm-error">Please fill out this field.</div>
                                   </div>
                                 </div>
                                 <div class="col-md-2">
                                   <div class="form-group" id="create-oppor-dates">
                                     <div class="input-group date" id="endDate">
                                       <label for="end_dm">End Date</label>
-                                      <input type="text" class="form-control" id="end_dm" name="end_dm" value="{{ date_format(date_create($opportunity->end_date),'m/d') }}">
+                                      <input type="text" class="form-control frminput" id="end_dm" name="end_dm" value="{{ date_format(date_create($opportunity->end_date),'m/d') }}" readonly="readonly">
                                       <span class="input-group-addon">
                                       <i class="fas fa-calendar-alt"></i>
                                       </span>
                                     </div>
                                     <div class="create-oppor-dates__selected" id="end_date_frmt">{{ date_format(date_create($opportunity->end_date),"D, M d, Y") }}</div>
-                                    <input type="hidden" id="end_date" name="end_date" value="{{ date_format(date_create($opportunity->end_date),'Y-m-d H:i:s') }}">
+                                    <input type="hidden" id="end_date" name="end_date" value="{{ date_format(date_create($opportunity->end_date),'Y-m-d H:i:s') }}" readonly="readonly">
                                     <div class="valid-feedback">Valid.</div>
-                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                    <div class="invalid-feedback" id="end_dm-error">Please fill out this field.</div>
                                   </div>
                                 </div>
                                 <div class="col-md-2">
                                   <div class="form-group" id="create-oppor-dates">
                                     <div class="input-group date" id="applyBefore">
                                       <label for="apply_dm">Apply Before</label>
-                                      <input type="text" class="form-control" id="apply_dm" name="apply_dm" value="{{ date_format(date_create($opportunity->apply_before),'m/d') }}">
+                                      <input type="text" class="form-control frminput" id="apply_dm" name="apply_dm" value="{{ date_format(date_create($opportunity->apply_before),'m/d') }}" readonly="readonly">
                                       <span class="input-group-addon">
                                       <i class="fas fa-calendar-alt"></i>
                                       </span>
                                     </div>
                                     <div class="create-oppor-dates__selected" id="apply_before_frmt">{{ date_format(date_create($opportunity->apply_before),"D, M d, Y") }}</div>
-                                    <input type="hidden" id="apply_before" name="apply_before" value="{{ date_format(date_create($opportunity->apply_before),'Y-m-d H:i:s') }}">
+                                    <input type="hidden" id="apply_before" name="apply_before" value="{{ date_format(date_create($opportunity->apply_before),'Y-m-d H:i:s') }}" readonly="readonly">
                                     <div class="valid-feedback">Valid.</div>
-                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                    <div class="invalid-feedback" id="apply_dm-error">Please fill out this field.</div>
                                   </div>
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label for="odesc">Summary</label>
-                                <textarea class="form-control" rows="3" id="odesc" name="odesc" placeholder="Focused on the delivery of relevant and content-rich emails and posts.">{{ $opportunity->opportunity_desc }}</textarea>
+                                <textarea class="form-control frminput" rows="3" id="odesc" name="odesc" placeholder="Focused on the delivery of relevant and content-rich emails and posts.">{{ $opportunity->opportunity_desc }}</textarea>
                                 <div class="valid-feedback">Valid.</div>
-                                <div class="invalid-feedback">Please fill out this field.</div>
+                                <div class="invalid-feedback" id="odesc-error">Please fill out this field.</div>
                               </div>
                               <div class="form-group">
                                 <label for="incentives">What are the incentives?</label>
-                                <textarea class="form-control" rows="4" id="incentives" name="incentives" placeholder="Kloves research is developing a proof-of-concept prototype, and will evaluate end-to-end system performance. Gain industry skills in this project.">{{ $opportunity->incentives }}</textarea>
+                                <textarea class="form-control frminput" rows="4" id="incentives" name="incentives" placeholder="Kloves research is developing a proof-of-concept prototype, and will evaluate end-to-end system performance. Gain industry skills in this project.">{{ $opportunity->incentives }}</textarea>
                                 <div class="valid-feedback">Valid.</div>
-                                <div class="invalid-feedback">Please fill out this field.</div>
+                                <div class="invalid-feedback" id="incentives-error">Please fill out this field.</div>
                               </div>
                               <div class="row">
                               <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="rewards">Rewards</label>
-                                    <input type="text" class="form-control" id="rewards" placeholder="$150 Gift Card" name="rewards" value="{{ $opportunity->rewards }}" required>
+                                    <input type="text" class="form-control frminput" id="rewards" placeholder="$150 Gift Card" name="rewards" value="{{ $opportunity->rewards }}" required>
                                     <div class="valid-feedback">Valid.</div>
-                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                    <div class="invalid-feedback"  id="rewards-error">Please fill out this field.</div>
                                 </div>
                                 </div>
                                 <div class="col-md-6">
@@ -135,13 +134,11 @@
                                     <div class="create-oppor-form__coin-counter">
                                     <i class="fas fa-coins gold-coins-color" aria-hidden="true"></i>
                                     <div class="number">
-                                        <span class="plus">+</span>
-                                        <input type="text" name="tokens" id="tokens" value="{{ ($opportunity->tokens>0)?$opportunity->tokens:1 }}" class="form-control">
-                                        <span class="minus">-</span>
+                                        <input type="text" name="tokens" id="tokens" value="{{ ($opportunity->tokens>0)?$opportunity->tokens:1 }}" class="form-control inp-num frminput nonzero" maxlength="5">
                                     </div>
                                     </div>
                                     <div class="valid-feedback">Valid.</div>
-                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                    <div class="invalid-feedback" id="tokens-error">Please fill out this field.</div>
                                 </div>
                                 </div>
                               </div>
@@ -153,7 +150,7 @@
                                 @endforeach
                                 </select>
                                 <div class="valid-feedback">Valid.</div>
-                                <div class="invalid-feedback">Please fill out this field.</div>
+                                <div class="invalid-feedback" id="skills-error">Please fill out this field.</div>
                               </div>
                               <div class="form-pillbox form-group create-opportunity__pills-dropdown create-opportunity__pills-dropdown--for-focus-area clearfix">
                                 <label>Focus Area</label>
@@ -163,7 +160,7 @@
                                 @endforeach
                                 </select>
                                 <div class="valid-feedback">Valid.</div>
-                                <div class="invalid-feedback">Please fill out this field.</div>
+                                <div class="invalid-feedback" id="focus_area-error">Please fill out this field.</div>
                               </div>
                             </form>
                           </div>
@@ -318,6 +315,7 @@
                                 </div>
                               </div>
                               <div class="tab-pane fade" id="candidates" role="tabpanel" aria-labelledby="candidates-tab">
+                              @foreach ($usersApplied as $user)
                               <div class="opportunity-details__candidates-applied">
                                 <div class="opportunity-details__candidates-applied--user-details">
                                   <div class="opportunity-details__candidates-pic">
@@ -325,74 +323,24 @@
                                     <i class="fas fa-cubes user-pic__cube"></i>
                                   </div>
                                   <div class="opportunity-details__candidates-details">
-                                    Alexis Smoody
+                                    {{ $user["user_details"]["firstName"] }}
                                   </div>
                                 </div>
                                 <div class="opportunity-details__candidates-applied--actions-list">
                                   <ul>
-                                    <li><i class="far fa-check-circle"></i><a href="#">Approve</a></li>
-                                    <li><i class="far fa-times-circle"></i><a href="#">Reject</a></li>
+                                    <li class="screen__user-approve" data-oid='{{ $user["oid"] }}' data-org_uid='{{ $user["org_uid"] }}'>
+                                        <i class="far fa-check-circle {{($user['approve']==1)?'text-success':''}}"></i>
+                                        <a href="#" class="{{($user['approve']==1)?'text-success':''}}">Approve</a>
+                                    </li>
+                                    <li class="screen__user-reject" data-oid='{{ $user["oid"] }}' data-org_uid='{{ $user["org_uid"] }}'>
+                                        <i class="far fa-times-circle {{($user['approve']==2)?'text-danger':''}}"></i>
+                                        <a href="#" class="{{($user['approve']==2)?'text-danger':''}}">Reject</a>
+                                    </li>
                                     <li><i class="far fa-comment-alt"></i><a href="#">Comment</a></li>
                                   </ul>
                                 </div>
                               </div>
-                              <!--------2nd candidate-->
-                              <div class="opportunity-details__candidates-applied">
-                                <div class="opportunity-details__candidates-applied--user-details">
-                                  <div class="opportunity-details__candidates-pic">
-                                    <i class="fas fa-user-circle" aria-hidden="true"></i>
-                                    <i class="fas fa-cubes user-pic__cube"></i>
-                                  </div>
-                                  <div class="opportunity-details__candidates-details">
-                                    Mark Terran
-                                  </div>
-                                </div>
-                                <div class="opportunity-details__candidates-applied--actions-list">
-                                  <ul>
-                                    <li><i class="far fa-check-circle"></i><a href="#">Approve</a></li>
-                                    <li><i class="far fa-times-circle"></i><a href="#">Reject</a></li>
-                                    <li><i class="far fa-comment-alt"></i><a href="#">Comment</a></li>
-                                  </ul>
-                                </div>
-                              </div>
-                              <!--------3rd candidate-->
-                              <div class="opportunity-details__candidates-applied">
-                                <div class="opportunity-details__candidates-applied--user-details">
-                                  <div class="opportunity-details__candidates-pic">
-                                    <i class="fas fa-user-circle" aria-hidden="true"></i>
-                                    <i class="fas fa-cubes user-pic__cube"></i>
-                                  </div>
-                                  <div class="opportunity-details__candidates-details">
-                                    Samantha Fox
-                                  </div>
-                                </div>
-                                <div class="opportunity-details__candidates-applied--actions-list">
-                                  <ul>
-                                    <li><i class="far fa-check-circle"></i><a href="#">Approve</a></li>
-                                    <li><i class="far fa-times-circle"></i><a href="#">Reject</a></li>
-                                    <li><i class="far fa-comment-alt"></i><a href="#">Comment</a></li>
-                                  </ul>
-                                </div>
-                              </div>
-                              <!--------4th candidate-->
-                              <div class="opportunity-details__candidates-applied">
-                                <div class="opportunity-details__candidates-applied--user-details">
-                                  <div class="opportunity-details__candidates-pic">
-                                    <i class="fas fa-user-circle" aria-hidden="true"></i>
-                                    <i class="fas fa-cubes user-pic__cube"></i>
-                                  </div>
-                                  <div class="opportunity-details__candidates-details">
-                                    Vincent Lawson
-                                  </div>
-                                </div>
-                                <div class="opportunity-details__candidates-applied--actions-list">
-                                  <ul>
-                                    <li><i class="far fa-check-circle"></i><a href="#">Approve</a></li>
-                                    <li><i class="far fa-times-circle"></i><a href="#">Reject</a></li>
-                                    <li><i class="far fa-comment-alt"></i><a href="#">Comment</a></li>
-                                  </ul>
-                                </div>
-                              </div>
+                              @endforeach
                             </div>
                           </div>
                           <div class="card-body"></div>
@@ -415,7 +363,7 @@
                 </div>
               </div>
           <!--RIGHT-SECTION-->
-          <div class="col-md-4 col-lg-4 main-page__right-section--outer">
+          <div class="col-md-3 col-lg-3 main-page__right-section--outer">
             <div class="fixme-rite-sec">
                 @if(!empty($myOppForCandidates))
                 <div class="main-page__cmmn-card cmmn-card__-title-subtitle" id="opp-for-candidate">
@@ -441,38 +389,30 @@
 		  </div>
 		</div>
 	  </div>
-
+	
     <script>
     $(document).ready(function(){
         var oppr_status = "<?=$opportunity->status?>";
         if(oppr_status=="<?=config('kloves.RECORD_STATUS_ACTIVE')?>") {
-            var current = $('.step-progress-bar').find('.current');
-            var next = current.next(); 
-            
-            // Current to success
-            current.removeClass('current');
-            // Timeout giving time to the animation to render
-            setTimeout(function() { current.addClass('success'); }, 0);
-            
-            // Disabled to current 
-            if(next && next.length > 0) {
-                next.addClass('current'); 
-                nextSlideFncn();
-            }
+          window.location.href = "<?=url('/')?>/published-opportunity/<?=$encryptOid?>";
         }
+
         $( "button#btn-opr-save, button#btn-opr-publish, button#btn-opr-u-save, button#btn-opr-u-publish" ).on( "click", function() {
             var data_array = $("#opportunity-store").serializeArray();
             
             let btnVal = $(this).attr('id');
+            var saveUrl = "";
             if(btnVal=="btn-opr-publish" || btnVal=="btn-opr-u-publish") {
                 data_array.push({name: 'status', value: 1});
+                saveUrl = "/store-opportunity";
             } else {
                 data_array.push({name: 'status', value: 0});
+                saveUrl = "/store-draft-opportunity";
             }
 
             $.ajax({
                 type: "POST",
-                url: SITE_URL+"/store-opportunity",
+                url: SITE_URL + saveUrl,
                 data: data_array,
                 success: function(data){
                     $('.invalid-feedback').hide();
@@ -484,73 +424,7 @@
                         });
                     } else if(data.status==true) {
                         if(btnVal=="btn-opr-publish" || btnVal=="btn-opr-u-publish") {
-                            /** Change Form Info Of Other Tabs */
-                            /** Pubish Tab */
-                            document.getElementById("publish__reward").innerHTML = data.opportunity.rewards;
-                            document.getElementById("publish__start_date").innerHTML = data.opportunity.frmt_start_date;
-                            document.getElementById("publish__end_date").innerHTML = data.opportunity.frmt_end_date;
-                            document.getElementById("publish__apply_before").innerHTML = data.opportunity.frmt_apply_before;
-                            document.getElementById("publish__tokens").innerHTML = data.opportunity.tokens;
-                            document.getElementById("publish__opportunity_desc").innerHTML = data.opportunity.opportunity_desc;
-                            document.getElementById("publish__incentives").innerHTML = data.opportunity.incentives;
-
-                            let skillList = <?=json_encode($skills)?>;
-                            var skillData = "";
-                            $.each( skillList, function( key, value ) {
-                                if(jQuery.inArray( value.tid.toString(), data.select_skills ) !== -1) {
-                                    skillData+="<li>"+value.name+"</li>";
-                                }
-                            });
-                            document.getElementById("publish__skills").innerHTML = skillData;
-
-                            let focusAreaList = <?=json_encode($focusArea)?>;
-                            var focusAreaData = "";
-                            $.each( focusAreaList, function( key, value ) {
-                                if(jQuery.inArray( value.tid.toString(), data.select_focus_area ) !== -1) {
-                                    focusAreaData+="<li>"+value.name+"</li>";
-                                }
-                            });
-                            document.getElementById("publish__focus_area").innerHTML = focusAreaData;
-
-                            /** Screen Tab */
-                            document.getElementById("screen__reward").innerHTML = data.opportunity.rewards;
-                            document.getElementById("screen__start_date").innerHTML = data.opportunity.frmt_start_date;
-                            document.getElementById("screen__end_date").innerHTML = data.opportunity.frmt_end_date;
-                            document.getElementById("screen__apply_before").innerHTML = data.opportunity.frmt_apply_before;
-                            document.getElementById("screen__tokens").innerHTML = data.opportunity.tokens;
-                            document.getElementById("screen__opportunity_desc").innerHTML = data.opportunity.opportunity_desc;
-                            document.getElementById("screen__incentives").innerHTML = data.opportunity.incentives;
-
-                            var skillData = "";
-                            $.each( skillList, function( key, value ) {
-                                if(jQuery.inArray( value.tid.toString(), data.select_skills ) !== -1) {
-                                    skillData+="<li>"+value.name+"</li>";
-                                }
-                            });
-                            document.getElementById("screen__skills").innerHTML = skillData;
-
-                            var focusAreaData = "";
-                            $.each( focusAreaList, function( key, value ) {
-                                if(jQuery.inArray( value.tid.toString(), data.select_focus_area ) !== -1) {
-                                    focusAreaData+="<li>"+value.name+"</li>";
-                                }
-                            });
-                            document.getElementById("screen__focus_area").innerHTML = focusAreaData;
-                            /** Change Form Info Of Other Tabs Ends */
-
-                            var current = $('.step-progress-bar').find('.current');
-                            var next = current.next(); 
-                            
-                            // Current to success
-                            current.removeClass('current');
-                            // Timeout giving time to the animation to render
-                            setTimeout(function() { current.addClass('success'); }, 0);
-                            
-                            // Disabled to current 
-                            if(next && next.length > 0) {
-                                next.addClass('current'); 
-                                nextSlideFncn();
-                            }
+                            window.location.href = "<?=url('/')?>/published-opportunity/<?=$encryptOid?>";
                         } else {
                             $('#opportunity__success').modal('show');
                         }
@@ -562,104 +436,78 @@
             });
         });
 
-        $('button#prev-button, button#prev-button-up').on( "click", function() {
-            let oid = $("input[name=oid]").val();
-            $.ajax({
-                type: "GET",
-                url: SITE_URL+"/draft-opportunity/"+oid,
-                success: function(data){
-                    if(data.status==true) {
-                        var current = $('.step-progress-bar').find('.current');
-                        var prev = current.prev();
-                        // Refresh current step
-                        if(current && prev && prev.length > 0) {
-                            current.removeClass('current'); 
-                            prev.removeClass('success');
-                            prev.addClass('current'); 
-                            
-                            // Show prev slide
-                            prevSlideFncn();
-                        }
-                    } else {
+        $(".screen__user-approve").on( "click", function() {
+            let elem = this;
+            let oid = $(elem).data('oid');
+            let org_uid = $(elem).data('org_uid');
 
-                    }
-                },
-                error: function(){
-                    alert('ACK ajax error!')
-                }
-            });
+            if(!$(elem).find('i').hasClass("text-success")) {
+                $.ajax({
+                  type: "POST",
+                  url: SITE_URL+"/approve-opportunity",
+                  data: { "oid": oid, "org_uid": org_uid },
+                  success: function(data){
+                      if(data.status==true) {
+                        $(elem).find('i').addClass("text-success");
+                        $(elem).find('a').addClass("text-success");
+
+                        $(elem).next('.screen__user-reject').find('i').removeClass("text-danger");
+                        $(elem).next('.screen__user-reject').find('a').removeClass("text-danger");
+                      }
+                  },
+                  error: function(){
+                      alert('ACK ajax error!')
+                  }
+                });
+            }
         });
 
-        function nextSlideFncn() {  
-           inTransition = true;
-           currentSlide = $('.current-slide');
-           nextSlide = currentSlide.next(); 
-          
-           nextSlide.show(); 
-           currentSlide.animate({opacity: 0}, {
-             step: function(now, mix) {
-               scale = 1 - (1 - now) * 0.2;
-               left = (now * 100) + '%'; 
-               opacity = 1 - now;
-               currentSlide.css({
-                 '-webkit-transform': 'scale(' + scale + ')',
-                 '-ms-transform': 'scale(' + scale + ')',
-                 'transform': 'scale(' + scale + ')'
-               }); 
-               nextSlide.css({
-                 '-webkit-transform': 'translateX(' + left + ')', 
-                 '-ms-transform': 'translateX(' + left + ')', 
-                 'transform': 'translateX(' + left + ')', 
-                 'opacity': opacity});
-             },
-             duration: 250,
-             complete: function() { 
-               currentSlide.hide();
-               currentSlide.removeClass('current-slide'); 
-               nextSlide.addClass('current-slide'); 
-               nextSlide.css({'position': 'relative'});
-               inTransition = false;
-             },
-             easing: 'linear' 
-           });
-        }
-        
-        function prevSlideFncn() {
-           inTransition = true;
-           currentSlide = $('.current-slide');
-           previousSlide = currentSlide.prev(); 
-          
-           previousSlide.show(); 
-           currentSlide.css({'position': 'absolute'});
-           currentSlide.animate({opacity: 0}, {
-             step: function(now, mix) {
-               scale = 0.8 + (1 - now) * 0.2; 
-               left = ((1 - now) * 50) + '%';
-               opacity = 1 - now;
-               currentSlide.css({
-                 '-webkit-transform': 'translateX(' + left + ')',
-                 '-ms-transform': 'translateX(' + left + ')',
-                 'transform': 'translateX(' + left + ')'
-               });
-               previousSlide.css({
-                 '-webkit-transform': 'scale(' + scale + ')', 
-                 '-ms-transform': 'scale(' + scale + ')', 
-                 'transform': 'scale(' + scale + ')', 
-                 'opacity': opacity
-               });
-             },
-             duration: 250,
-             complete: function() { 
-               currentSlide.hide();
-               currentSlide.removeClass('current-slide');
-               previousSlide.addClass('current-slide'); 
-               previousSlide.css({'position': 'relative'});
-               inTransition = false;
-             },
-             easing: 'linear'
-           });
-        }
+        $(".screen__user-reject").on( "click", function() {
+            let elem = this;
+            let oid = $(elem).data('oid');
+            let org_uid = $(elem).data('org_uid');
+
+            if(!$(elem).find('i').hasClass("text-danger")) {
+                $.ajax({
+                  type: "POST",
+                  url: SITE_URL+"/disapprove-opportunity",
+                  data: { "oid": oid, "org_uid": org_uid },
+                  success: function(data){
+                      if(data.status==true) {
+                        $(elem).find('i').addClass("text-danger");
+                        $(elem).find('a').addClass("text-danger");
+
+                        $(elem).prev('.screen__user-approve').find('i').removeClass("text-success");
+                        $(elem).prev('.screen__user-approve').find('a').removeClass("text-success");
+                      }
+                  },
+                  error: function(){
+                      alert('ACK ajax error!')
+                  }
+                });
+            }
+        });
 
     });
+
+    function sortWidget(slug,sortby){
+      $.ajax({
+        type: "POST",
+        url: SITE_URL+"/sort-widget",
+        data: {slug: slug, sortby: sortby}, 
+        beforeSend: function(){
+        },error: function(){
+          alert('SORT ajax error!')
+        },success: function(){
+        },complete: function( data ){
+          var obj = $.parseJSON( data.responseText ); 
+          if(obj.type=='success'){ //console.log(obj)
+            $('#'+slug).html(obj.success_html);
+            
+          }else{
+          }
+        }, 
+      })
+    }
     </script>
 @endsection

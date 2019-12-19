@@ -328,35 +328,52 @@ class UserController extends Controller
 				$loggedInUserID = $user->id;
 				$action = $request->post('action');
 				if(!empty($action)) {
-					$details['image_name'] = '';
+					
 					switch($action) {
 						case 'activity':
 							$details = $request->post('activity');
-							UserProfile::where('user_id', '=', $loggedInUserID)->update(['activities' => $details]);
+							$chk_profile = UserProfile::where('user_id', '=', $loggedInUserID)->first();							
+							if ($chk_profile === null) {
+								UserProfile::insert(['user_id' => $loggedInUserID, 'activities' => $details]);	
+							} else {
+								UserProfile::where('user_id', '=', $loggedInUserID)->update(['activities' => $details]);
+							}
 							$response['details'] = $request->post();
 						break;
 						case 'certificate':
 							$details = $request->post('certificate');
-							UserProfile::where('user_id', '=', $loggedInUserID)->update(['certificate' => $details]);
+							$chk_profile = UserProfile::where('user_id', '=', $loggedInUserID)->first();							
+							if ($chk_profile === null) {
+								UserProfile::insert(['user_id' => $loggedInUserID, 'certificate' => $details]);	
+							} else {
+								UserProfile::where('user_id', '=', $loggedInUserID)->update(['certificate' => $details]);
+							}	
 							$response['details'] = $request->post();
 						break;
 						case 'profile':
 							$details = $request->post();
-							if($profile_image = $request->file('profile_images')){
-								$file_name =  substr(preg_replace('/[^a-zA-Z0-9\']/', '', $profile_image->getClientOriginalName()),0,10);
-								$ext = pathinfo($profile_image->getClientOriginalName(), PATHINFO_EXTENSION);
-								$filename = $file_name . "_" . time() . "." . $ext;
-								$profile_image->move(public_path('uploads'), $filename);
-								$details['image_name'] = url('/uploads/').Config('constants.DS').$filename;
-							} else {
-								 $users = $user->getUserProfileDataById($loggedInUserID);
-								 $filename = $users->image_name;
-								  if(!empty($filename)) {
+							$details['image_name'] = '';
+								if($profile_image = $request->file('profile_images')){
+									$file_name =  substr(preg_replace('/[^a-zA-Z0-9\']/', '', $profile_image->getClientOriginalName()),0,10);
+									$ext = pathinfo($profile_image->getClientOriginalName(), PATHINFO_EXTENSION);
+									$filename = $file_name . "_" . time() . "." . $ext;
+									$profile_image->move(public_path('uploads'), $filename);
 									$details['image_name'] = url('/uploads/').Config('constants.DS').$filename;
-								 }
+								} else {
+									 $users = $user->getUserProfileDataById($loggedInUserID);
+									 $filename = $users->img_name;
+									  if(!empty($filename)) {
+										$details['image_name'] = url('/uploads/').Config('constants.DS').$filename;
+									 }
+								}
+							$chk_profile = UserProfile::where('user_id', '=', $loggedInUserID)->first();							
+							if ($chk_profile === null) {
+								UserProfile::insert(['user_id' => $loggedInUserID, 'image_name' => $filename, 'designation' => $details['designation'],'department' => $details['dept'],'aspirations' => $details['aspirations'],'availability' => $details['availability'],'about' => $details['about'],'manager' => $details['manager']]);
+								User::where('id', '=', $loggedInUserID)->update(['firstName' => $details['uname']]);	
+							} else {		
+								UserProfile::where('user_id', '=', $loggedInUserID)->update(['image_name' => $filename, 'designation' => $details['designation'],'department' => $details['dept'],'aspirations' => $details['aspirations'],'availability' => $details['availability'],'about' => $details['about'],'manager' => $details['manager']]);
+								User::where('id', '=', $loggedInUserID)->update(['firstName' => $details['uname']]);
 							}	
-							UserProfile::where('user_id', '=', $loggedInUserID)->update(['image_name' => $filename, 'designation' => $details['designation'],'department' => $details['dept'],'aspirations' => $details['aspirations'],'availability' => $details['availability'],'about' => $details['about'],'manager' => $details['manager']]);
-							User::where('id', '=', $loggedInUserID)->update(['firstName' => $details['uname']]);
 							 $response['details'] = $details;	
 						break;
 					}

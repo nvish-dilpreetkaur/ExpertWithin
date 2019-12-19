@@ -99,7 +99,7 @@ class RegisterController extends Controller
         DB::table('user_roles')->insert([
             'user_id'       => $lastInsertId,
             'role'          => $data['role'],
-            'status'        => 0,
+            'status'        => 1,
         ]);
         $utype = 'manager';
    

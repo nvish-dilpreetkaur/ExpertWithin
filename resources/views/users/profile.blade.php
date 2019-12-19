@@ -1,10 +1,7 @@
 @extends('layouts.app')
 @section('content')  
  <!-- <link rel="stylesheet" href="assets/css/all.css">  -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/css/swiper.min.css">
-   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css'>
-   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css'>
-   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
+   
 	<div class="main-contnt-body" id="profile-page">
 				<div class="profile-section-outer">
 					<div class="">
@@ -34,7 +31,7 @@
 										   @if(!empty($users->image_name))
 												<div id="imagePreview" style="background-image: url('{{$users->image_name}}');"></div>
 										   @else
-												<div id="imagePreview" style="background-image: url('../images/user-pic.png');"></div>
+												<div id="imagePreview"><i class="fas fa-user-circle fa-9x pro_img" aria-hidden="true"></i></div>
 										   @endif	
 										   <input type='hidden' id="old_image" value="" />	
 									   </div>
@@ -394,7 +391,7 @@
 							<div class="form-group cmmn-profile-page__textfield hidden" id="edit_activity">
 							   <div class="form-group">
 									 <input type="text" class="form-control frminput" id="activity-profile" 
-									 placeholder="Frank Williamson #Kudos Simple yet profound work, always! #GreatPresentation #graphicsdesign #brandingexpert" 
+									 placeholder="#Kudos Simple yet profound work, always! #GreatPresentation #graphicsdesign #brandingexpert" 
 									 name="activity" required="" value="{{$users->activities}}">
 									 <div class="valid-feedback">Valid.</div>
 								     <div class="invalid-feedback" id="activity-error">Please fill out this field.</div>
@@ -416,7 +413,7 @@
 							<div class="form-group cmmn-profile-page__textfield hidden" id="edit_certificate">
 								 <div class="form-group">
 									   <input type="text" class="form-control frminput" id="certificate-profile" 
-									   placeholder="  Design Sprint Certificate" name="certificate" required="" value="{{$users->certificate}}">
+									   placeholder="Certificate" name="certificate" required="" value="{{$users->certificate}}">
 									    <div class="valid-feedback">Valid.</div>
 										<div class="invalid-feedback" id="certificate-error">Please fill out this field.</div>
 								 </div>
@@ -428,14 +425,7 @@
 					<!-------row end-->
 				</div>
 			</div>
-			
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
-           crossorigin="anonymous"></script>
-         <script src='https://unpkg.com/bootstrap-material-design@4.0.0-beta.3/dist/js/bootstrap-material-design.js'></script>
-         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
-           crossorigin="anonymous"></script>
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-         <script src="{{ URL::asset('js/profile.js') }}"></script>
+
          
 @endsection
 

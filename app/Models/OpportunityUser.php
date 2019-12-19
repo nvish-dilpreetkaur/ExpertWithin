@@ -30,6 +30,17 @@ class OpportunityUser extends Model
       'updated_at'
     ];
     
+
+    public function user_details()
+    {
+        return $this->hasOne('App\User', "id", "org_uid")->select(["id", "firstName"]);
+    }
+
+    public function profile_image() {
+        return $this->hasOne('App\UserProfile', "user_id", "org_uid")->select(["user_id", "image_name as profile_image"]);
+    }
+
+
   /**
 	 * To  Update opportunity user action
 	 *

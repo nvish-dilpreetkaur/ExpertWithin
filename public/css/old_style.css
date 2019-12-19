@@ -512,6 +512,8 @@ text-transform: uppercase;
 
 .action-modal form{
     border-radius: 0 0 15px 15px;
+    background-color: #fff;
+    margin-top: 0;
 }
 
 .action-modal .modal-footer button,
@@ -865,11 +867,23 @@ i.fa.fa-plus {
   
 }
 #list-opportunities-page {
-    margin: 5rem 0 0 0;
+    /* margin: 5rem 0 0 0;
    padding: 4rem 0;
-   height: 100vh;
+   height: 100vh; */
  
 }
+.dataTables_wrapper .dataTables_filter{
+    margin-right: 2rem;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    border: 1px solid #dedede;
+    border-radius: 10px;
+}
+
+
+
 #my-favorites-page {
     margin: 5rem 0 0 0;
     padding: 3rem 0;
@@ -880,7 +894,20 @@ i.fa.fa-plus {
 .inner-oppor-wrapper{
     /* background-color: #fff; */
     margin: 0 2px;
+    padding: 1rem 0;
 
+}
+
+table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover,
+table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
+    background-color: #f6f6f6;
+    transform: scale(1.02);
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+}
+
+table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
+    background-color: #f9f9f9;
+    transition: 0.5s ease;
 }
 
 .inner-wrapper{
@@ -1272,7 +1299,7 @@ text-align: right;
 }
 
 .text-wid-underline :hover{
-  
+    text-decoration: none;
 }
 
 
@@ -1319,7 +1346,7 @@ text-align: right;
      }
      #success .modal-dialog{
     background-color: #fff;
-    width: 24%;
+    /* width: 24%; */
     top: 2em;
     border-radius: 20px;
     }

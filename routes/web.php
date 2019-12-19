@@ -26,7 +26,8 @@ Route::group( ['middleware' => ['auth']], function() {
 	Route::get('/', 'IndexController@index')->name('home');
 	Route::post('/', 'IndexController@index')->name('home');
 	Route::post('/acknowledge', 'AcknowledgementController@acknowledge')->name('acknowledge');
-
+	Route::get('/ack-form', 'AcknowledgementController@ackForm')->name('ack-form');
+	
 	Route::get('/profile', 'UserController@show')->name('profile');
 	Route::get('/profile/{id}', 'UserController@show')->name('user-profile');
 	Route::post('/update', 'UserController@update')->name('update');
@@ -34,12 +35,20 @@ Route::group( ['middleware' => ['auth']], function() {
 
 	Route::post('/sort-widget', 'IndexController@sortWidget')->name('sort-widget');
 	Route::post('/feed-action', 'FeedController@feedAction')->name('feed-action');
-
+	Route::get('/share-feed/{id}', 'FeedController@feedShare')->name('share-feed');
+	Route::post('/share-feed', 'FeedController@postFeed')->name('share-feed');
+	
 	Route::get('view-opportunity/{id}','OpportunityController@view')->name('view-opportunity');
 	Route::any('add-opportunity','OpportunityController@addOpportunity')->name('add-opportunity');
 	Route::any('create-opportunity/{oid}','OpportunityController@createOpportunity')->name('create-opportunity');
 	Route::any('store-opportunity','OpportunityController@storeOpportunity')->name('store-opportunity');
+	Route::any('store-draft-opportunity','OpportunityController@storeDraftOpportunity')->name('store-draft-opportunity');
 	Route::get('draft-opportunity/{oid}','OpportunityController@draftOpportunity')->name('draft-opportunity');
+	Route::get('cancel-opportunity/{oid}','OpportunityController@cancelOpportunity')->name('cancel-opportunity');
+	Route::post('approve-opportunity','OpportunityController@approveOpportunity')->name('approve-opportunity');
+	Route::post('disapprove-opportunity','OpportunityController@disapproveOpportunity')->name('disapprove-opportunity');
+	Route::post('dismiss-opportunity','OpportunityController@dismissOpportunity')->name('dismiss-opportunity');
+	Route::any('published-opportunity/{oid}','OpportunityController@publishedOpportunity')->name('published-opportunity');
 	
 	Route::post('opportunity-action', 'OpportunityUserController@actionOpportunityUser')->name('opportunity-action');
 	Route::get('opportunity/{action}/{id}', 'OpportunityUserController@applyOpportunity')->name('opportunity-apply');
@@ -47,7 +56,14 @@ Route::group( ['middleware' => ['auth']], function() {
 	Route::post('user_interests','UserController@save_user_interests')->name('user_interests');
 	Route::post('save_user_profile','UserController@save_user_profile')->name('save_user_profile');
 	
-	
+	//admin controller
+	Route::get('users','AdminController@list_users')->name('users');
+	Route::post('hr-action','AdminController@hrAction')->name('hr-action');
+	Route::get('role_action/{action}/{id}','AdminController@roleAction')->name('role_action');
+
+	Route::get('taxonomy', 'TaxonomyController@index')->name('taxonomy-list');
+	Route::post('taxonomy', 'TaxonomyController@update')->name('taxonomy-update');
+	Route::post('taxonomy/status', 'TaxonomyController@status')->name('taxonomy-delete');
 	/*
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::any('search', 'IndexController@searchOpportunity')->name('search');
@@ -89,7 +105,7 @@ Route::group( ['middleware' => ['auth']], function() {
 	//admin controller
 	Route::get('managers','AdminController@list_managers')->name('managers');
 	Route::get('users','AdminController@list_users')->name('users');
-	Route::get('role_action/{action}/{id}','AdminController@roleAction')->name('role_action');
+	
 	Route::post('hr-action','AdminController@hrAction')->name('hr-action');
 	
 	Route::get('kudos-menu', 'KudosController@index')->name('kudos-menu');
