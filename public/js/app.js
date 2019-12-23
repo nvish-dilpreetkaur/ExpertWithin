@@ -375,3 +375,24 @@ $("#imageUpload").change(function() {
         $(document).on("click", function () {
             $(".dropdown-for__user-infor-card--view").hide();
         });
+        
+        
+  function sortWidget(slug,sortby){
+      $.ajax({
+        type: "POST",
+        url: SITE_URL+"/sort-widget",
+        data: {slug: slug, sortby: sortby}, 
+        beforeSend: function(){
+        },error: function(){
+          alert('SORT ajax error!')
+        },success: function(){
+        },complete: function( data ){
+          var obj = $.parseJSON( data.responseText ); 
+          if(obj.type=='success'){ //console.log(obj)
+            $('#'+slug).html(obj.success_html);
+            
+          }else{
+          }
+        }, 
+      })
+    }

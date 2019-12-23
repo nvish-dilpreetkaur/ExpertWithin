@@ -46,21 +46,11 @@
                               <div class="form-group">
                                 <label for="otitle">Title</label>
                                 <input type="hidden" class="form-control" id="oid" name="oid" value="{{$opportunity->id}}">
-                                <input type="text" class="form-control" id="otitle" placeholder="Email and social media specialist (E-Commerce)" name="otitle" value="{{$opportunity->opportunity}}" required>
+                                <input type="text" class="form-control frminput" id="otitle" placeholder="Email and social media specialist (E-Commerce)" name="otitle" value="{{$opportunity->opportunity}}" required>
                                 <div class="valid-feedback">Valid.</div>
-                                <div class="invalid-feedback">Please fill out this field.</div>
+                                <div class="invalid-feedback" id="otitle-error">Please fill out this field.</div>
                               </div>
                               <div class="row">
-                                <div class="col-md-6 create-oppor-form__coin-counter">
-                                    <div class="form-group">
-                                        <label for="oexperts">How many experts do you need for this opportunity?</label>
-                                        <div class="number experts">
-                                        <input type="text" class="form-control inp-num nonzero" id="oexperts" placeholder="" name="oexperts" value="{{ ($opportunity->expert_qty>0)?$opportunity->expert_qty:1 }}" pattern="^0*[1-9]\d*$" maxlength="5" required>
-                                        </div>
-                                        <div class="valid-feedback">Valid.</div>
-                                        <div class="invalid-feedback">Please fill out this field.</div>
-                                    </div>
-                                </div>
                                 <div class="col-md-2">
                                   <div class="form-group" id="create-oppor-dates">
                                     <div class="input-group date" id="startDate">
@@ -104,6 +94,28 @@
                                     <input type="hidden" id="apply_before" name="apply_before" value="{{ date_format(date_create($opportunity->apply_before),'Y-m-d H:i:s') }}" readonly="readonly">
                                     <div class="valid-feedback">Valid.</div>
                                     <div class="invalid-feedback" id="apply_dm-error">Please fill out this field.</div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6 create-oppor-form__coin-counter create-oppor-form__experts-opt">
+                                  <div class="form-group">
+                                      <label for="oexperts">How many expert(s) do you need for this opportunity?</label>
+                                      <div class="number experts">
+                                      <input type="text" class="form-control inp-num nonzero frminput" id="oexperts" placeholder="" name="oexperts" value="{{ ($opportunity->expert_qty>0)?$opportunity->expert_qty:1 }}" pattern="^0*[1-9]\d*$" maxlength="5" required>
+                                      </div>
+                                      <div class="valid-feedback">Valid.</div>
+                                      <div class="invalid-feedback" id="oexperts-error">Please fill out this field.</div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6 create-oppor-form__coin-counter create-oppor-form__experts-opt">
+                                  <div class="form-group">
+                                      <label for="oexperts_hrs">How many hours do you need the expert(s)?</label>
+                                      <div class="number experts">
+                                      <input type="text" class="form-control inp-num nonzero frminput" id="oexperts_hrs" placeholder="" name="oexperts_hrs" value="{{ ($opportunity->expert_hrs>0)?$opportunity->expert_hrs:1 }}" pattern="^0*[1-9]\d*$" maxlength="5" required>
+                                      </div>
+                                      <div class="valid-feedback">Valid.</div>
+                                      <div class="invalid-feedback" id="oexperts_hrs-error">Please fill out this field.</div>
                                   </div>
                                 </div>
                               </div>
@@ -420,7 +432,7 @@
                         $.each(data.message, function( index, value ) {
                             var error_elem =  $("#"+index).closest(".form-group").find(".invalid-feedback");
                             error_elem.show()
-                            error_elem.text(value);
+                            error_elem.text(value[0]);
                         });
                     } else if(data.status==true) {
                         if(btnVal=="btn-opr-publish" || btnVal=="btn-opr-u-publish") {
@@ -490,24 +502,6 @@
 
     });
 
-    function sortWidget(slug,sortby){
-      $.ajax({
-        type: "POST",
-        url: SITE_URL+"/sort-widget",
-        data: {slug: slug, sortby: sortby}, 
-        beforeSend: function(){
-        },error: function(){
-          alert('SORT ajax error!')
-        },success: function(){
-        },complete: function( data ){
-          var obj = $.parseJSON( data.responseText ); 
-          if(obj.type=='success'){ //console.log(obj)
-            $('#'+slug).html(obj.success_html);
-            
-          }else{
-          }
-        }, 
-      })
-    }
+    
     </script>
 @endsection

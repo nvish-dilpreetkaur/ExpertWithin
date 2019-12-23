@@ -256,7 +256,11 @@
                                 <li class="flex-item">
                                     <div class="common__user-detail-card">
                                         <div class="common__user-detail-card--user-picture">
-                                            <i class="fas fa-user-circle fa-7x" aria-hidden="true"></i>
+                                            @if(!empty($rUser["profile_image"]["profile_image"]))
+                                                <img src="{{ $rUser['profile_image']['profile_image'] }}">
+                                            @else
+                                                <i class="fas fa-user-circle fa-7x" aria-hidden="true"></i>
+                                            @endif
                                         </div>
                                         <div class="common__user-detail-card--user-name">{{ $rUser["user_details"]["firstName"] }}</div>
                                         <div class="common__user-detail-card--invite-button">

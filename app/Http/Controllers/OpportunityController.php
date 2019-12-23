@@ -167,6 +167,7 @@ class OpportunityController extends Controller
             "rewards",
             "tokens",
             "expert_qty",
+            "expert_hrs",
             "start_date",
             "end_date",
             "apply_before",
@@ -231,6 +232,7 @@ class OpportunityController extends Controller
             "rewards" => $request->post('rewards'),
             "tokens" => $request->post('tokens'),
             "expert_qty" => $request->post("oexperts"),
+            "expert_hrs" => $request->post("oexperts_hrs"),
             "start_date" => $request->post('start_date'),
             "end_date" => $request->post('end_date'),
             "apply_before" => $request->post('apply_before'),
@@ -430,6 +432,8 @@ class OpportunityController extends Controller
         Opportunity::where("id", $oid)->update(array("status"=>config('kloves.RECORD_STATUS_INACTIVE')));
         Feed::where("key_id", $oid)->update(array("status"=>config('kloves.RECORD_STATUS_INACTIVE')));
 
+        OpportunityUser::where("oid", $oid)->update(array("apply"=> 0));
+
         $result = array('status' => true);
         return response()->json($result, Config::get('constants.STATUS_OK'));
     }
@@ -437,6 +441,8 @@ class OpportunityController extends Controller
     protected function cancelOpportunity($oid) {
         Opportunity::where("id", $oid)->update(array("status"=> 3));
         Feed::where("key_id", $oid)->update(array("status"=>config('kloves.RECORD_STATUS_INACTIVE')));
+
+        OpportunityUser::where("oid", $oid)->update(array("apply"=> 0));
 
         $result = array('status' => true);
         return response()->json($result, Config::get('constants.STATUS_OK'));

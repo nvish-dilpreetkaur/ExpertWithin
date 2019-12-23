@@ -143,7 +143,12 @@
 		  $('#role').val(role)
           $("#user_approval_modal").modal("show");
       });
-	  
+
+      /** event on dismiss button click **/
+      $(document).on("click",'#user_approval_modal button[data-dismiss="modal"]', function(){ //console.log('dd')
+        $('input[name="hr_action"]').prop('checked', false);
+      });
+
 		$(document).ready(function(){
 			$("#action-form").submit(function(ev){ 
 				//ev.preventDefault();

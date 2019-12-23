@@ -28,6 +28,7 @@ class OpportunityUserController extends Controller
     $this->opportunity = new Opportunity();
     $this->taxonomyterm = new TaxonomyTerm();
     $this->feed = new Feed();
+    $this->user = new User();
   }
 
    /**
@@ -38,9 +39,9 @@ class OpportunityUserController extends Controller
   public function  actionOpportunityUser(Request $request)
   { 
     $response = array( 
-			"type" => NULL,
-			"errors" => NULL,
-			"message" => NULL,
+		"type" => NULL,
+		"errors" => NULL,
+		"message" => NULL,
     );
 
     if($request->ajax()){ 
@@ -307,19 +308,7 @@ class OpportunityUserController extends Controller
       return response()->json(['status'=>0]);
     }
   }
-   /**
-   * To get Opportunity activties
-   * @param Request
-   * @return Response
-  */
-  function activitiesOpportunity(){
-    $activityFilter = [];
-    $loggedInUserID  = auth()->user()->id;
-    $activityFilter['loggedUserID'] = $loggedInUserID;
-    $activityOpportunities = $this->opportunity_user->getActivityOpportunities($activityFilter);
-   // dd($activityOpportunities);
-    return view('opportunity.activities',compact('activityOpportunities','loggedInUserID'));
-  }
+  
   /**
    * To get private Opportunity comments
    * @param id
@@ -403,5 +392,31 @@ class OpportunityUserController extends Controller
       }else{
         return back()->with('success', $successMessage);
       }
+  }
+
+
+   /**
+   * To get favorite Opportunities
+   * @param Request
+   * @return Response
+  */
+  function favoritesOpportunity(){
+    $activityFilter = [];
+    $loggedInUserID  = auth()->user()->id;
+
+    /** share user list */
+    $shareUserList['all'] = $this->user->where('status','=',config('kloves.RECORD_STATUS_ACTIVE'))->where('id', '<>', $loggedInUserID)->select('id','firstName')->get()->toArray(); 
+    $shareUserJsonList = json_encode($shareUserList['all']);
+
+    $favoritesOpportunities = OpportunityUser::select(["oid", "org_uid", "like", "favourite"])
+           ->with(["opportunity","opportunity.creator","opportunity.creator.profile","opportunity.creator.profile_image"]) 
+            ->where("favourite", config('kloves.FLAG_SET'))
+            ->where("org_uid", $loggedInUserID)
+            ->orderBy("created_at", "DESC")
+            ->get()->toArray(); //prd($favoritesOpportunities);
+   
+        
+
+    return view('opportunity.favorites',compact('favoritesOpportunities','shareUserJsonList'));
   }
 }

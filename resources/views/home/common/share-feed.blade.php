@@ -28,7 +28,7 @@
 
                         <input type="hidden" id="checkedUsers" name="checkedUsers" value=""/>
                         <div class="valid-feedback">Valid.</div>
-                        <div class="invalid-feedback"  id="error-checkedUsers"></div>
+                        <div class="invalid-feedback"  id="error-checkedUsers" v-if="!this.search.length && !selectedList.length"></div>
 
                         <div class="invite-user-list__all">
                         <ul id="example-1">

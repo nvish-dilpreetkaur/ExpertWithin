@@ -52,7 +52,8 @@ Route::group( ['middleware' => ['auth']], function() {
 	
 	Route::post('opportunity-action', 'OpportunityUserController@actionOpportunityUser')->name('opportunity-action');
 	Route::get('opportunity/{action}/{id}', 'OpportunityUserController@applyOpportunity')->name('opportunity-apply');
-	
+	Route::get('favorites', 'OpportunityUserController@favoritesOpportunity')->name('favorites');
+
 	Route::post('user_interests','UserController@save_user_interests')->name('user_interests');
 	Route::post('save_user_profile','UserController@save_user_profile')->name('save_user_profile');
 	
@@ -64,6 +65,7 @@ Route::group( ['middleware' => ['auth']], function() {
 	Route::get('taxonomy', 'TaxonomyController@index')->name('taxonomy-list');
 	Route::post('taxonomy', 'TaxonomyController@update')->name('taxonomy-update');
 	Route::post('taxonomy/status', 'TaxonomyController@status')->name('taxonomy-delete');
+
 	/*
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::any('search', 'IndexController@searchOpportunity')->name('search');
@@ -80,9 +82,7 @@ Route::group( ['middleware' => ['auth']], function() {
 	Route::post('update-opportunity/{id}', 'OpportunityController@updateOpportunity')->name('update-opportunity');
 	Route::get('opportunity/delete/{id}', 'OpportunityController@deleteOpportunity')->name('delete-opportunity');
 	Route::get('my-opportunities', 'OpportunityUserController@myOpportunity')->name('my-opportunities');
-	//Route::get('my-favorites', 'OpportunityUserController@myfavoritesOpportunity')->name('my-favorites');
-	//Route::get('my-likes', 'OpportunityUserController@mylikedOpportunity')->name('my-likes');
-	Route::get('activities', 'OpportunityUserController@activitiesOpportunity')->name('activities');
+	
 	Route::get('view-opportunity/{id}','OpportunityController@view')->name('view-opportunity');
 	Route::get('/opp-applicants/{id}','OpportunityController@applicants')->name('opp-applicants');
 	Route::get('/opp-comment-list/{id}','OpportunityController@getOppPublicComments')->name('opp-comment-list');

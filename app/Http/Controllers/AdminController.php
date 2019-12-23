@@ -138,7 +138,7 @@ class AdminController extends Controller
     $emaildata['subject'] = "HR Action";
     $emaildata['receiver_name'] = $userData->uname;
     $emaildata['receiver_email'] = $userData->email;
-    $emaildata['message'] = $message = 'Your account is '.$hr_action.' by HR Admin.';
+    $emaildata['message'] = $message = 'User account '.$hr_action.' successfully.';
    // $emaildata['sender_name'] = $user_name;
    // $emaildata['sender_email'] = auth()->user()->email;
     $mailResponse =  send_email($emaildata);

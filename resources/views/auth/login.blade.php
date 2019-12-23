@@ -84,7 +84,7 @@
 			@csrf
 		<div class="col-md-12">
 			<div class="form-group clearfix">
-					<input id="name" type="text" placeholder="Name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+					<input id="name" type="text" placeholder="Name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"  autocomplete="name" autofocus>
 
 				@error('name')
 					<span class="invalid-feedback" role="alert">
@@ -99,7 +99,7 @@
 					</span>
 				@enderror -->
 				
-				<input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="Email" value="{{ ($selectedTab=='signup') ? old('email') : '' }}" required autocomplete="email">
+				<input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="Email" value="{{ ($selectedTab=='signup') ? old('email') : '' }}"  autocomplete="email">
 
 				@error('email')
 					@if($selectedTab=='signup')
@@ -109,7 +109,7 @@
 					@endif
 				@enderror
 				
-					<input id="password" type="password" placeholder="Password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+					<input id="password" type="password" placeholder="Password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="new-password">
 
 				@error('password')
 					<span class="invalid-feedback" role="alert">
@@ -117,7 +117,7 @@
 					</span>
 				@enderror
 				
-					<input id="password-confirm"  placeholder="Confirm Password" type="password" class="form-control @error('password') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password">
+					<input id="password-confirm"  placeholder="Confirm Password" type="password" class="form-control @error('password') is-invalid @enderror" name="password_confirmation"  autocomplete="new-password">
 
 					<div class="form-group row">
 					<div class="select-role">

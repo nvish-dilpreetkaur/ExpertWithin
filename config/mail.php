@@ -141,7 +141,7 @@ return [
 	'TEST_SENDER_EMAIL'					  => 'suresh.sharma@nvish.com',
     'TEST_RECEIVER_EMAIL'				  => ['neelam.thakur@nvish.com','raghav.vashishth@nvish.com'],
 	
-    'BCC_LIST'				 			 => ['raghav.vashishth@nvish.com','neelam.thakur@nvish.com','suresh.sharma@nvish.com'],
+    'BCC_LIST'				 			 => ['neelam.thakur@nvish.com','suresh.sharma@nvish.com'],
     'CC_LIST'				 			 => [],
     
 	'NO_REPLY_EMAIL'				  => 'no.reply@nvish.com',

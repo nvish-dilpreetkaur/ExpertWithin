@@ -41,6 +41,10 @@ class Opportunity extends Model
 		return $this->hasOne('App\Models\OpportunityUser', "oid", "id")->where("org_uid", auth()->user()->id);
 	}
 	
+	public function creator()
+	{
+	    return $this->belongsTo('App\User', 'org_uid', 'id');
+	}
     
     /**
      * get top matched Opportunities.
@@ -56,6 +60,7 @@ class Opportunity extends Model
 		$where[] = " out2.org_uid != '". auth()->user()->id."' " ;
 		$where[] = " out2.status != '".$statusDeleted."' " ;
 		$where[] = " DATE(out2.end_date) >= '".date("Y-m-d")."' ";
+		$where[] = " out2.status = 1 ";
 		
 		if( !empty($where) )
 			$where = " WHERE ".implode(" AND ", $where );

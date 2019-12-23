@@ -36,10 +36,15 @@ class OpportunityUser extends Model
         return $this->hasOne('App\User', "id", "org_uid")->select(["id", "firstName"]);
     }
 
+    public function opportunity()
+    {
+        return $this->hasOne('App\Models\Opportunity', "id", "oid")->select(["id", "opportunity","opportunity_desc","rewards","org_uid","apply_before","tokens","expert_hrs"]);
+    }
+
+
     public function profile_image() {
         return $this->hasOne('App\UserProfile', "user_id", "org_uid")->select(["user_id", "image_name as profile_image"]);
     }
-
 
   /**
 	 * To  Update opportunity user action
@@ -139,6 +144,7 @@ class OpportunityUser extends Model
      * @param  $filters
      * @return Response
     */
+    /*
     public function getActivityOpportunities($filters = array()){
       $statusActive = config('kloves.RECORD_STATUS_ACTIVE');
       
@@ -166,6 +172,6 @@ class OpportunityUser extends Model
       
         return $opportunitiesResult;
       }
-    
+    */
     
 }

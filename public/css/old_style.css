@@ -901,7 +901,7 @@ i.fa.fa-plus {
 table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover,
 table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
     background-color: #f6f6f6;
-    transform: scale(1.02);
+    /* transform: scale(1.02); */
     box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
 }
 
@@ -909,7 +909,9 @@ table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
     background-color: #f9f9f9;
     transition: 0.5s ease;
 }
-
+.custom-switch {
+    margin-left: 1rem;
+}
 .inner-wrapper{
     /* border-bottom: 2px solid #F3F3F3; */
 }
@@ -1353,7 +1355,7 @@ text-align: right;
 
 .table thead th:first-child, .table tbody td:first-child{
     /* padding-left: 40px; */
-    width: 40%;
+    width: 43.5%;
     padding-left: 2rem;
    
 }
@@ -1369,7 +1371,12 @@ text-align: right;
   
 }
 
-
+.for-thrd-filter {
+    padding-left: 0rem !important;
+}
+.for-action-on-usr {
+    padding-left: 3rem !important;
+}
 
 .table thead th:last-child{
     text-align: left;
@@ -1389,7 +1396,7 @@ text-align: right;
 
 
         .update-oppr-right-sec{
-            margin-right: 1.5rem;
+            /* margin-right: 1.5rem; */
         }
   }
   

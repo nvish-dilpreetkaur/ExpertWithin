@@ -88,6 +88,10 @@ $(document).on('click',"a[class^='shareBtn']",function(e){
             error: function() {
             },
             success: function() {
+			/** remove multiple backdrop from page */
+			if ($(".modal-backdrop").length > 1) { console.log('dsadash')
+				$(".modal-backdrop").not(':first').remove();
+			}
             },
             complete: function(data) {
                 var obj = $.parseJSON(data.responseText); //console.log(obj.html)
@@ -95,11 +99,14 @@ $(document).on('click',"a[class^='shareBtn']",function(e){
 		   // $('#mainPage__acknowledgeAnExpert').find('.modal-body').html(obj.html);
 		   // $('#mainPage__acknowledgeAnExpert').modal('show');
 		   initVueComponent()
+
+		   
             },
         });
 });
 
 var vm;
+
 $(document).on('submit',"#shareForm",function(e){
 	e.preventDefault(); // avoid to execute the actual submit of the form.
 	var form = $(this);
@@ -122,9 +129,11 @@ $(document).on('submit',"#shareForm",function(e){
 			var obj = $.parseJSON( data.responseText );  
 			if(obj.type=='success'){ //console.log(obj)
 				//$(modal).find('.modal-body').html(obj.html);
+				
 				model.find('#content').addClass('hidden');
 				model.find('#thanks_up').html(obj.success_html);
 				model.find('#thanks_up').removeClass('hidden');
+				
 				setTimeout(function(){  
 					model.find('.close').click()
 			     }, 2000);

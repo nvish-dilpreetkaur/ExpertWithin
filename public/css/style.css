@@ -101,7 +101,7 @@ input:read-only {
 
 .for-scroll-function{
     overflow: hidden;
-    padding-right: 16px;
+    /* padding-right: 16px; */
 }
 
 .hidden {display:none !important;}
@@ -120,15 +120,16 @@ body.modal-open {
 
 .search-close-button{
     float: right;
-    padding: 1rem;
+    padding: 0rem;
     cursor: pointer;
+    margin: 0.5rem 3rem 0rem 0rem;
 }
 .search-close-button i{
     color: #fff;
 }
 
 .search-drawer-content{
-    margin: 3rem 4rem;
+    margin: 3rem 2rem;
 }
 .search-drawer-input{
     display: inline-block;
@@ -137,11 +138,13 @@ body.modal-open {
 }
 .search-drawer-input input{
     border-radius: 8px;
+    padding: 1.5rem 0 1.5rem 1rem;
+    font-size: 0.875rem !important;
 }
 
 .search-drawer-input i{
     position: absolute;
-    top: .7rem;
+    top: 1rem;
     right: 1rem;
     vertical-align: middle;
     cursor: pointer;
@@ -151,12 +154,12 @@ body.modal-open {
     float: right;
 }
 .search-drawer-btn{
-    background-color: #0057A7;
+    background-color: #F13B02;
     border-radius: 8px;
-    border-color: #0057A7;
+    border-color: #F13B02;
     color: #fff;
     display: inline-block;
-    padding: .5rem 2rem;
+    padding: 0.9rem 2.7rem 0.9rem 2.7rem;
     cursor: pointer;
     font-size: 0.875rem;
 }
@@ -182,10 +185,28 @@ button:focus{
     margin-right: .1rem;
 }
 
+
+
+
+
+
+/************SEARCH DRAWER CARDS START**************************/
+
 .search-drawer-cards{
     margin-top: 2rem;
 }
-
+.search-drawer-card-cmmn__heading {
+    border-radius: 0.75rem 0rem 4rem 0rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.7rem 3rem 0.7rem 1rem;
+    font-size: 0.625rem;
+    color: #fff;
+}
+.main-page-cmmn-feed__content-area.search-drawer_card--cntnt{
+    margin: 0;
+}
 .search-drawer-cards p{
     color: #F1F3F4;
     font-weight: 600;
@@ -193,7 +214,7 @@ button:focus{
 }
 
 .cstm-for-search-drawer{
-
+    border: none !important;
 }
 
 .cstm-for-search-drawer.main-page-cmmn-feed-card{
@@ -208,9 +229,17 @@ button:focus{
 }
 
 .cstm-for-search-drawer .main-page-cmmn-feed-card__heading{
-    margin-top: 2.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
 }
-
+.main-page-cmmn-feed__content-area.search-drawer_card--cntnt .main-page-cmmn-feed-card__heading a{
+    text-decoration: none;
+    color: #2A282F !important;
+}
+.main-page-cmmn-feed__content-area.search-drawer_card--cntnt a{
+    text-decoration: none;
+    color: #fff;
+}
 .cstm-for-search-drawer .main-page-cmmn-feed-card__desc{
  margin-top: .4rem;
  margin-bottom: .4rem;
@@ -228,6 +257,13 @@ button:focus{
 .cstm-for-search-drawer .main-page-cmmn-feed-card__footer--social-icons{
     margin-bottom: .3rem;
 }
+.search-drawer__footer-area{
+    margin: 0.5rem -1rem 0rem -1rem !important;
+}
+
+/* ---------------------------------------------------
+   SEARCH_DRAWER_STYLE END
+----------------------------------------------------- */
 /* ---------------------------------------------------
    MAIN PAGE HEADER STYLE START
 ----------------------------------------------------- */
@@ -375,7 +411,6 @@ button:focus{
 .main-logo a{
  text-decoration: none;
  color: #fff;
- display: inline-block
 }
 
 .main-logo a i{
@@ -562,8 +597,8 @@ button:focus{
    
 }
 .main-page__middle-section--outer{
-  
-    max-width: 39.3rem;   
+    width: 39.3rem; 
+    /*max-width: 39.3rem; */  
     padding: 0 1.3125rem;
 }
 #create__opportunity-page .main-page__middle-section--outer{
@@ -656,6 +691,41 @@ button:focus{
     cursor: pointer;
     font-weight: 400 !important;
 }
+
+
+.black-txt-clr{
+    /* color: #0057A7; */
+    color: #2A282F;
+    font-weight:600;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.black-txt-clr a{
+    text-decoration: none;
+    color: #2A282F;
+}
+
+
+.white-highlit-txt{
+    /* background-color: #0057A7;
+    color: #fff; */
+    background-color: #fff;
+    color: #2A282F;
+    border-radius: 2px;
+    display: table-cell;
+    font-size: 0.625rem !important;
+    padding: 0.1rem 0.5rem;
+    cursor: pointer;
+    font-weight: 400 !important;
+}
+
+
+.white-highlit-txt i{
+    margin-right: .3rem;
+}
+
+
 .grey-txt-clr{
     color: #7A7A7A;
     margin-bottom: .5rem !important;
@@ -872,7 +942,7 @@ button:focus{
 .user-info-card__stats--title span,
 .main-page__cmmn-card--heading span{
     margin-left: .3rem;
-    color: #202124;
+    color: #2A282F;
 }
 
 .user-info-card__stats--numbers{
@@ -977,6 +1047,21 @@ button:focus{
 }
 .for-element-with--orange-red-bg{
     background-color: #F13A01;
+}
+.azure-radiance-color-bg{
+    background-color: #0079F1;
+}
+
+.grenadier-color-bg{
+    background-color: #D33403;
+}
+
+.yellow-sea-color-bg{
+    background-color: #F1A702;
+}
+
+.copper-canyon-bg{
+    background-color: #8A3E16;
 }
 
 /*******TEXT-ICON----COLORS**********/
@@ -1206,6 +1291,16 @@ button:focus{
     overflow: auto;
 }
 
+.card.card-body.com_rep {
+    background: none;
+    border: none;
+    vertical-align: top;
+    font-size: 80%;
+}
+
+.opprtunity-comment {
+    clear: both;
+}
 
 #collapsibleComment .card.card-body textarea{
   
@@ -1299,7 +1394,7 @@ button:focus{
 .for-swiper-slider-bg{
     background-color: #EAEAEA !important;
     border: none !important;
-    padding: 1rem 0rem 1.5rem 1rem !important;
+    padding: 1rem 0rem 1.5rem 2rem !important;
 }
 .swiper-container {
     width: 100%;
@@ -1388,10 +1483,10 @@ button:focus{
 }
 .swiper-button-next, .swiper-button-prev{
     background-size: auto !important;
-    height: 2rem !important;
+    height: 4rem !important;
     background-repeat: no-repeat !important;
     top: 55% !important;
-    width: 28px !important;
+    width: 11% !important;
 }
 .swiper-button-prev, .swiper-container-rtl .swiper-button-next{
     left: 4px !important;
@@ -1407,7 +1502,7 @@ button:focus{
     padding-left: 0;
 }
 .for-null-paddng-right{
-    padding-left: 0;
+    padding-right: 0;
 }
 .middle-scroll-section__outer{
 
@@ -1444,7 +1539,7 @@ button:focus{
     padding:1.23rem 1rem 1.23rem 1.76rem;
     margin: 0 0.5rem 0.5rem 0rem;
     cursor: pointer;
-    opacity: 0.8;
+    opacity: 1;
     transition: 0.3s;
     color: #fff;
 }
@@ -1514,10 +1609,7 @@ button:focus{
     color: #fff;
     margin: 0;
 }
-.main-page-cmmn-feed-card__heading{
-    font-size: 1rem;
-    margin-top: 3rem;
-}
+
 
 .main-page-cmmn-feed-card__heading.blue-txt-clr a{
     text-decoration: none;
@@ -1525,11 +1617,7 @@ button:focus{
     font-size: 1rem;
 }
 
-.main-page-cmmn-feed-card__desc{
-    font-size: 0.75rem;
-    margin-top: .8rem;
-    color: #2A282F;
-}
+
 .main-page-cmmn-feed-card__coins-info{
     margin-top: .4rem;
     margin-bottom: .5rem;
@@ -1589,6 +1677,7 @@ button:focus{
     border: 1px solid #F7BA2E;
     border-radius: 4px;
 }
+
 
 /*******Modal-Classes*******/
 .modal-backdrop.show {
@@ -1678,6 +1767,328 @@ button:focus{
 /* ---------------------------------------------------
   OPPORTUNITY_DETAIL_PAGE_STYLE_END
 ----------------------------------------------------- */
+
+
+/* ---------------------------------------------------
+  MAIN PAGE COOMON FEED CARDS REDESIGNED_STYLE-START
+----------------------------------------------------- */
+
+
+/************STYLE TO BE DLEETED LATERS START*****************************/
+.main-page-cmmn-feed-card.main-page__cmmn-card .main-page-cmmn-feed-card__heading.blue-txt-clr{
+ margin-top: 3rem;
+}
+
+
+
+/************STYLE TO BE DLEETED LATERS END*****************************/
+
+.main-page-cmmn-feed-card__wrapper{
+    border: none;
+    background-color: #fff;
+}
+
+.main-page-cmmn-feed__content-area{
+ display: flex;
+ flex-wrap: wrap;
+ margin-top: 3rem;
+}
+
+.main-page-cmmn-feed__content-area--left-section{
+ flex: 1;
+ flex-basis: 50%;
+ /* border-right: 1px solid #2A282F;
+ margin: 0 1rem 0px 0; */
+}
+.main-page-cmmn-feed__content-area--left-section a{
+    text-decoration: none;
+    color: #fff;
+}
+.main-page-cmmn-feed__content-area--right-section{
+    flex: 2;
+    flex-basis: 30%;
+}
+
+.main-page-cmmn-feed-card__heading{
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.main-page-cmmn-feed-card__heading a{
+    text-decoration: none;
+    color: #2A282F;
+}
+.main-page-cmmn-feed-card__desc{
+    font-size: 0.875rem;
+    margin-top: 0.625rem;
+    color: #2A282F;
+}
+
+.main-page-cmmn-feed-card__top-heading {
+    border-radius: 0.6rem 0rem 4rem 0rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.7rem 8rem 0.7rem 1.5rem;
+    font-size: 0.875rem;
+    color: #fff;
+}
+
+.main-page-cmmn-feed-card__top-heading span{
+    color: #fff;
+}
+
+.main-page-cmmn-feed-card__action-btn{
+    background-color: #D33403;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    display: inline-block;
+    padding: 0.69rem 3.8rem 0.69rem 3.8rem;
+    text-align: center;
+    margin: 2rem 0 0rem 0;
+}
+.main-page-cmmn-feed__content-area--left-section__list{
+    margin: 1rem 0;
+}
+
+.main-page-cmmn-feed__content-area--left-section__list ul{
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.main-page-cmmn-feed__content-area--left-section__list ul li{
+    display: inline-block;
+    font-size: 0.75rem;
+    margin: 0;
+}
+.main-page-cmmn-feed__content-area--left-section__list ul li i{
+   margin-right: 0.3rem;
+}
+.main-page-cmmn-feed__content-area--left-section__list ul li::after{
+    content: "|";
+    text-align: center;
+    padding: 0rem 0rem 0rem 0rem;
+    margin: 0rem 0.1rem 0rem 0.3rem;
+}
+
+
+.main-page-cmmn-feed__content-area--left-section__list ul li:nth-child(3):after {
+    display: none;
+}
+
+.main-page-cmmn-feed__content-area--left-section__list ul li:last-child::after{
+    display: none;
+}
+
+.main-page-cmmn-feed-card__wrapper .main-page-cmmn-feed-card__footer-area {
+    padding: 1rem;
+    margin-left: -1.4rem;
+    margin-right: -1.4rem;
+    margin-bottom: -1rem;
+    background-color: #EAEAEA;
+    border-radius: 0 0 6px 6px;
+}
+.main-page-cmmn-feed-card__wrapper .main-page-cmmn-feed-card__footer--social-icons i{
+    font-size: 1.375rem;
+}
+
+/***************RIGHT SECTION START**************************/
+.main-page-cmmn-feed-card__wrapper .dots__options-list--for-feed ul li:first-child{
+    padding: 0;
+    text-decoration: none;
+}
+
+.dropdown-menu.dots__options-list--for-feed ul li:first-child {
+    padding: 0;
+    text-decoration: none;
+}
+
+
+.main-page-cmmn-feed__content-area--right-section{
+    border-left: 1px solid #2A282F;
+    margin: -1rem 0rem 1rem 0rem;
+    padding: 0rem 0rem 0.8rem 1rem;
+}
+.main-page-cmmn-feed__content-area--right-section__list{
+    margin-bottom: 0.8rem;
+
+}
+.main-page-cmmn-feed__content-area--right-section__list span{
+    font-size: 0.75rem;
+    color: #2A282F;
+    font-weight: 700;
+}
+
+.main-page-cmmn-feed__content-area--right-section__list ul{
+    list-style: none;
+    margin: -0.1rem 0rem 0rem 0rem;
+    padding: 0;
+}
+
+.main-page-cmmn-feed__content-area--right-section__list ul li{
+    display: inline-block;
+    border: 1px solid #2A282F;
+    border-radius: 34px;
+    font-size: 0.625rem;
+    padding: 0.1rem 0.6rem;
+    margin: 0rem 0rem 0.1rem 0rem;
+}
+
+.main-page-cmmn-feed__content-area--right-section__list ul li:last-child{
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-left: 0.2rem;
+}
+
+.main-page-cmmn-feed__content-area--right-section__list ul li a{
+    text-decoration: none;
+    color: #2A282F;
+}
+/* ---------------------------------------------------
+  MAIN PAGE COOMON FEED CARDS REDESIGNED_STYLE-END
+----------------------------------------------------- */
+
+/* ---------------------------------------------------
+   FAVORITES STYLE START
+----------------------------------------------------- */
+.favorites__wrapper {}
+
+.favorites__wrapper--favorite-cards {
+    padding: 1rem 1.5rem;
+    background-color: #2A282F;
+    border-radius: 6px;
+}
+.favorite_page--cntnt .main-page-cmmn-feed-card__heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+.favorite_page--cntnt .main-page-cmmn-feed-card__heading a {
+    color:#2A282F !important;
+}
+.avorites__wrapper--favorite-cards .favorite_page--cntnt .main-page-cmmn-feed-card__heading a {
+    text-decoration: none;
+    color:#2A282F;
+}
+
+.favorites-cmmn__cards--dots-menu{
+    float: right;
+}
+.favorite-page-cmmn-card__heading{
+    /* background-color: #645AB7; */
+    border-radius: 0.75rem 0rem 4rem 0rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5rem 3rem 0.5rem 1rem;
+    font-size: 0.625rem;
+    color: #fff;
+}
+
+.favorites__wrapper--favorite-cards .search-drawer-cards {
+    margin-top: 1rem;
+}
+
+.favorites__wrapper--favorite-cards .favorite_page--cntnt{
+    margin-top: 1.7rem;
+    min-height: 11.3rem;
+ }
+
+ .favorites-cmmn__cards{
+     border: none;
+     padding: 1rem;
+     margin-bottom: 1.5rem;
+     transition: 0.5s ease;
+     position: relative;
+ }
+ .favorites-cmmn__cards:hover{
+    /* box-shadow: 0px 5px 15px rgba(64,224,208,0.8);
+    transform: scale(1.02); */
+ }
+ .favorites__wrapper--favorite-cards .favorite_page--cntnt .main-page-cmmn-feed-card__desc{
+    color: #2A282F;
+    font-size: 0.75rem;
+ }
+
+ .favorites__wrapper--favorite-cards .favorite_page--cntnt a{
+     text-decoration: none;
+     color: #fff;
+ }
+
+.main-page-cmmn-feed-card__action-btn.favorite--card-action__button{
+    margin: 0.5rem 0rem 1rem 0rem;
+    padding: 0.45rem 2.3rem 0.45rem 2.3rem;
+    font-size: 0.75rem;
+    background-color: #F13B02;
+ }
+
+.favorite_page--cntnt__list{
+
+}
+
+.favorite_page--cntnt__list ul{
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 1rem;
+}
+
+.favorite_page--cntnt__list ul li{
+    display: inline-block;
+    font-size: 0.625rem;
+    margin: 0;
+}
+
+.favorite_page--cntnt__list ul li i{
+    margin-right: 0.3rem;
+ }
+
+
+ .favorite_page--cntnt__list ul li::after{
+    content: "|";
+    text-align: center;
+    padding: 0rem 0rem 0rem 0rem;
+    margin: 0rem 0.1rem 0rem 0.3rem;
+}
+ 
+.favorite_page--cntnt__list ul li:nth-child(3):after {
+    display: none;
+}
+
+.favorite_page--cntnt__list ul li:last-child::after{
+    display: none;
+}
+
+.favorite-card__footer-area{
+    background-color: #EAEAEA;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0 0 6px 6px;
+    margin: 0.5rem -1rem -1rem -1rem;
+}
+.favorite-page-cmn-card__user-pic img {
+    width: 2rem;
+    border-radius: 50%;
+}
+
+.favorite-card__footer-area .main-page-cmmn-feed-card__footer-area--desg,
+.favorite-card__footer-area .main-page-cmmn-feed-card__footer-area--dept{
+ font-size: 0.625rem;
+ margin-left: 0.6rem;
+}
+
+
+.favorite-card__footer-area .main-page-cmmn-feed-card__footer--social-icons i{
+    margin-left: 0.3rem;
+}
+
+/* ---------------------------------------------------
+   FAVORITES STYLE END
+----------------------------------------------------- */
+
+
 
 
 /* ---------------------------------------------------
@@ -2242,6 +2653,7 @@ opacity: 1;
 
 #user_name_text {
     margin-top: 2rem;
+    font-size: 0.875rem;
 }
 
 .profile-sec__cmmn-tile p {
@@ -2251,7 +2663,9 @@ opacity: 1;
     margin-top: 0rem;
     margin-bottom: 0.2rem;
 }
-
+#designation_text{ 
+    font-size: 0.75rem;
+}
 .profile-sec__cmmn-tile.top-section__user-info{
     padding: 2rem 2rem 2.5rem 2rem 
 }
@@ -2451,7 +2865,8 @@ opacity: 1;
     font-weight: 300;
     font-size: .8rem;
     font-weight: 300;
-    margin:1rem 2rem 0rem 0rem;
+    margin:1rem 1rem 0rem 0rem;
+    width: 10rem;
 }
 
 .profile-sec__user-details .form-group{
@@ -3605,9 +4020,24 @@ opacity: 1;
         border-radius: 50%;
         margin: 0 0.5rem 0 0;
     }
+
+    .create-oppor-form__experts-opt label {
+        width: auto;
+        margin: 0 0.5rem 0 0;
+    }
+
+    .create-oppor-form__coin-counter.create-oppor-form__experts-opt .number input {
+        margin: 0.5rem 0 0 0;
+    }
     /* ---------------------------------------------------
       CREATE OPPORTUNITY SECTION STYLE END
     ----------------------------------------------------- */
+
+
+
+
+
+
 
     /*****************INVITE-USER-LIST-ALL****************/
 
@@ -3756,6 +4186,15 @@ opacity: 1;
 /* ---------------------------------------------------
   Loader Style End
 ----------------------------------------------------- */
+
+
+/*************THANKYOU POPUP********************/
+#thanks_up{
+    margin: 0 auto;
+}
+
+
+
 
 @media screen and (min-width: 768px){
     .main-logo{

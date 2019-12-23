@@ -66,7 +66,7 @@ class User extends Authenticatable
 	}
 
 	public function profile_image() {
-        return $this->hasOne('App\UserProfile', "user_id", "id")->select(["user_id", "image_name as profile_image"]);
+        return $this->hasOne('App\UserProfile', "user_id", "id")->select(["user_id", "image_name", "image_name as profile_image", "image_name as image_url"]);
     }
 	
 	 /**
@@ -74,10 +74,12 @@ class User extends Authenticatable
      *
      * @var array
      */
-    public function profile()
+     public function profile()
     {
-        return $this->hasOne('App\UserProfile');
+        return $this->hasOne('App\UserProfile')->select(array('user_id','about', 'image_name','image_name as image_url'));
     }
+    
+    
 	/**
      * User Notification Relationships.
      *

@@ -19,7 +19,7 @@
             	<ul>
                   <li><a href="#"><i class="fas fa-door-open"></i><p>Opportunities</p></a></li>
                   <li><a href="#"><i class="fas fa-user-friends"></i><p>My Team</p></a></li>
-                  <li><a href="#"><i class="fas fa-heart"></i><p>Favorites</p></a></li>
+                  <li><a href="{{ route('favorites') }}"><i class="fas fa-heart"></i><p>Favorites</p></a></li>
                   <li><a href="#"><i class="fas fa-bell"></i><p>Notifications</p></a></li>
                   <!-- <li id="header-profile__dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
                   <li class="dropdown-for__user-infor-card">

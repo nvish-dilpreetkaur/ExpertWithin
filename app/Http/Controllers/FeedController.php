@@ -162,7 +162,7 @@ class FeedController extends Controller
 	    if($request->ajax()){ 
 			
 			 $messages = [
-				    'checkedUsers.required' => 'This field is required', 
+				    'checkedUsers.required' => 'Please choose atleast one expert', 
 				];
 			 
 		  $validator = \Validator::make($request->all(), [

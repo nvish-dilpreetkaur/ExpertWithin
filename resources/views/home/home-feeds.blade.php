@@ -4,7 +4,7 @@
 		<input type="hidden" value="{{ @$totalPages }}" name="total_page" id="total_page">
 	@endif
 
-	<?php /**** new card HTML : starts **/ ?>
+	<?php /**** new card HTML : starts **/ /* ?>
 		@include('home.common.new-card-html')
 	<?php /**** new card HTML : ends **/ ?>
 	@foreach($feedData as $feedKey => $feedVal)
