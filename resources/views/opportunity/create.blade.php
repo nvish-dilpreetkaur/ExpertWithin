@@ -33,6 +33,15 @@
                         <div class="card slide current-slide">
                           <div class="card-header">
                             <div class="form-slides-container__header">
+                            <div class="common-user-info__header--section">
+                                @if(!empty($opportunity->creator->profile["image_name"]))
+									<div class="publish-page-cmn-card__user-pic" style="background: url('{{ $opportunity->creator->profile['image_url'] }}') ;"></div>
+								@else
+									<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+								@endif
+                               <div class="common-user-info__header--section-user-name">{{$opportunity->creator->firstName}}</div>
+                               <div class="common-user-info__header--section-user-desg">{{$opportunity->creator->profile->department}}</div>
+                            </div>
                               <button id="btn-opr-u-save" type="button" class="create-oppor-hdr-cmmn-btn">
                               <span>Save (⌘+S )</span>
                               </button>
@@ -41,6 +50,8 @@
                               </button>
                             </div>
                           </div>
+                          <div class="common-black-strip-for-status-message"> <i class="fas fa-file-upload"></i> Draft
+                            </div>
                           <div class="card-body">
                             <form action="#" id="opportunity-store" class="needs-validation form-create-opportunity" novalidate>
                               <div class="form-group">
@@ -502,6 +513,24 @@
 
     });
 
-    
+    function sortWidget(slug,sortby){
+      $.ajax({
+        type: "POST",
+        url: SITE_URL+"/sort-widget",
+        data: {slug: slug, sortby: sortby}, 
+        beforeSend: function(){
+        },error: function(){
+          alert('SORT ajax error!')
+        },success: function(){
+        },complete: function( data ){
+          var obj = $.parseJSON( data.responseText ); 
+          if(obj.type=='success'){ //console.log(obj)
+            $('#'+slug).html(obj.success_html);
+            
+          }else{
+          }
+        }, 
+      })
+    }
     </script>
 @endsection

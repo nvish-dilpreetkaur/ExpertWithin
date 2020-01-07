@@ -39,9 +39,9 @@ class OpportunityUserController extends Controller
   public function  actionOpportunityUser(Request $request)
   { 
     $response = array( 
-		"type" => NULL,
-		"errors" => NULL,
-		"message" => NULL,
+			"type" => NULL,
+			"errors" => NULL,
+			"message" => NULL,
     );
 
     if($request->ajax()){ 
@@ -342,19 +342,27 @@ class OpportunityUserController extends Controller
       switch ($userAction) {
         case $opportunityApply:
           $opportunity_user[$opportunityApply] = $actionstatus;
+          $opportunity_user['approve'] = config('kloves.OPP_APPLY_NEW');
           $success_message = '<strong>Hooray, a real super hero</strong><br>The opportunity manager will be in touch.';
           break;
+        case "WITHDRAW":
+          $opportunity_user[$opportunityApply] = config('kloves.RECORD_STATUS_INACTIVE');
+          $opportunity_user['approve'] = config('kloves.OPP_APPLY_NEW');
+          $success_message = 'Opportunity has been withdrawn successfully!';
+        break;
       }
       $opportunityuser_exists = $this->opportunity_user->opportunity_user_exists($oid, $uid, $org_id); 
       if ($opportunityuser_exists) {
         $opportunity_user_data = $this->opportunity_user->opportunity_user_update($opportunity_user, $oid, $uid, $org_id);
       }else{
-        $opportunity_user_new = new OpportunityUser;
-        $opportunity_user_new->oid = $oid;
-        $opportunity_user_new->org_uid = $uid;
-        $opportunity_user_new->org_id = $org_id;
-        $opportunity_user_new->$opp_action = $actionstatus;
-        $opportunity_user_data = $opportunity_user_new->save();
+        if($userAction!="WITHDRAW") {
+          $opportunity_user_new = new OpportunityUser;
+          $opportunity_user_new->oid = $oid;
+          $opportunity_user_new->org_uid = $uid;
+          $opportunity_user_new->org_id = $org_id;
+          $opportunity_user_new->$opp_action = $actionstatus;
+          $opportunity_user_data = $opportunity_user_new->save();
+        }        
       }
       if($userAction==$opportunityApply){
           $data_to_save['oid'] = $oid;
@@ -408,8 +416,16 @@ class OpportunityUserController extends Controller
     $shareUserList['all'] = $this->user->where('status','=',config('kloves.RECORD_STATUS_ACTIVE'))->where('id', '<>', $loggedInUserID)->select('id','firstName')->get()->toArray(); 
     $shareUserJsonList = json_encode($shareUserList['all']);
 
-    $favoritesOpportunities = OpportunityUser::select(["oid", "org_uid", "like", "favourite"])
-           ->with(["opportunity","opportunity.creator","opportunity.creator.profile","opportunity.creator.profile_image"]) 
+    $favoritesOpportunities = OpportunityUser::select(["oid", "org_uid", "like", "favourite","apply","approve"])
+           ->with([
+                  "opportunity" => function($q){
+                      $q->where('status', '<>', config('kloves.OPP_APPLY_REJECTED'));
+                  },
+                "opportunity.creator",
+                "opportunity.creator.profile",
+                "opportunity.creator.profile_image",
+                "opportunity.approved_applicants"  
+               ]) 
             ->where("favourite", config('kloves.FLAG_SET'))
             ->where("org_uid", $loggedInUserID)
             ->orderBy("created_at", "DESC")

@@ -31,7 +31,9 @@
 	</script>
 </head>
 <body>
-	@include('common.search-top')
+	@if(Route::getCurrentRoute()->getName()!="list-opportunity")
+		@include('common.search-top')
+	@endif
 	<div class="main-content-container">  <!-- wraps whole page -->
 		@include('common.header')
 		@yield('content')

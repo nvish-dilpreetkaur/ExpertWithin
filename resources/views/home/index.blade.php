@@ -7,14 +7,14 @@
 		<div class="row">
 		<!--LEFT-SECTION-->
 				<div class="main-page__left-section--outer">
-					<div class="main-page__cmmn-card">
-						@include('home.common.daily-digest')
-					</div>
 					<div class="fixme">
+						<div class="main-page__cmmn-card">
+							@include('home.common.daily-digest')
+						</div>
 						<!----My applied opportunities--->
 						@include('home.my-applied-opp')
 						<!------->
-						<div class="main-page__cmmn-card cmmn-card__-title-subtitle">
+						<div class="main-page__cmmn-card cmmn-card__-title-subtitle hidden">
 								<div class="card-option-dots" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<i class="fas fa-ellipsis-h"></i>
 									<div class="dropdown-menu dots__options-list dots__options-list--for-left-section">
@@ -44,8 +44,8 @@
 	<!--MIDDLE-SCROLL-SECTION-->
 				<div class="main-page__middle-section--outer">
 					<div class="middle-scroll-section__outer">
-						<div class="middle-section__cmmn-card">
-							<p>What would you like to do?</p>
+						<div class="middle-section__cmmn-card main-page__btn-section">
+							<p>What would you like to do today?</p>
 							@if (in_array(config('kloves.ROLE_MANAGER'), $userRoles) || in_array(config('kloves.ROLE_ADMIN'), $userRoles))
 							<div class="middle-section__top-card--cmmn-button" data-toggle="modal" data-target="#mainPage__createOpportunity">
 							<i class="fas fa-door-open" aria-hidden="true"></i><sup>+</sup><a href="#"></a>
@@ -66,7 +66,8 @@
 									@foreach ($topMatchedOpportunities as $topOppRow)
 										<div class="swiper-slide">
 											<div class="main-page-cmmn-slider__top-white-banner">
-													{{ $topOppRow->rewards }}
+													<!-- {{ $topOppRow->rewards }} -->
+													<div>Apply by</div>{{ date_format(date_create($topOppRow->apply_before),"M d, Y") }}
 											</div>
 											<div class="main-page-slider__cntnt">
 													<a href="{{ url('view-opportunity', Crypt::encrypt($topOppRow->id)) }}">{{ $topOppRow->opportunity }}</a>
@@ -97,12 +98,13 @@
 				</div>
 	<!--RIGHT-SECTION-->
 				<div class="main-page__right-section--outer">
+				<div class="fixme-rite-sec">
 					<div class="main-page__cmmn-card main-page__user-info-card">
 						<div class="container">
 						<div class="row clearfix">
 							<div class="col-md-4">
 							   @if(!empty($current_user_detail['profile']['image_name']))
-									<div class="main-page__user-info-card__picture" style="background-image: url('uploads/{{$current_user_detail['profile']['image_name']}}');"><i class=''></i></div>
+									<div class="main-page__user-info-card__picture" style="background-image: url('{{$current_user_detail['profile']['image_url']}}');"><i class=''></i></div>
 							   @else
 									<div class="main-page__user-info-card__picture"><i class="fas fa-user-circle fa-4x" aria-hidden="true"></i></div>
 							   @endif
@@ -116,9 +118,9 @@
 								</div>
 							</div>
 	
-							<div class="main-page__user-info-card__stats">
+							<div class="main-page__user-info-card__stats widget__my-profile">
 									<div class="user-info-card__stats--title">
-										<i class="fas fa-eye"></i><span> Who’s viewed your profile</span>
+										<i class="fas fa-eye"></i><span> Who’s viewed your profile:</span>
 									</div>
 									<div class="user-info-card__stats--numbers">
 											<span>13</span>
@@ -163,8 +165,8 @@
 						</div>
 						</div>
 					</div><!--main-page__user-info-card-->
-					<div class="fixme-rite-sec">
-						<div class="main-page__cmmn-card">
+					
+						<div class="main-page__cmmn-card hidden">
 							<div class="main-page__cmmn-card--heading"><i class="fas fa-cubes"></i> <span>My skills & certifications</span></div>
 							<div class="main-page__cmmn-card--my-skills">
 								<div class="my-skills__title">UI/UX <span class="my-skills__points"> • 23</span></div>
@@ -270,95 +272,29 @@
 	  </div>
 	  
 <script src="{{ URL::asset('js/jm.spinner.js') }}"></script>
+<script src="{{ URL::asset('js/opportunity.js') }}"></script>
+
 <script type="text/javascript">
-var hasData = true;
-var isLoading = false;
-
-
-$("#opportunity-create").submit(function(e) {
-	e.preventDefault();
-});
-
-$( "button#btn-opr-later, button#btn-opr-cont" ).on( "click", function() {
-	var data_array = $("#opportunity-create").serializeArray();
-	let btnVal = $(this).val();
-	  $.ajax({
-		type: "POST",
-		url: SITE_URL+"/add-opportunity",
-		data: data_array,
-		success: function(data){
-			$('.invalid-feedback').hide()
-			if(data.status==false) {
-				$.each(data.message, function( index, value ) {
-					var error_elem =  $("#"+index).closest(".form-group").find(".invalid-feedback");
-					error_elem.show()
-					error_elem.text(value);
-				});
-			} else if(data.status==true) {
-				if(btnVal=="continue") {
-					window.location.href = SITE_URL+"/create-opportunity/"+data.enc_oid;
-				} else {
-					$('#mainPage__createOpportunity').modal('hide');
-					$('#opportunity__success').modal('show');
-				}
-			}
-		},
-		error: function(){
-			alert('ACK ajax error!')
-		}
-	});
-});
-
-$('#message').on('keyup',function() {
-	$('#error-message').hide();
-});
-$('#user_id').on('change',function() {
-	$('#error-user_id').hide();
-});
-
-$(document).on('submit',"#acknowledgeForm",function(e){
-	e.preventDefault(); // avoid to execute the actual submit of the form.
-	var form = $(this);
-
-	$.ajax({
-		type: "POST",
-		url: SITE_URL+"/acknowledge",
-		data: form.serializeArray(), // serializes the form's elements.
-		beforeSend: function(){
-		},error: function(){
-			alert('ACK ajax error!')
-		},success: function(){
-			$('.invalid-feedback').hide()
-		},complete: function( data ){
-			var obj = $.parseJSON( data.responseText ); 
-			if(obj.type=='success'){ //console.log(obj)
-				//$('#mainPage__acknowledgeAnExpert .modal-content').html(obj.success_html);
-				$('#acknowledge').addClass('hidden');
-				$('#thanks_up').html(obj.success_html);
-				$('#thanks_up').removeClass('hidden');
-				setTimeout(function(){ 
-					 //$('#mainPage__acknowledgeAnExpert').modal('toggle')
-					 $('#mainPage__acknowledgeAnExpert').modal('hide');
-				}, 2000);
-			}else{
-				jQuery.each(obj.keys, function(key, value){
-					var error_msg = obj.errors[key] //console.log("#"+value)
-					var error_elem =  $("#"+value).closest(".form-group").find(".invalid-feedback");
-					error_elem.show()
-					error_elem.text(error_msg);
-				});
-			}
-		}, 
-	});
-
-
-});
-
-
 $(document).ready(function() {
+	$(window).on('scroll', function() {
+        if (Math.ceil($(window).scrollTop()) + Math.ceil($(window).height()) >= Math.ceil($(document).height())) {
+            if (hasData == true && isLoading == false) {
+                $('.box').jmspinner('small');
+                var cur_page = $('#cur_page').val();
+                var total_page = $('#total_page').val(); //console.log('cur_page'+cur_page) ;  console.log('total_page'+total_page);
+                setTimeout(function() {
+                    console.log(cur_page);
+                    var page_no = parseInt(cur_page) + 1;
+                    if (cur_page != page_no) {
+                        load_feed_data(page_no, total_page);
+                    }
+                }, 500);
+            }
+        }
+	});
 
-    function load_feed_data(page_no, total_page) {
-		isLoading = true;
+	function load_feed_data(page_no, total_page) {
+        isLoading = true;
         $.ajax({
             url: "{{ route('home') }}",
             type: "POST",
@@ -376,114 +312,61 @@ $(document).ready(function() {
 
             },
             complete: function(data) {
-					var obj = $.parseJSON(data.responseText);
-					//$('#load_more_wrapper').remove();
-					if(obj.feed == true) {
-						$('#home-feed').append(obj.html);
-						var cur_page = $('#cur_page').val(page_no); 
-						hasData=true;
-					} else {
-						if(!$('#caught_up').length){
-							//$('#home-feed').append('<div id="caught_up" class="col-md-12 text-center">You\'re All Caught Up</div>');
-						}
-						hasData=false;		
-					}
-					isLoading = false;
-					$('.box').jmspinner(false);
+                var obj = $.parseJSON(data.responseText);
+                //$('#load_more_wrapper').remove();
+                if (obj.feed == true) {
+                    $('#home-feed').append(obj.html);
+                    var cur_page = $('#cur_page').val(page_no);
+                    hasData = true;
+                } else {
+                    if (!$('#caught_up').length) {
+                        //$('#home-feed').append('<div id="caught_up" class="col-md-12 text-center">You\'re All Caught Up</div>');
+                    }
+                    hasData = false;
+                }
+                isLoading = false;
+                $('.box').jmspinner(false);
             },
         });
     }
 
-   	$(window).on('scroll', function() {
-		if(Math.ceil($(window).scrollTop()) + Math.ceil($(window).height()) >= Math.ceil($(document).height())) {
-			if(hasData==true && isLoading==false) {
-				$('.box').jmspinner('small');
-				var cur_page = $('#cur_page').val(); 
-				var total_page = $('#total_page').val(); //console.log('cur_page'+cur_page) ;  console.log('total_page'+total_page);
-				setTimeout(function(){
-					console.log(cur_page);
-					var page_no = parseInt(cur_page)+1;
-					if(cur_page != page_no) {
-						load_feed_data(page_no, total_page);
-					}	
-				}, 500);	
-			}	
-		}
-	});
-	
-	
- 	$(document).on('click', '#load_more_button', function() {
-        var cur_page = $(this).data('cur_page');
-		var total_page = $(this).data('total_page');
-		//var page_no = parseInt(cur_page) + 1;
-		$('#load_more_button').html('<b>Loading...</b>');
-		load_feed_data(page_no, total_page);
-	});
-
-	$(document).on('click', '.remove_feed_link', function() {
-        	var feed_id = $(this).data('id'); 
-		remove_feed(feed_id);
-	});
-
-	$(document).on('click', '#acknowledgeAnExpert', function() {
-		/*$('#acknowledge').removeClass('hidden');
-		$('#thanks_up').addClass('hidden');
-		$('#error-message').hide();
-		$('#error-user_id').hide();
-		$('#user_id').val('');
-		$('#message').val('');
-		$('#mainPage__acknowledgeAnExpert').modal('show'); */
-
-	
-		var modal = $(this).data("target")
-		//console.log(modal)
-		$.ajax({
-			url: SITE_URL+'/ack-form',
-			type: "GET",
-			data: {
-			},
-			beforeSend: function() {
-				$(modal).find('.modal-body').html('<i class="fa fa-spinner" aria-hidden="true"></i>');
-			},
-			error: function() {
-			},
-			success: function() {
-			},
-			complete: function(data) {
-				var obj = $.parseJSON(data.responseText); //console.log(obj.html)
-				$('#'+modal).find('.modal-body').html(obj.html);
-				$('#'+modal).modal('show');
-			},
-		});
-	});
-
-	function remove_feed(feed_id){
-		$.ajax({
+	function remove_feed(feed_id) {
+        $.ajax({
             url: "{{ route('feed-action') }}",
             type: "POST",
             data: {
-			'feed_id': feed_id,
-			'action': 'remove_feed'
+                'feed_id': feed_id,
+                'action': 'remove_feed'
             },
-            beforeSend: function() {
-            },
-            error: function() {
-            },
-            success: function() {
-            },
+            beforeSend: function() {},
+            error: function() {},
+            success: function() {},
             complete: function(data) {
                 var obj = $.parseJSON(data.responseText); //console.log(obj)
-			if(obj.type='success'){
-				$('#parent-'+feed_id).html(obj.feed_html);
-			}
-               //$('#home-feed').append(obj.html);
+                if (obj.type = 'success') {
+					//$('#parent-' + feed_id).html(obj.feed_html);
+					$('#parent-' + feed_id).html("");
+                }
+                //$('#home-feed').append(obj.html);
             },
         });
-	}
+    }
+
+
+    $(document).on('click', '#load_more_button', function() {
+        var cur_page = $(this).data('cur_page');
+        var total_page = $(this).data('total_page');
+        //var page_no = parseInt(cur_page) + 1;
+        $('#load_more_button').html('<b>Loading...</b>');
+        load_feed_data(page_no, total_page);
+    });
+
+    $(document).on('click', '.remove_feed_link', function() {
+        var feed_id = $(this).data('id');
+        remove_feed(feed_id);
+	});
 });
-
-
-
+	
 function initVueComponent(){
 	//<![CDATA[
       // $shareUserList['all']
@@ -536,6 +419,5 @@ function initVueComponent(){
 	});
 	//]]>
 }
-
 </script>
 @endsection

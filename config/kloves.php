@@ -41,6 +41,7 @@ return [
     'OPP_APPLY_NEW'                		 => 0, //draft
     'OPP_APPLY_APPROVED'                 => 1,
     'OPP_APPLY_REJECTED'                 => 2,
+    'OPP_APPLY_CANCELLED'                => 3,
 
     // opportunity apply action status
     'OPP_NEW'                		 => 0,
@@ -70,4 +71,10 @@ return [
 	//Notification Type
       'NOTI_SHARED_OPP'                         => 1,
       'NOTI_SHARED_ACK'                         => 2,
+      'NOTI_NEW_ACK_ADDED'                      => 3,
+      'NOTI_OPOR_COMPLETED'                     => 4,
+      'NOTI_RELATED_OPOR'                       => 5,
+      'NOTI_OPOR_INVITES'                       => 6,
+
+      'SEARCH_OPR_LIMIT'        => 12,
 ];

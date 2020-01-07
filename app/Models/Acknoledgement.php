@@ -25,5 +25,15 @@ class Acknoledgement extends Model
 	public function acknoledgement()
 	{
 		return $this->hasMany('App\Models\ShareFeed', "key_id", "id")->where("share_type","ACK")->select("*");
+    }
+    
+    public function ack_by()
+	{
+		return $this->hasOne('App\User', "id", "created_by");
+    }
+    
+    public function ack_to()
+	{
+		return $this->hasOne('App\User', "id", "user_id");
 	}
 }

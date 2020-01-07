@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\PasswordReset; 
 use DB;
 use Config;
+use Storage;
 
 class User extends Authenticatable
 {
@@ -76,7 +77,7 @@ class User extends Authenticatable
      */
      public function profile()
     {
-        return $this->hasOne('App\UserProfile')->select(array('user_id','about', 'image_name','image_name as image_url'));
+        return $this->hasOne('App\UserProfile')->select(array('user_id','about','designation', 'image_name','image_name as image_url','department'));
     }
     
     
@@ -89,14 +90,24 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Notification', 'recipient_id', 'id')->orderBy('id','DESC');
     }
+
+   	/**
+    	* OpportunityInvites Relationships.
+     	* @var array
+     	*/
+    	public function opportunity_invites()
+	{
+	    return $this->hasMany('App\Models\OpportunityInvites', 'user_id', 'id');
+	}
+    
 	
 	function getUserProfileDataById($user_id = null){
-		$file_path = url('/uploads/');
+		$file_path = Storage::disk('public_uploads')->url('/thumbnail/');
 		$status = config('kloves.RECORD_STATUS_ACTIVE');
 		$query = " SELECT u1.id, u1.firstName, u1.status, u1.mobile, u1.linkedin_id, u1.org_id
 		, u2.designation, u2.aspirations, u2.availability, u2.notes, u2.status, u2.activities, u2.certificate, u2.about, u2.manager, u2.department, 
 		CASE
-            WHEN u2.image_name != '' THEN CONCAT('".$file_path."', '".Config('constants.DS')."', u2.image_name)
+            WHEN u2.image_name != '' THEN CONCAT('".$file_path."',  u2.image_name)
             ELSE ''
         END AS image_name, u2.image_name as img_name
 		FROM ".DB::getTablePrefix()."users AS u1

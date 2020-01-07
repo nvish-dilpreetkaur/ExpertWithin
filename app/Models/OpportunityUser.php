@@ -38,12 +38,11 @@ class OpportunityUser extends Model
 
     public function opportunity()
     {
-        return $this->hasOne('App\Models\Opportunity', "id", "oid")->select(["id", "opportunity","opportunity_desc","rewards","org_uid","apply_before","tokens","expert_hrs"]);
+        return $this->hasOne('App\Models\Opportunity', "id", "oid")->select(["id", "opportunity","opportunity_desc","rewards","org_uid","apply_before","tokens","expert_hrs","expert_qty","status"]);
     }
 
-
     public function profile_image() {
-        return $this->hasOne('App\UserProfile', "user_id", "org_uid")->select(["user_id", "image_name as profile_image"]);
+        return $this->hasOne('App\UserProfile', "user_id", "org_uid")->select(["user_id", "image_name as profile_image","image_name as image_url"]);
     }
 
   /**

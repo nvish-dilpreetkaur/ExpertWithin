@@ -32,7 +32,7 @@
 
                                         @foreach($vocabulary_names as $key=>$category)
                                         <li class="nav-item">
-                                            <a class="nav-link @php if($flag) echo 'active'; @endphp" id="{{'tax-'.$key}}-tab" data-toggle="tab" href="#{{'tax-'.$key}}" role="tab" aria-controls="{{'tax-'.$key}}" aria-selected="true" data-vocab-id='{{$key}}' data-vocab-name='{{$category}}' >{{$category}}</a>
+                                            <a class="nav-link {{ ($flag) ? 'active' : '' }} " id="{{'tax-'.$key}}-tab" data-toggle="tab" href="{{'#tax-'.$key}}" role="tab" aria-controls="{{'tax-'.$key}}" aria-selected="true" data-vocab-id='{{$key}}' data-vocab-name='{{$category}}' >{{$category}}</a>
                                         </li>
                                             @php
                                                 if($flag) {
@@ -59,7 +59,7 @@
                         <div class="tab-content" id="myTabContent">
                             @php $flag = true; @endphp
                             @foreach($taxonomy as $index=>$item)
-                            <div class="tab-pane vocab-tab fade show @php if($flag) echo 'active'; @endphp" id="{{'tax-'.$index}}" data-vocab-id="{{$index}}" data-vocab-name="{{$vocabulary_names[$index]}}" role="tabpanel" aria-labelledby="{{'tax-'.$index}}-tab">
+                            <div class="tab-pane vocab-tab fade show {{ ($flag) ? 'active' : '' }}" id="{{'tax-'.$index}}" data-vocab-id="{{$index}}" data-vocab-name="{{$vocabulary_names[$index]}}" role="tabpanel" aria-labelledby="{{'tax-'.$index}}-tab">
                                 <table class="table display nowrap for-administration-table" id="my-opp-table-{{$index}}" style="width:100%">
                                     <thead>
                                         <tr class="inner-pages">
@@ -129,7 +129,7 @@
     </div>
 </div>
 <!-- Modal -->
-<table id="dummy-term-row">
+<table id="dummy-term-row"  class="d-none">
     <tr class="term-row">
         <td class="term-name w-80 text-left">
             <a href="javascript:void(0)" class="open-modal" data-item-id=''>

@@ -48,7 +48,39 @@ class IndexController extends Controller
 			$offset = ($page_no - 1) * $limit;
 		} 
 		$totalPages = ($request->post('totalPages') ? $request->post('totalPages') : '') ; 
-		$feedData = $this->feed->getfeedData($feedFilters, $offset , $limit); //prd($feedData);
+		//$feedData = $this->feed->getfeedData($feedFilters, $offset , $limit); //prd($feedData);
+		$feedData = Feed::with([
+                  "opportunity" => function($q){
+                     $q->where('status', '<>', config('kloves.OPP_APPLY_REJECTED'));
+                     $q->where('apply_before', '>=', \Carbon\Carbon::now());
+                     $q->whereNull('job_complete_date');
+			},
+			"opportunity.user_actions",
+			"opportunity.skills",
+			"opportunity.focus_areas",
+			"opportunity.creator.profile",
+			"opportunity.approved_applicants",  
+			"feed_user_action",
+			"acknoledgement" => function($q1){
+				$q1->where('status', '=', config('kloves.ACK_ACTIVE'));
+			 },
+			"acknoledgement.ack_by",
+			"acknoledgement.ack_by.profile",
+			"acknoledgement.ack_to"
+               ])
+		->doesntHave('feed_user_action')
+		->orwhereHas('feed_user_action', function($q2)
+		   {
+			   $q2->where('feeds_user_action.removed_feed', '<>', 1)
+			  ->where('feeds_user_action.user_id', '=', \Auth::user()->id);
+		 })
+		->offset($offset)
+		->limit($limit)
+		->orderBy('feeds.updated_at','desc')
+		->get()->toArray();
+		
+		//prd($feedData);
+
 		if($request->ajax()){ 
 			$response["feed"] = true;
 			$response["html"] = view('home.home-feeds', compact(['feedData','page_no','totalPages']))->render();
@@ -56,6 +88,7 @@ class IndexController extends Controller
 			if(!$feedData) {
 				$response["feed"] = false;
 			}
+			
 			echo json_encode($response);
 			exit();
 		}else{
@@ -77,7 +110,7 @@ class IndexController extends Controller
 		$totalPages = ceil($feedCount / $limit);
 		
 		$status = config('kloves.RECORD_STATUS_ACTIVE');
-		$shareUserList['all'] = $this->user->where('status','=', $status)->where('id', '<>', $loggedInUserID)->select('id','firstName')->get()->toArray(); 
+		$shareUserList['all'] = $this->user->where('status','=', $status)->where('id', '<>', $loggedInUserID)->with(['profile',])->select('id','firstName')->get()->toArray();  //prd($shareUserList['all']);
 		$shareUserJsonList = json_encode($shareUserList['all']);
 
 		return view('home.index', compact(

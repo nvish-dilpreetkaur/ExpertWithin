@@ -3,7 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Storage;
+use Config;
 class UserProfile extends Model
 {
      /**
@@ -21,10 +22,12 @@ class UserProfile extends Model
      * @return mixed
      */
     
-	public function getImageUrlAttribute($image_name)
-	{		
-		$file_path = url('/uploads/').Config('constants.DS').$image_name;
-		if(!file_exists($file_path)) {
+	public function getImageUrlAttribute($image_name,$folder='thumbnail')
+	{	$file_path =  Storage::disk('public_uploads')->url($folder.Config('constants.DS').$image_name);
+		if (!Storage::disk('public_uploads')->exists($image_name)){
+			$file_path = '';
+		}	
+		if (!Storage::disk('public_uploads')->exists($folder.Config('constants.DS').$image_name)){
 			$file_path = '';
 		}
 		return $file_path;
@@ -43,7 +46,8 @@ class UserProfile extends Model
     public function getProfileImageAttribute($value)
     {
         if(!empty($value)) {
-            $value = url('/uploads/') . "/" . $value;
+            $profileImagePath = Storage::disk('public_uploads')->url('/thumbnail/');
+            $value = $profileImagePath . $value;
         } else {
             $value = "";
         }

@@ -10,7 +10,7 @@ class UserInterest extends Model
 
     public function user_details()
     {
-        return $this->hasOne('App\User', "id", "user_id")->select(["id", "firstName"]);
+        return $this->hasOne('App\User', "id", "user_id")->select(["id", "firstName","status"]);
     }
 
     public function profile_image() {

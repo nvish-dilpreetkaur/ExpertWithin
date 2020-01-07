@@ -67,7 +67,7 @@
 								<div class="profile-sec__user-details--middle">
 								   <ul>
 									  <li class="profile-sec__card-content--heading">
-										 Department       
+										 Dept       
 									  </li>
 									  <!-- <li class="form-pillbox form-group user-profile-page--for-userInfo"> Department Hai</li> -->
 										<li class="form-pillbox form-group user-profile-page--for-userInfo hidden" id="dept_input"> 
@@ -161,55 +161,25 @@
 							<div class="profile-sec__cmmn-tile--left-side profile__swiper-section">
 								<div class="profile-sec__cmmn-tile">
 									<div class="profile-sec__swiper-slider">
-										<div class="swiper-container">
-											<div class="swiper-wrapper">
-												<div class="swiper-slide">
-													<div class="main-page-cmmn-slider__top-white-banner">
-														Lunch for two
+										@if ($topMatchedOpportunities != null)
+											<div class="swiper-container">
+												<div class="swiper-wrapper">
+												@foreach ($topMatchedOpportunities as $topOppRow)
+													<div class="swiper-slide">
+														<div class="main-page-cmmn-slider__top-white-banner">
+																<?php echo get_opp_status_label($topOppRow->status, $topOppRow->job_complete_date); ?>
+														</div>
+														<div class="main-page-slider__cntnt">
+																<a href="{{ url('view-opportunity', Crypt::encrypt($topOppRow->id)) }}">{{ $topOppRow->opportunity }}</a>
+														</div>
 													</div>
-													<div class="main-page-slider__cntnt">
-														Restock merchandize at the Exchange
-													</div>
+												@endforeach
 												</div>
-												<!------->
-												<div class="swiper-slide">
-													<div class="main-page-cmmn-slider__top-white-banner">
-														Floating PTO
-													</div>
-													<div class="main-page-slider__cntnt">
-														Create wireframe workflows mockups
-													</div>
-												</div>
-												<!--------->
-												<div class="swiper-slide">
-													<div class="main-page-cmmn-slider__top-white-banner">
-														Movie Night
-													</div>
-													<div class="main-page-slider__cntnt">
-														Slideshow presentation deck for new products
-													</div>
-												</div>
-												<!--------->
-												<div class="swiper-slide">
-													<div class="main-page-cmmn-slider__top-white-banner">
-														Lunch for two
-													</div>
-													<div class="main-page-slider__cntnt">
-														Restock merchandize at the Exchange
-													</div>
-												</div>
-												<!--------->
-												<div class="swiper-slide">
-													<div class="main-page-cmmn-slider__top-white-banner">
-														Floating PTO
-													</div>
-													<div class="main-page-slider__cntnt">
-														Create wireframe workflows mockups
-													</div>
-												</div>
-												<!--------->
 											</div>
-										</div>
+											<!-- Add Arrows -->
+											<div class="swiper-button-next"></div>
+											<div class="swiper-button-prev"></div> 
+										@endif
 									</div>
 								</div>
 							</div>
@@ -219,90 +189,54 @@
 								<div class="profile-sec__cmmn-tile">
 									<div class="profile-sec__carousel">
 										<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-											<ol class="carousel-indicators">
-												<li data-target="#carouselExampleIndicators" data-slide-to="0"
-													class="active"></li>
-												<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-												<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-											</ol>
 											<div class="carousel-inner">
-												<div class="carousel-item active">
-													<div class="profile__carousel-item--heading">
-														What people are saying about you
-													</div>
-													<div class="profile__carousel-item--content">
-														<div class="row">
-															<div class="col-md-2">
-																<i class="fas fa-user-circle fa-3x"
-																	aria-hidden="true"></i>
+												@if($acknowledgement)
+													@foreach($acknowledgement as $ack)
+														<div class="carousel-item active">
+															<div class="profile__carousel-item--heading">
+																What people are saying about you
 															</div>
-
-															<div class="col-md-10">
-																<span>@Frank Williamson, Thank you for a magnificent job
-																	on the welcome aboard pamphlets!
-																	#designexpert</span>
-																<pspan
-																	class="profile__carousel-item--content--subheading">
-																	Natasha Vargas, Human Resources</pspan>
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="carousel-item">
-													<div class="profile__carousel-item--heading">
-														What people are saying about you
-													</div>
-													<div class="profile__carousel-item--content">
-														<div class="row">
-															<div class="col-md-2">
-																<i class="fas fa-user-circle fa-3x"
-																	aria-hidden="true"></i>
-															</div>
-
-															<div class="col-md-10">
-																<span>@Frank Williamson, Thank you for a magnificent job
-																	on the welcome aboard pamphlets!
-																	#designexpert</span>
-																<pspan
-																	class="profile__carousel-item--content--subheading">
-																	Natasha Vargas, Human Resources</pspan>
+															<div class="profile__carousel-item--content">
+																<div class="row">
+																	<div class="col-md-2">
+																	@if(!empty($ack['ack_by']['profile']["image_name"]))
+																		<div class="main-page__user-info-card__picture" style="background-image: url('{{ $ack['ack_by']['profile']['image_url'] }}');"><i class="" aria-hidden="true"></i></div>
+																	@else
+																		<div class="main-page__user-info-card__picture"><i class="fas fa-user-circle fa-3x" aria-hidden="true"></i></div>
+																	@endif
+																	</div>
+																	<div class="col-md-10 for-profile-carousel__wrapper">
+																		<span> {{'@'.$ack['ack_to']['firstName']}}, {{$ack['message']}}</span>
+																		<span
+																			class="profile__carousel-item--content--subheading">
+																			{{$ack['ack_by']['firstName']}}, {{$ack['ack_by']['profile']['designation']}}</pspan>
+																	</div>
+																</div>
 															</div>
 														</div>
-													</div>
-												</div>
-												<div class="carousel-item">
-													<div class="profile__carousel-item--heading">
-														What people are saying about you
-													</div>
-													<div class="profile__carousel-item--content">
-														<div class="row">
-															<div class="col-md-2">
-																<i class="fas fa-user-circle fa-3x"
-																	aria-hidden="true"></i>
+													@endforeach
+												@else
+													<div class="carousel-item active">
+														<div class="profile__carousel-item--heading no_acknowledgement">
+																No acknowledgment yet posted.
 															</div>
-
-															<div class="col-md-10">
-																<span>@Frank Williamson, Thank you for a magnificent job
-																	on the welcome aboard pamphlets!
-																	#designexpert</span>
-																<pspan
-																	class="profile__carousel-item--content--subheading">
-																	Natasha Vargas, Human Resources</pspan>
+														<div class="profile__carousel-item--content">
 															</div>
-														</div>
-													</div>
-												</div>
+													</div>	
+												@endif
 											</div>
-											<a class="carousel-control-prev" href="#carouselExampleIndicators"
-												role="button" data-slide="prev">
-												<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-												<span class="sr-only">Previous</span>
-											</a>
-											<a class="carousel-control-next" href="#carouselExampleIndicators"
-												role="button" data-slide="next">
-												<span class="carousel-control-next-icon" aria-hidden="true"></span>
-												<span class="sr-only">Next</span>
-											</a>
+											@if($acknoledgement_count > 1)
+												<a class="carousel-control-prev" href="#carouselExampleIndicators"
+													role="button" data-slide="prev">
+													<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+													<span class="sr-only">Previous</span>
+												</a>
+												<a class="carousel-control-next" href="#carouselExampleIndicators"
+													role="button" data-slide="next">
+													<span class="carousel-control-next-icon" aria-hidden="true"></span>
+													<span class="sr-only">Next</span>
+												</a>
+											@endif	
 										</div>
 									</div>
 								</div>

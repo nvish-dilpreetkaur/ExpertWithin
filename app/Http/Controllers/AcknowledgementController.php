@@ -68,6 +68,16 @@ class AcknowledgementController extends Controller
                             'feed_type' => 'new_ack_added',
               ];
               $this->feed->add_feed($feed_data); /** Add new feed */
+
+                /** add notification : start */
+                $notification_data['type_of_notification'] = config('kloves.NOTI_NEW_ACK_ADDED');
+                $notification_data['key_value'] = $last_insert_id;
+                $notification_data['sender_id'] = $user_id;
+                $notification_data['recipient_id'] = $request->post('user_id');
+                $notification_data['status'] = config('kloves.RECORD_STATUS_ACTIVE');
+                DB::table('notifications')->insert($notification_data);
+                /** add notification : end */
+              
               $success_message = '<p>That\'s All</p><br>You have brigthen someone\'s day!';
               $response["success_html"] = view("common.thumbup-pop") //render view
               ->with("success_message", $success_message)
@@ -96,7 +106,7 @@ class AcknowledgementController extends Controller
 		if(!empty($user)){
 			$loggedInUserID = $user->id;
 		}
-    $all_users = $user->where('id', '<>', $loggedInUserID)->get(); //prd($all_users);
+    $all_users = $user->where('id', '<>', $loggedInUserID)->where('status', '=', config('kloves.RECORD_STATUS_ACTIVE'))->get(); //prd($all_users);
 		$response["html"] = view('home.common.ack-form', compact(['all_users']))->render();
 		$response["type"] = "success";
 		echo json_encode($response);

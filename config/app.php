@@ -177,6 +177,7 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
 		Collective\Html\HtmlServiceProvider::class,
 		Laravel\Socialite\SocialiteServiceProvider::class,
+		Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*

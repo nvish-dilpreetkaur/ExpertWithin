@@ -1,7 +1,8 @@
 <div class="row">
-		<div class="search-container-outer">
-			<div class="search-slide-down-container">
-				<div class="search-close-button"><i class="fas fa-times"></i></div>
+	<div id="temp-model-wrapper"></div>
+	<div class="search-container-outer">
+		<div class="search-slide-down-container search__scroll-container">
+				<div class="search-close-button"><i class="fas fa-times search__popup-close"></i></div>
 	
 				<div class="col-md-12">
 					<div class="">
@@ -9,308 +10,150 @@
 						<div class="form-group">
 						<form>					
 							<div class="search-drawer-input">
-								<input type="text" class="form-control">
-								<i class="fas fa-times"></i>
+								<input type="text" id="search__data-field" class="form-control">
+								<i class="fas fa-times" id="search__clear-data-field" style="display:none;"></i>
 							</div> 
 							<div class="search-drawer-content-btn">
-								<button type="submit" class="search-drawer-btn">Search</button>
+								<button type="button" id="search__btn" class="search-drawer-btn">Search</button>
 							</div>
 						</form>
 						</div>
 						<div class="search-drawer-content-pills">
-							<ul>
-								<li>Opportunities</li>
-								<li>Department</li>
-								<li>Analytics</li>
-								<li>Business</li>
-								<li>Communications</li>
-								<li>Computers</li>
-								<li>Design</li>
-								<li>Video Editing</li>
-							</ul>
+						<ul id="search__focus-area-list"></ul>
 						</div>
 						<div class="search-drawer-cards">						 
 						 
 								<div class="container">
-										<p>Search results</p>
-
-
-
-								<div class="row clearfix">
-								<!----1-->
-									<div class="col-md-3">
-									<div class="main-page-cmmn-feed-card main-page__cmmn-card cstm-for-search-drawer">
-
-									<div class="favorites-cmmn__cards--dots-menu">
-										<i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+									<p>Search results</p>
+										<div class="row clearfix" id="search__opportunity-content"></div>
 									</div>
-											<div class="search-drawer-card-cmmn__heading yellow-sea-color-bg">
-											Apply by Jan 14, 2020
-											</div>
-
-									<div class="main-page-cmmn-feed__content-area search-drawer_card--cntnt">
-
-											<div class="main-page-cmmn-feed-card__heading">
-												<a href="#">Design related opportunity…</a>
-											</div>
-											<div class="main-page-cmmn-feed-card__desc">
-												Assist in providing hardware and software solutions enabling delivery of
-											</div>
-											<a href="#">
-												<div class="main-page-cmmn-feed-card__action-btn favorite--card-action__button">
-													<span>Interested ?</span>
-												</div>
-											</a>
-											<div class="favorite_page--cntnt__list">
-												<ul>
-													<li><i class="fas fa-coins gold-coins-color" aria-hidden="true"></i><span class="common-semibold-heading">25</span></li>
-													<li class="common-semibold-heading">10hrs/wk</li>
-													<li><span class="common-semibold-heading">0</span> of <span class="common-semibold-heading">1</span> candidate(s)</li>
-													<li><span class="common-semibold-heading">Reward:</span> Present concepts to VP of Sales…</li>
-												</ul>
-											</div>
-
-									</div>
-
-									<div class="main-page-cmmn-feed-card__footer-area favorite-card__footer-area search-drawer__footer-area">
-									<div class="row ">
-
-										<div class="col-md-1">
-											<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
-										</div>
-
-										<div class="col-md-5 for-null-paddng-right">
-											<div class="main-page-cmmn-feed-card__footer-area--desg">Jamie Kendel</div>
-											<div class="main-page-cmmn-feed-card__footer-area--dept">HR</div>
-										</div>
-																			
-					
-										<div class="col-md-5 for-null-paddng">
-											<div class="main-page-cmmn-feed-card__footer--social-icons">
-												<i class="far fa-thumbs-up" aria-hidden="true"></i>
-												<i class="far fa-heart" aria-hidden="true"></i>
-												<i class="far fa-share-square" aria-hidden="true"></i>
-												<i class="far fa-comment" aria-hidden="true"></i>
-											</div>
-										</div>
-
-									</div>
-									</div>
-														
-										
-									
-										</div>
-										</div><!---col-md-3-ENDS----->
-									
-								<!----2-->
-								<div class="col-md-3">
-									<div class="main-page-cmmn-feed-card main-page__cmmn-card cstm-for-search-drawer">
-
-									<div class="favorites-cmmn__cards--dots-menu">
-										<i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-									</div>
-											<div class="search-drawer-card-cmmn__heading for-element-with--blue-marguerite-bg">
-											Apply by Jan 14, 2020
-											</div>
-
-									<div class="main-page-cmmn-feed__content-area search-drawer_card--cntnt">
-
-											<div class="main-page-cmmn-feed-card__heading">
-												<a href="#">Design related opportunity…</a>
-											</div>
-											<div class="main-page-cmmn-feed-card__desc">
-												Assist in providing hardware and software solutions enabling delivery of
-											</div>
-											<a href="#">
-												<div class="main-page-cmmn-feed-card__action-btn favorite--card-action__button">
-													<span>Interested ?</span>
-												</div>
-											</a>
-											<div class="favorite_page--cntnt__list">
-												<ul>
-													<li><i class="fas fa-coins gold-coins-color" aria-hidden="true"></i><span class="common-semibold-heading">25</span></li>
-													<li class="common-semibold-heading">10hrs/wk</li>
-													<li><span class="common-semibold-heading">0</span> of <span class="common-semibold-heading">1</span> candidate(s)</li>
-													<li><span class="common-semibold-heading">Reward:</span> Present concepts to VP of Sales…</li>
-												</ul>
-											</div>
-
-									</div>
-
-									<div class="main-page-cmmn-feed-card__footer-area favorite-card__footer-area search-drawer__footer-area">
-									<div class="row ">
-
-										<div class="col-md-1">
-											<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
-										</div>
-
-										<div class="col-md-5 for-null-paddng-right">
-											<div class="main-page-cmmn-feed-card__footer-area--desg">Jamie Kendel</div>
-											<div class="main-page-cmmn-feed-card__footer-area--dept">HR</div>
-										</div>
-																			
-					
-										<div class="col-md-5 for-null-paddng">
-											<div class="main-page-cmmn-feed-card__footer--social-icons">
-												<i class="far fa-thumbs-up" aria-hidden="true"></i>
-												<i class="far fa-heart" aria-hidden="true"></i>
-												<i class="far fa-share-square" aria-hidden="true"></i>
-												<i class="far fa-comment" aria-hidden="true"></i>
-											</div>
-										</div>
-
-									</div>
-									</div>
-														
-										
-									
-										</div>
-										</div><!---col-md-3-ENDS----->
-								
-								<!----3-->
-								<div class="col-md-3">
-									<div class="main-page-cmmn-feed-card main-page__cmmn-card cstm-for-search-drawer">
-
-									<div class="favorites-cmmn__cards--dots-menu">
-										<i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-									</div>
-											<div class="search-drawer-card-cmmn__heading copper-canyon-bg">
-											Apply by Jan 14, 2020
-											</div>
-
-									<div class="main-page-cmmn-feed__content-area search-drawer_card--cntnt">
-
-											<div class="main-page-cmmn-feed-card__heading">
-												<a href="#">Design related opportunity…</a>
-											</div>
-											<div class="main-page-cmmn-feed-card__desc">
-												Assist in providing hardware and software solutions enabling delivery of
-											</div>
-											<a href="#">
-												<div class="main-page-cmmn-feed-card__action-btn favorite--card-action__button">
-													<span>Interested ?</span>
-												</div>
-											</a>
-											<div class="favorite_page--cntnt__list">
-												<ul>
-													<li><i class="fas fa-coins gold-coins-color" aria-hidden="true"></i><span class="common-semibold-heading">25</span></li>
-													<li class="common-semibold-heading">10hrs/wk</li>
-													<li><span class="common-semibold-heading">0</span> of <span class="common-semibold-heading">1</span> candidate(s)</li>
-													<li><span class="common-semibold-heading">Reward:</span> Present concepts to VP of Sales…</li>
-												</ul>
-											</div>
-
-									</div>
-
-									<div class="main-page-cmmn-feed-card__footer-area favorite-card__footer-area search-drawer__footer-area">
-									<div class="row ">
-
-										<div class="col-md-1">
-											<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
-										</div>
-
-										<div class="col-md-5 for-null-paddng-right">
-											<div class="main-page-cmmn-feed-card__footer-area--desg">Jamie Kendel</div>
-											<div class="main-page-cmmn-feed-card__footer-area--dept">HR</div>
-										</div>
-																			
-					
-										<div class="col-md-5 for-null-paddng">
-											<div class="main-page-cmmn-feed-card__footer--social-icons">
-												<i class="far fa-thumbs-up" aria-hidden="true"></i>
-												<i class="far fa-heart" aria-hidden="true"></i>
-												<i class="far fa-share-square" aria-hidden="true"></i>
-												<i class="far fa-comment" aria-hidden="true"></i>
-											</div>
-										</div>
-
-									</div>
-									</div>
-														
-										
-									
-										</div>
-										</div><!---col-md-3-ENDS----->
-
-
-								<!----4--->
-								<div class="col-md-3">
-									<div class="main-page-cmmn-feed-card main-page__cmmn-card cstm-for-search-drawer">
-
-									<div class="favorites-cmmn__cards--dots-menu">
-										<i class="fas fa-ellipsis-h" aria-hidden="true"></i>
-									</div>
-											<div class="search-drawer-card-cmmn__heading azure-radiance-color-bg">
-											Apply by Jan 14, 2020
-											</div>
-
-									<div class="main-page-cmmn-feed__content-area search-drawer_card--cntnt">
-
-											<div class="main-page-cmmn-feed-card__heading">
-												<a href="#">Design related opportunity…</a>
-											</div>
-											<div class="main-page-cmmn-feed-card__desc">
-												Assist in providing hardware and software solutions enabling delivery of
-											</div>
-											<a href="#">
-												<div class="main-page-cmmn-feed-card__action-btn favorite--card-action__button">
-													<span>Interested ?</span>
-												</div>
-											</a>
-											<div class="favorite_page--cntnt__list">
-												<ul>
-													<li><i class="fas fa-coins gold-coins-color" aria-hidden="true"></i><span class="common-semibold-heading">25</span></li>
-													<li class="common-semibold-heading">10hrs/wk</li>
-													<li><span class="common-semibold-heading">0</span> of <span class="common-semibold-heading">1</span> candidate(s)</li>
-													<li><span class="common-semibold-heading">Reward:</span> Present concepts to VP of Sales…</li>
-												</ul>
-											</div>
-
-									</div>
-
-									<div class="main-page-cmmn-feed-card__footer-area favorite-card__footer-area search-drawer__footer-area">
-									<div class="row ">
-
-										<div class="col-md-1">
-											<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
-										</div>
-
-										<div class="col-md-5 for-null-paddng-right">
-											<div class="main-page-cmmn-feed-card__footer-area--desg">Jamie Kendel</div>
-											<div class="main-page-cmmn-feed-card__footer-area--dept">HR</div>
-										</div>
-																			
-					
-										<div class="col-md-5 for-null-paddng">
-											<div class="main-page-cmmn-feed-card__footer--social-icons">
-												<i class="far fa-thumbs-up" aria-hidden="true"></i>
-												<i class="far fa-heart" aria-hidden="true"></i>
-												<i class="far fa-share-square" aria-hidden="true"></i>
-												<i class="far fa-comment" aria-hidden="true"></i>
-											</div>
-										</div>
-
-									</div>
-									</div>
-														
-										
-									
-										</div>
-										</div><!---col-md-3-ENDS----->
-
-
-								<!-----5----->
-
-
-								<!------6------->
-										</div>
-										</div>
-										<!---------->
-						   </div><!-----search-drawer-cards-ENDS-->
+									<!---------->
+						</div><!-----search-drawer-cards-ENDS-->
 		
 				</div>
 				</div>
 				</div>
-</div>
 		</div>
+	</div>
 </div>
+
+<script>
+$(document).ready(function() {
+	var selectedFocusArea = [];
+	var searchText = "";
+	var page = 1;
+	var hasMoreData = true;
+
+	function makeSearchCall() {
+		page = 1;
+		searchText = document.getElementById("search__data-field").value;
+		if(searchText.length > 0) {
+			$("#search__clear-data-field").show();
+		} else {
+			$("#search__clear-data-field").hide();
+		}
+		$.ajax({
+			type: "POST",
+			url: SITE_URL+"/search",
+			data: { "search_text": searchText, "focus_area": selectedFocusArea, "page": page },
+			success: function(data){
+				if(data.status==true) {
+					page++;
+					hasMoreData = data.hasMoreData;
+					$("#search__opportunity-content").html(data.html);
+				}
+			}
+		});
+	}
+
+	$.ajax({
+		type: "GET",
+		url: SITE_URL+"/focus-areas",
+		success: function(data){
+			if(data.status==true) {
+				var focusAreaHtml = "";
+				$.each(data.response.focusArea, function( index, value ) {
+					focusAreaHtml += '<li class="search__focus-area" data-fid="'+value.tid+'">'+value.name+'</li>';
+				});
+				$("#search__focus-area-list").html(focusAreaHtml);
+			}
+		}
+	});
+
+	makeSearchCall();
+
+	$(document).on("click", "#search__btn", function() {
+		makeSearchCall();
+	});
+
+	$(document).on('keyup change','#search__data-field', function() {
+		makeSearchCall();
+	});
+
+	$('#search__data-field').keypress(function(e){
+      if(e.which === 13) {
+		e.preventDefault();
+	  }
+   });
+
+
+	$(document).on("click", "#search__clear-data-field", function() {
+		document.getElementById("search__data-field").value = "";
+		makeSearchCall();
+	});
+
+	$(document).on("click", ".search__focus-area", function() {
+		page = 1;
+		let fid = $(this).data('fid');
+		if($(this).hasClass("active")) {
+			// Remove From focus Area list
+			$(this).removeClass("active");
+			selectedFocusArea.splice( $.inArray(fid, selectedFocusArea), 1 );
+		} else {
+			// Add to focus Area List
+			$(this).addClass("active");
+			selectedFocusArea.push(fid);
+		}
+
+		makeSearchCall();
+	});
+
+	var isLoading=false;
+	$('.search__scroll-container').on('scroll', function() {
+		if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+			if(hasMoreData==true && isLoading==false) {
+				isLoading = true;
+				$.ajax({
+					type: "POST",
+					url: SITE_URL+"/search",
+					data: { "search_text": searchText, "focus_area": selectedFocusArea, "page": page },
+					success: function(data){
+						if(data.status==true) {
+							page++;
+							hasMoreData = data.hasMoreData;
+							$("#search__opportunity-content").append(data.html);
+							isLoading = false;
+						}
+					}
+				});
+			} else {
+				console.log("No More Data To Show");
+			}
+		}
+	});
+
+	$(document).on("click", ".search__popup-close", function() {
+		window.location.href = "<?=route('list-opportunity')?>";
+
+		// $("#search__opportunity-content").html("");
+		// page = 1;
+		// hasMoreData = true;
+		// searchText = "";
+		// document.getElementById("search__data-field").value = "";
+		// selectedFocusArea = [];
+		// $(".search__focus-area").removeClass("active");
+		
+		// makeSearchCall();
+	});
+});
+</script>

@@ -11,12 +11,17 @@ use App\Models\TaxonomyTerm;
 use App\Models\Feed;
 use App\Models\OpportunityUser;
 use App\Models\OpportunityUserActions;
+use App\Models\OpportunityInvites;
+use App\Models\UserComment;
+use App\Models\Notification;
 use App\User;
 use App\UserInterest;
 use Config;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Carbon\Carbon;
+use DB;
 
 class OpportunityController extends Controller
 {
@@ -32,6 +37,7 @@ class OpportunityController extends Controller
         //parent::__construct();
         $this->opportunity = new Opportunity();
         $this->taxonomyterm = new TaxonomyTerm();
+        $this->user_comment = new UserComment();
 		$this->user = new User();
     }
 
@@ -40,53 +46,9 @@ class OpportunityController extends Controller
      * @param  none
      * @return Response
      */
-    public function index()
+    public function opportunities()
     {
 
-        if (request()->ajax()) {
-            $filters = [];
-            $filters['status'] = [0, 1]; //active
-            $oppData = $this->opportunity->ajax_opportunity_list($filters); //dd($oppData);
-
-            /*  return Datatables::of($posts)
-            ->editColumn('title', '{!! str_limit($title, 60) !!}')
-            ->editColumn('name', function ($model) {
-            return \HTML::mailto($model->email, $model->name);
-            })
-            ->make(true); */
-            return datatables()->of($oppData)
-            //return datatables::->of($oppData)
-                ->editColumn('opportunity', function ($oppData) {
-                    $colName = 'opportunity';
-
-                    $focus_areas = array();
-                    $focus_area_options = $this->taxonomyterm->getTaxonomyTermDataByVid(config('kloves.FOCUS_AREA'));
-                    foreach ($focus_area_options as $focus_area_option) {
-                        $focus_areas[$focus_area_option->tid] = $focus_area_option->name;
-                    }
-                    return view('opportunity.datatable-col-view', compact('oppData', 'colName', 'focus_areas'));
-                    //return (string)
-                })
-                ->addColumn('start_date', function ($oppData) {
-                    $colName = 'start_date';
-                    return (string) view('opportunity.datatable-col-view', compact('oppData', 'colName'));
-                })
-                ->addColumn('end_date', function ($oppData) {
-                    $colName = 'end_date';
-                    return (string) view('opportunity.datatable-col-view', compact('oppData', 'colName'));
-                })
-            /*->addColumn('apply_before', function($oppData) {
-            $colName = 'apply_before';
-            return (string) view('opportunity.datatable-col-view', compact('oppData','colName'));
-            })*/
-                ->addColumn('action', function ($oppData) {
-                    $colName = 'action';
-                    return (string) view('opportunity.datatable-col-view', compact('oppData', 'colName'));
-                })
-                ->rawColumns(['action', 'start_date', 'end_date', 'opportunity'])
-                ->addIndexColumn()
-                ->make(true);
-        }
         return view('opportunity.opportunity-list');
     }
 
@@ -159,20 +121,11 @@ class OpportunityController extends Controller
     protected function createOpportunity($oid)
     {
         $oid = Crypt::decrypt($oid);
-        $opportunityData = Opportunity::select([
-            "id",
-            "opportunity",
-            "opportunity_desc",
-            "incentives",
-            "rewards",
-            "tokens",
-            "expert_qty",
-            "expert_hrs",
-            "start_date",
-            "end_date",
-            "apply_before",
-            "status",
-        ])->where("id", $oid)->first();
+        $opportunityData = Opportunity::with("user_actions","creator","creator.profile")
+        ->where("id", $oid)->first();
+        if($opportunityData->status == config('kloves.RECORD_STATUS_ACTIVE')) {
+            header('Location: '. route('published-opportunity', Crypt::encrypt($oid)) );
+        }
 
         $selectedSkills = OpportunityTermsRelationship::where('oid', $oid)->where("vid", config('kloves.SKILL_AREA'))->pluck('tid')->toArray();
 
@@ -326,16 +279,42 @@ class OpportunityController extends Controller
         }
 
         if($request->post('status')==1) {
-          $feedInsArr = array(
-              "feed_type" => config('kloves.FEED_TYPE_NEW_OPP'),
-              "key_id" => $request->post('oid'),
-              "org_id" => auth()->user()->org_id,
-              "status" => config('kloves.RECORD_STATUS_ACTIVE'),
-          );
-          Feed::updateOrCreate(
+            $feedInsArr = array(
+                "feed_type" => config('kloves.FEED_TYPE_NEW_OPP'),
+                "key_id" => $request->post('oid'),
+                "org_id" => auth()->user()->org_id,
+                "status" => config('kloves.RECORD_STATUS_ACTIVE'),
+                "created_at" => \Carbon\Carbon::now()->toDateTimeString(),
+                "updated_at" => \Carbon\Carbon::now()->toDateTimeString(),
+            );
+            Feed::updateOrCreate(
             ['key_id' => $request->post('oid')], 
             $feedInsArr
-          );
+            );
+
+            /**
+             * add notification : start
+             * When Opportunity related to someone's skills/focus area is published.
+             */
+            $relTid = array_merge($request->post("focus_area"), $request->post("skills"));
+            $userIds = UserInterest::select(["user_id"])
+                ->whereHas('user_details', function($q2)
+                {
+                    $q2->where('users.status', '=', config('kloves.RECORD_STATUS_ACTIVE'))
+                    ->where("users.id", "!=", \Auth::user()->id);
+                })
+                ->whereIn('tid', $relTid)
+                ->distinct('user_id')->get();
+            foreach($userIds as $user) {
+                $notification_data['type_of_notification'] = config('kloves.NOTI_RELATED_OPOR');
+                $notification_data['key_value'] = $request->post('oid');
+                $notification_data['sender_id'] = auth()->user()->id;
+                $notification_data['recipient_id'] = $user->user_id;
+                $notification_data['status'] = config('kloves.RECORD_STATUS_ACTIVE');
+                Notification::insert($notification_data);
+            }
+            /** add notification : end */
+
         }
 
         $opportunity["frmt_start_date"] = date_format(date_create($opportunity["start_date"]),"M d, Y");
@@ -351,23 +330,10 @@ class OpportunityController extends Controller
     }
 
     protected function publishedOpportunity($oid, Request $request) {
-        $oid = Crypt::decrypt($oid);
-        $opportunityData = Opportunity::select([
-            "id",
-            "opportunity",
-            "opportunity_desc",
-            "incentives",
-            "rewards",
-            "tokens",
-            "expert_qty",
-            "start_date",
-            "end_date",
-            "apply_before",
-            "status",
-        ])
-        ->with("user_actions")
+        $oid = Crypt::decrypt($oid); //prd($oid);
+        $opportunityData = Opportunity::with("user_actions","creator","creator.profile")
         ->where("id", $oid)->first();
-
+//prd($opportunityData->creator);
         $selectedSkills = OpportunityTermsRelationship::where('oid', $oid)->where("vid", config('kloves.SKILL_AREA'))->pluck('tid')->toArray();
 
         $selectedFocusAr = OpportunityTermsRelationship::where('oid', $oid)->where("vid", config('kloves.FOCUS_AREA'))->pluck('tid')->toArray();
@@ -388,6 +354,14 @@ class OpportunityController extends Controller
             ->where("oid", $oid)
             ->orderBy("created_at", "DESC")
             ->get()->toArray();
+         if($usersApplied)  {
+			foreach($usersApplied as $key =>$applied) {
+				$user_id = $applied['org_uid'];
+				$usersApplied[$key]['comment_count'] = UserComment::where(function ($q) use($user_id) {
+					$q->where('user_id', $user_id)->orWhere('to_id', $user_id);
+				})->where('org_id',$oid)->count();
+			}
+		}   
 
         $usersApproved = OpportunityUser::select(["oid", "org_uid", "approve"])
             ->with("user_details", "profile_image")
@@ -396,22 +370,85 @@ class OpportunityController extends Controller
             ->where("oid", $oid)
             ->orderBy("created_at", "DESC")
             ->get()->toArray();
+            
+        if($usersApproved)  {
+			foreach($usersApproved as $key =>$approved) {
+				$user_id = $applied['org_uid'];
+				$usersApproved[$key]['comment_count'] = UserComment::where(function ($q) use($user_id) {
+					$q->where('user_id', $user_id)->orWhere('to_id', $user_id);
+				})->where('org_id',$oid)->count();
+			}
+		}      
 
+        $selectedRecoIds = array_merge($selectedSkills,$selectedFocusAr);
+
+        /** get opportunity already invited user list */
+        $alreadyInvitedUsers = OpportunityInvites::where('opp_id', $oid)->where("status", config('kloves.RECORD_STATUS_ACTIVE'))->pluck('user_id')->toArray(); 
+        
         $recommendations = UserInterest::select(["user_id"])
-            ->with("user_details", "profile_image")
-            ->where(function ($query) use ($selectedSkills) {
-                $query->whereIn('tid', $selectedSkills)
-                    ->where('vid', 1);
+            ->with([
+                "profile_image",
+                "user_details" => function($query){
+                      $query->where('status', '=', config('kloves.RECORD_STATUS_ACTIVE'));
+             }])
+             ->whereHas('user_details', function($q2)
+             {
+                 $q2->where('users.status', '=', config('kloves.RECORD_STATUS_ACTIVE'))
+                    ->where("users.id", "!=", \Auth::user()->id);
+             })
+            ->where(function ($query) use ($selectedRecoIds) {
+                $query->whereIn('tid', $selectedRecoIds);
             })
-            ->orWhere(function ($query) use ($selectedFocusAr) {
-                $query->whereIn('tid', $selectedFocusAr)
-                    ->where('vid', 3);
-            })->distinct('user_id')->limit(28)->get()->toArray();
+            // ->orWhere(function ($query) use ($selectedFocusAr) {
+            //     $query->whereIn('tid', $selectedFocusAr)
+            //         ->where('vid', 3);
+            // })
+            ->distinct('user_id')->limit(28)->get()->toArray();
+			//prd($recommendations);
+		
+		if($recommendations)  {
+			foreach($recommendations as $key =>$recommend) {
+				$user_id = $recommend['user_id'];
+				$recommendations[$key]['comment_count'] = UserComment::where(function ($q) use($user_id) {
+					$q->where('user_id', $user_id)->orWhere('to_id', $user_id);
+				})->where('org_id',$oid)->count();
+			}
+		}  	
 			
 		/** share user list */
-            $shareUserList['all'] = $this->user->where('status','=',config('kloves.RECORD_STATUS_ACTIVE'))->where('id', '<>', \Auth::user()->id)->select('id','firstName')->get()->toArray(); 
-            $shareUserJsonList = json_encode($shareUserList['all']);
-			
+        $shareUserList['all'] = $this->user->where('status','=',config('kloves.RECORD_STATUS_ACTIVE'))->where('id', '<>', \Auth::user()->id)->select('id','firstName')->get()->toArray(); 
+        $shareUserJsonList = json_encode($shareUserList['all']);    // prd($shareUserList['all']);
+            
+        /** share user list for opp-invites */
+         $inviteUserList =  User::select(["id","firstName"])
+            ->where("status", config('kloves.RECORD_STATUS_ACTIVE'))
+            ->where(function ($query) use ($alreadyInvitedUsers) {
+                $query->whereNotIn('id', $alreadyInvitedUsers);
+            })
+			->where('id', '<>', \Auth::user()->id)
+            ->orderBy("firstName", "ASC")
+            ->get()->toArray(); //prd($inviteUserList);
+        $inviteUserJSONList = json_encode($inviteUserList); 
+
+        $prevOpportunity = Opportunity::select(["id"])
+            ->where("id","<",$oid)->where("status",1)
+            ->orderBy("id", "DESC");
+        if($prevOpportunity->count()>0) {
+            $prevOpportunity = $prevOpportunity->first()->toArray();
+        } else {
+            $prevOpportunity = array();
+        }
+            
+
+        $nextOpportunity = Opportunity::select(["id"])
+            ->where("id",">",$oid)->where("status",1)
+            ->orderBy("id", "ASC");
+        if($nextOpportunity->count()>0) {
+            $nextOpportunity = $nextOpportunity->first()->toArray();
+        } else {
+            $nextOpportunity = array();
+        }
+        
         $data = array(
             "opportunity" => $opportunityData,
             "skills" => $skillsData,
@@ -422,9 +459,13 @@ class OpportunityController extends Controller
             "usersApproved" => $usersApproved,
             "recommendations" => $recommendations,
             "encryptOid" => Crypt::encrypt($oid),
-            "shareUserJsonList" => $shareUserJsonList
+            "shareUserJsonList" => $shareUserJsonList,
+            "inviteUserJSONList" => $inviteUserJSONList,
+            "alreadyInvitedUsers" => $alreadyInvitedUsers,
+            "prevOpportunity" => (isset($prevOpportunity["id"]) && !empty($prevOpportunity["id"]))?Crypt::encrypt($prevOpportunity["id"]):"",
+            "nextOpportunity" => (isset($nextOpportunity["id"]) && !empty($nextOpportunity["id"]))?Crypt::encrypt($nextOpportunity["id"]):"",
         );
-        //prd($data);
+        
         return view('opportunity.published', $data);
     }
 
@@ -442,7 +483,7 @@ class OpportunityController extends Controller
         Opportunity::where("id", $oid)->update(array("status"=> 3));
         Feed::where("key_id", $oid)->update(array("status"=>config('kloves.RECORD_STATUS_INACTIVE')));
 
-        OpportunityUser::where("oid", $oid)->update(array("apply"=> 0));
+        OpportunityUser::where("oid", $oid)->update(array("approve"=> config('kloves.OPP_APPLY_CANCELLED')));
 
         $result = array('status' => true);
         return response()->json($result, Config::get('constants.STATUS_OK'));
@@ -511,6 +552,29 @@ class OpportunityController extends Controller
             "approver_id" => auth()->user()->id,
             "org_id" => auth()->user()->org_id
         ]);
+
+        $result = array('status' => true);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
+    protected function startOpportunity($oid) {
+        Opportunity::where("id", $oid)->update(array("job_start_date"=> Carbon::now()));
+
+        $result = array('status' => true);
+        return response()->json($result, Config::get('constants.STATUS_OK'));
+    }
+
+    protected function completeOpportunity($oid) {
+        Opportunity::where("id", $oid)->update(array("job_complete_date"=> Carbon::now()));
+
+        /** add notification : start */
+        // $notification_data['type_of_notification'] = config('kloves.NOTI_OPOR_COMPLETED');
+        // $notification_data['key_value'] = $oid;
+        // $notification_data['sender_id'] = auth()->user()->id;
+        // $notification_data['recipient_id'] = auth()->user()->id;
+        // $notification_data['status'] = config('kloves.RECORD_STATUS_ACTIVE');
+        // Notification::insert($notification_data);
+        /** add notification : end */
 
         $result = array('status' => true);
         return response()->json($result, Config::get('constants.STATUS_OK'));
@@ -761,5 +825,173 @@ class OpportunityController extends Controller
 
         return view('opportunity.view', compact(['opportunity_data','youMayLikeOpp','shareUserJsonList']));
     }
+	
+	
+
+    /**
+	 * render opporutnity invite external view
+	 * @param  Request
+	 * @return Response
+	*/
+	public function opportunityInviteView(Request $request,$id = null){
+		$response = array( 
+			"type" => NULL,
+			"errors" => NULL,
+			"message" => NULL,
+		);
+		$user_id = \Auth::user()->id;  
+		$opp_id = Crypt::decrypt($id);
+		//$share_type = $request->post('share_type');
+		$status = config('kloves.RECORD_STATUS_ACTIVE');
+		$page_title = "";
+		$response["html"] = view('opportunity.common.opportunity-invite', compact(['opp_id']))->render();
+		$response["type"] = "success";
+		echo json_encode($response);
+		exit();
+    }
+    
+
+    
+	/**
+	 * post opporutnity invite
+	 * @param  Request
+	 * @return Response
+	*/
+	function opportunityInvite(Request $request)
+	{  
+	    $response = array( 
+		  "type" => NULL,
+		  "errors" => NULL,
+		  "success_html" => NULL,
+	    );
+	    $loggedInUserID = $roleId = '';
+	    $user = \Auth::user();  
+	   
+	    if($request->ajax()){ 
+			
+			 $messages = [
+				    'checkedUsers.required' => 'Please choose atleast one expert', 
+				];
+			 
+		  $validator = \Validator::make($request->all(), [
+			'checkedUsers' => 'sometimes|required'
+		  ],$messages);
+		  
+		  if ($validator->fails())
+		  {
+			$response["type"] = "error";
+			$response["errors"] = $validator->errors()->all();
+			$response["keys"] = $validator->errors()->keys();
+		  }else{
+            $user_id = auth()->user()->id; 
+            if($request->post('action')=='SINGLE-INVITE'){
+                $post_users[] = $request->post('user_id');
+            }else{
+                $post_users = explode(",",$request->post('checkedUsers')); //prd($request->post());
+            }
+            $opp_id = $request->post('opp_id'); 
+            
+			/** add 'invites' ... */
+			$invite_post_multidata = []; $notification_multidata = [];
+			$batch_id = time();
+            $status = config('kloves.RECORD_STATUS_ACTIVE');
+            $type_of_notification = config('kloves.NOTI_OPOR_INVITES');
+			foreach($post_users as $ukey => $uval){ 
+				$udata = $this->user->where('id', '=', $uval)->select('id','firstName','email')->first()->toArray();
+				// prd($udata);
+
+				$invite_post_multidata[$ukey]['batch_id'] = $batch_id;
+				$invite_post_multidata[$ukey]['user_id'] = trim($uval);
+				$invite_post_multidata[$ukey]['opp_id'] = $opp_id;
+				$invite_post_multidata[$ukey]['status'] = $status;
+				$invite_post_multidata[$ukey]['created_by'] = $user_id;
+
+				/** add notification */
+				$notification_multidata[$ukey]['type_of_notification'] = $type_of_notification;
+				$notification_multidata[$ukey]['key_value'] = $opp_id;
+				$notification_multidata[$ukey]['sender_id'] = $user_id;
+				$notification_multidata[$ukey]['recipient_id'] = $uval;
+				$notification_multidata[$ukey]['status'] = $status;
+
+				/** @send_email : to notify */
+				$sender_name  = auth()->user()->firstName;
+				$emaildata['subject'] = $sender_name." has invited you to apply on an opportunity!";
+				$emaildata['receiver_name'] = $udata['firstName']; 
+				$emaildata['receiver_email'] = $udata['email'];
+                $message = $sender_name.'  has invited you to apply on an opportunity.';
+				$emaildata['message'] = $message;
+				$emaildata['sender_name'] = $sender_name;
+				$emaildata['sender_email'] = auth()->user()->email;
+				$mailResponse =  send_email($emaildata);
+				/** @send_email : to manager to notify ENDS*/
+			}
+			//prd($invite_post_multidata);
+			DB::table('opportunity_invites')->insert($invite_post_multidata);
+			DB::table('notifications')->insert($notification_multidata);
+
+			$success_message = '<p>That\'s All</p><br> Thanks for inviting!';
+			$response["success_html"] = view("common.thumbup-pop") //render view
+			->with("success_message", $success_message)
+			->render();
+			$response["type"] = "success"; 
+		  }  
+	    }
+	    echo json_encode($response);
+	    exit();
+	}
+	
+	public function get_user_comment(Request $request) {
+		$response['status'] = false;
+		if($request->ajax()){
+			$user = \Auth::user();
+			$terms = array();
+			if(!empty($user)){
+				$input = $request->post();
+				$oid = $input['oid'];
+				$to_id = $input['user_id'];
+				$user_id = $user->id;
+				$all_comments = UserComment::with(['users','users.profile'])->where(function ($q) use($to_id) {
+					$q->where('user_id', $to_id)->orWhere('to_id', $to_id);
+				})->where('org_id',$oid)->get()->toArray();
+				if($all_comments) {
+					$response["comments"] = view('opportunity.common.opp_comment',compact(['all_comments']))->render();
+				}
+				$response['status'] = true;	
+			}
+			
+		}	
+		return json_encode($response);
+	}
+	
+	public function post_user_comment(Request $request) {
+		$response['status'] = false;
+		if($request->ajax()){
+			$user = \Auth::user();
+			$terms = array();
+			if(!empty($user)){
+				$input = $request->post();
+				$pdata = array(
+					'user_id' => $user->id,
+					'to_id' => $input['user_id'],
+					'org_id' => $input['oid'],
+					'comment' => $input['comment']
+				);
+				UserComment::create($pdata);
+				$to_id = $input['user_id'];
+				$all_comments = UserComment::with(['users','users.profile'])->where(function ($q) use($to_id) {
+					$q->where('user_id', $to_id)->orWhere('to_id', $to_id);
+				})->where('org_id',$input['oid'])->get()->toArray();
+				$response["cnt_comment"] = 0;
+				if($all_comments) {
+					$response["comments"] = view('opportunity.common.opp_comment',compact(['all_comments']))->render();
+					$response["cnt_comment"] = count($all_comments);
+				}
+				$response['status'] = true;	
+			}
+			
+		}	
+		return json_encode($response);
+	}
+
 
 }

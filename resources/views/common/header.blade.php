@@ -1,4 +1,5 @@
 @php $current_user_detail = get_user_profile_details(); @endphp
+
 <!-- header :start-->
 <div class="container-fluid for-container-fluid">
     <div class="container header-bg">
@@ -10,23 +11,25 @@
           </div>
         </div>
         <div class="col-md-4 for-null-paddng-left">
+        @if(Route::getCurrentRoute()->getName()!="list-opportunity")
           <div class="header-search-box">
             <i class="fas fa-search"></i>
-          </div>				 
+          </div>
+        @endif
         </div>
         <div class="col-md-6">
           <div class="header-rite-icons">
             	<ul>
-                  <li><a href="#"><i class="fas fa-door-open"></i><p>Opportunities</p></a></li>
+                  <li><a href="{{ route('list-opportunity') }}"><i class="fas fa-door-open"></i><p>Opportunities</p></a></li>
                   <li><a href="#"><i class="fas fa-user-friends"></i><p>My Team</p></a></li>
                   <li><a href="{{ route('favorites') }}"><i class="fas fa-heart"></i><p>Favorites</p></a></li>
-                  <li><a href="#"><i class="fas fa-bell"></i><p>Notifications</p></a></li>
+                  <li><a href="{{ route('notifications') }}"><i class="fas fa-bell"></i><p>Notifications</p></a></li>
                   <!-- <li id="header-profile__dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
                   <li class="dropdown-for__user-infor-card">
                    @if(!empty($current_user_detail->image_name))
-						<a href="#" class="main-header--user-info-card__picture cur_image user-pic__for-profile--header" style="background-image: url('{{$current_user_detail->image_name}}') !important;"><i class='fas fa-user-circle' id="def_pic"></i><p>Me</p></a>
+						<a href="#" class="main-header--user-info-card__picture cur_image user-pic__for-profile--header" style="background:url('{{$current_user_detail->image_name}}')" ></a>
 				   @else
-						<a href="#" id="header_def_image" class="main-header--user-info-card__picture cur_image"><i class="fas fa-user-circle for-header-user__default-pic" id="header_def_pic" aria-hidden="true"></i><p>Me</p></a>
+						<a href="#" id="header_def_image" class="main-header--user-info-card__picture cur_image"><i class="fas fa-user-circle for-header-user__default-pic" id="header_def_pic" aria-hidden="true"></i></a>
 				   @endif
                   </li>
                   <!-----modal-content-->

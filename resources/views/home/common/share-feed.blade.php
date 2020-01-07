@@ -1,11 +1,10 @@
+<?php 
+/*
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
 <link rel="stylesheet" href="{{ URL::asset('css/style.css') }}">
-<style>
-      
-
-</style>
+*/ ?>
 <div class="for-invite-user__modal-popup">
 <div class="modal-body">
       <form id="shareForm" method="POST"  action="{{ url('share-feed') }}" class="" novalidate>
@@ -32,8 +31,9 @@
 
                         <div class="invite-user-list__all">
                         <ul id="example-1">
-                              <li v-for="item in filteredList">
+                              <li v-for="item in filteredList">                             
                                     <a href="javascript:void(0)" v-on:click="selectRecord(item)">
+                                    <i class="fas fa-user-circle fa-1x" aria-hidden="true"></i>
                                     @{{ item.firstName }}
                                     </a>
                               </li>

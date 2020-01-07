@@ -314,7 +314,9 @@ $(document).on('click','#editSkill', function() {
 									
 									if(data.details.image_name != '') {
 										var imageUrl = data.details.image_name;
-										$('.cur_image').css('background-image', 'url(' + imageUrl + ')');
+										//$('#cur_image').attr('src', imageUrl);
+										$('.cur_image').css('background', 'url(' + imageUrl + ')');
+										
 										if($('#header_def_pic').length > 0) {
 											$('#header_def_pic').removeClass();
 											$('#def_pic').removeClass();

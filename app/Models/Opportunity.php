@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Config;
 use App\Http\Controllers\Auth;
+use Storage;
 
 class Opportunity extends Model
 {
@@ -40,10 +41,34 @@ class Opportunity extends Model
 	function user_actions() {
 		return $this->hasOne('App\Models\OpportunityUser', "oid", "id")->where("org_uid", auth()->user()->id);
 	}
+
+	function skills1() {
+		return $this->hasMany('App\Models\OpportunityTermsRelationship', "oid", "id")->with('skill_details');
+	}
+
+	function skills() {
+		return $this->hasMany('App\Models\OpportunityTermsRelationship', "oid", "id")
+			->leftjoin('taxonomy_term_data as ttd','ttd.tid', '=', 'org_opportunity_terms_rel.tid')
+			->where('ttd.vid','=',config('kloves.SKILL_AREA'));
+	}
+
+	function focus_areas() {
+		return $this->hasMany('App\Models\OpportunityTermsRelationship', "oid", "id")
+			->leftjoin('taxonomy_term_data as ttd','ttd.tid', '=', 'org_opportunity_terms_rel.tid')
+			->where('ttd.vid','=',config('kloves.FOCUS_AREA'));
+	}
 	
 	public function creator()
 	{
-	    return $this->belongsTo('App\User', 'org_uid', 'id');
+	    return $this->belongsTo('App\User', 'org_uid', 'id')->with('profile');
+	}
+	
+	
+	public function approved_applicants()
+	{
+	    return $this->hasMany('App\Models\OpportunityUser', 'oid', 'id')
+	    ->where("apply", config('kloves.RECORD_STATUS_ACTIVE'))
+	    ->where("approve", config('kloves.RECORD_STATUS_ACTIVE'));
 	}
     
     /**
@@ -61,6 +86,9 @@ class Opportunity extends Model
 		$where[] = " out2.status != '".$statusDeleted."' " ;
 		$where[] = " DATE(out2.end_date) >= '".date("Y-m-d")."' ";
 		$where[] = " out2.status = 1 ";
+		$where[] = " opr_usr.id IS NULL ";
+		$where[] = " out2.job_complete_date IS NULL ";
+		$where[] = " out2.apply_before >= '".\Carbon\Carbon::now()."'";
 		
 		if( !empty($where) )
 			$where = " WHERE ".implode(" AND ", $where );
@@ -71,9 +99,10 @@ class Opportunity extends Model
 		// die;
 		if(!empty($filters['loggedUserID'])){
 			$whereCondRole = "";
-			$query = "SELECT  out2.id, out2.opportunity, out2.rewards, out2.tokens
+			$query = "SELECT  out2.id, out2.opportunity, out2.rewards, out2.tokens, out2.apply_before, out2.status, out2.job_complete_date
 					FROM ".DB::getTablePrefix()."vw_user_matched_opp AS out1
-					LEFT JOIN ".DB::getTablePrefix()."org_opportunity AS out2 ON (out2.id = out1.oid) "
+					LEFT JOIN ".DB::getTablePrefix()."org_opportunity AS out2 ON (out2.id = out1.oid) 
+					LEFT JOIN ".DB::getTablePrefix()."org_opportunity_users AS opr_usr ON (opr_usr.oid = out1.oid AND opr_usr.org_uid='".auth()->user()->id."' AND apply=1) "
 					.$where; 
 		}else{
 			$query = " ";
@@ -104,7 +133,7 @@ class Opportunity extends Model
 		else
 			$where = " ";
 
-		$query = " SELECT t1.id , t1.opportunity, t1.status
+		$query = " SELECT t1.id , t1.opportunity, t1.status, t1.job_complete_date
 		FROM ".DB::getTablePrefix()."org_opportunity AS t1 "
 		.$where
 		.$orderby
@@ -133,7 +162,7 @@ class Opportunity extends Model
 		else
 			$where = " ";
 
-		$query = "SELECT t1.id , t1.opportunity, t1.status, t2.apply
+		$query = "SELECT t1.id , t1.opportunity, t1.status, t2.apply, t2.approve
 		, ( SELECT action_status FROM ".DB::getTablePrefix()."org_opportunity_user_actions
 		WHERE id IN (SELECT MAX(id) FROM ".DB::getTablePrefix()."org_opportunity_user_actions WHERE applicant_id = '".$filters['loggedUserID']."' AND action_type = 1 AND oid = t1.id GROUP BY oid)  ) AS application_status
 		FROM ".DB::getTablePrefix()."org_opportunity AS t1
@@ -156,7 +185,7 @@ class Opportunity extends Model
 	 * @return Response
 	 */
 	function getOpportunityDetailsByID($filters = array()){
-		$file_path = url('/uploads/');
+		$file_path = Storage::disk('public_uploads')->url('/thumbnail/');
 		$where[] = " t1.org_id = '".auth()->user()->org_id."' " ;
 		$where[] = " t1.id = '".$filters['id']."' " ;
 
@@ -166,11 +195,13 @@ class Opportunity extends Model
 			$where = " ";
 
 		$query = "SELECT t1.id AS opp_id, t1.opportunity, t1.opportunity_desc, t1.rewards, t1.tokens
-		, t1.incentives, t1.start_date, t1.end_date, t1.apply_before, t2.firstName AS uname, t3.department,
+		, t1.incentives, t1.start_date, t1.end_date, t1.apply_before, t1.expert_hrs, t1.expert_qty, 
+		IFNULL((SELECT COUNT(id) FROM ".DB::getTablePrefix()."org_opportunity_users WHERE apply=1 AND approve=1 AND oid=t1.id),0) as approved_experts, t1.status, t1.job_complete_date, 
+		 t2.firstName AS uname, t3.department, t1.job_start_date, t1.job_complete_date,
 		CASE
-            WHEN t3.image_name != '' THEN CONCAT('".$file_path."', '".Config('constants.DS')."', t3.image_name)
+            WHEN t3.image_name != '' THEN CONCAT('".$file_path."', t3.image_name)
             ELSE ''
-        END AS image_name, t21.like, t21.favourite, t21.apply, t1.org_uid
+        END AS image_name, t21.like, t21.favourite, t21.apply, t1.org_uid, t21.approve
 		FROM ".DB::getTablePrefix()."org_opportunity AS t1 
 		LEFT JOIN  ".DB::getTablePrefix()."org_opportunity_users AS  t21 ON (t21.oid = t1.id AND t21.org_uid = '".auth()->user()->id."')
 		LEFT JOIN  ".DB::getTablePrefix()."users AS  t2 ON (t2.id = t1.org_uid)
@@ -208,7 +239,7 @@ class Opportunity extends Model
 	 * @return Response
 	 */
     public function getYouMayLikeOpportunities($filters = array()){
-		$file_path = url('/uploads/');
+		$file_path = Storage::disk('public_uploads')->url('/thumbnail/');
 		$statusDeleted = config('kloves.OPP_DELETE');
 		$opp_feed_type = config('kloves.FEED_TYPE_NEW_OPP');
 
@@ -230,13 +261,15 @@ class Opportunity extends Model
 		// die;
 		if(!empty($filters['loggedUserID'])){
 			$whereCondRole = "";
-			$query = "SELECT t001.*, COALESCE(t002.removed_feed,0) AS removed_feed  FROM (SELECT  out2.id, out2.opportunity, out2.rewards, out2.tokens, out2.opportunity_desc
-			, t2.firstName AS uname, t3.department,
+			$query = "SELECT t001.*, COALESCE(t002.removed_feed,0) AS removed_feed  FROM (SELECT  out2.id, out2.opportunity, out2.rewards, out2.tokens, out2.opportunity_desc, out2.apply_before
+			, t2.firstName AS uname, t3.department, out2.org_uid, out2.job_start_date, out2.job_complete_date, 
+			out2.expert_hrs,
+			IFNULL((SELECT COUNT(id) FROM ".DB::getTablePrefix()."org_opportunity_users WHERE apply=1 AND approve=1 AND oid=out1.oid),0) as approved_users,
 			CASE
-				WHEN t3.image_name != '' THEN CONCAT('".$file_path."', '".Config('constants.DS')."', t3.image_name)
+				WHEN t3.image_name != '' THEN CONCAT('".$file_path."',  t3.image_name)
 				ELSE ''
 			END AS image_name,
-			 t21.like, t21.favourite
+			 t21.like, t21.favourite, t21.apply, t21.approve
 			, (SELECT GROUP_CONCAT(DISTINCT tid) FROM ".DB::getTablePrefix()."org_opportunity_terms_rel WHERE vid = 3 AND oid = out1.oid ) AS focus_areas
 			, (SELECT id FROM ".DB::getTablePrefix()."feeds WHERE feed_type = '".$opp_feed_type."' AND key_id = out2.id) AS feed_id
 			FROM ".DB::getTablePrefix()."vw_user_matched_opp AS out1

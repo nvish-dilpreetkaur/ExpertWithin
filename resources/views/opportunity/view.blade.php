@@ -8,12 +8,29 @@
 		  
 		   <!--LEFT-SECTION-->
 		   <div class="col-md-8 col-lg-8 opportunity-detail__left-section--outer">
+
+		   <div class="opportunity-detail-published__top-section">
+                           <a href="{{ route('list-opportunity') }}">
+                           <div class="cmmn-button__black-bg ripple-effect">
+                                <i class="fas fa-door-open" aria-hidden="true"></i>
+                              <span>View my opportunities for candidates</span>
+                           </div>
+                           </a>
+
+                           <div class="common-icons__paginations">
+                                <a href="{{ (!empty($prevOpportunity))?url('published-opportunity', $prevOpportunity):'' }}" class="common-icons__paginations--for-left-pagination ripple-effect {{(empty($prevOpportunity))?'disabled':''}}"><i class="fas fa-chevron-left"></i></a>
+                                <a href="{{ (!empty($nextOpportunity))?url('published-opportunity', $nextOpportunity):'' }}" class="common-icons__paginations--for-right-pagination ripple-effect {{(empty($nextOpportunity))?'disabled':''}}"><i class="fas fa-chevron-right"></i></a>
+                           </div>
+                        </div>
+
+
+
 			<div class="main-page__cmmn-card opportunity-detail-page__card">
 			   <div class="opportunity-detail-page__card--top-bottom">
 				   <div class="row clearfix">
 					   @if(!empty($opportunity_data->image_name))
 						<div class="col-md-1">
-						 <img src="{{$opportunity_data->image_name}}" style="width: 100%;">
+							<div class="publish-page-cmn-card__user-pic" style="background: url('{{$opportunity_data->image_name}}') ;"></div>
 					   </div>
 					   @else
 						<div class="col-md-1">
@@ -44,11 +61,11 @@
 					   </div>
 					   <div class="col-md-5">
 						<div class="opportunity-detail-page__card--apply-btn">
-							@if(Auth::user()->id !=  $opportunity_data->org_uid) 
-								@if($opportunity_data->apply == 0)
-									<a class="applyBtn{{$opportunity_data->opp_id}}"  data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">Apply</a>
+							@if(Auth::user()->id != $opportunity_data->org_uid && empty($opportunity_data->job_start_date) && empty($opportunity_data->job_complete_date)) 
+								@if(($opportunity_data->apply == config('kloves.FLAG_SET'))  && ($opportunity_data->approve == config('kloves.OPP_APPLY_NEW') || $opportunity_data->approve == config('kloves.OPP_APPLY_APPROVED')) )
+									<a class="withdrawBtn{{$opportunity_data->opp_id}}" data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">{{ __('Withdraw') }}</a>
 								@else
-									<a class="appliedOpp{{$opportunity_data->opp_id}}" href="javascript:void(0)">{{ __('Applied') }}</a>
+									<a class="applyBtn{{$opportunity_data->opp_id}}"  data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">Apply</a>
 								@endif
 							@endif	
 						</div>
@@ -56,15 +73,33 @@
 					</div>
 			   </div>
 
+			   <div class="common-black-strip-for-status-message applyStatusStrip">
+				<?=getOppApplyStatus($opportunity_data->apply, $opportunity_data->approve,  $opportunity_data->status, $opportunity_data->job_complete_date, $opportunity_data->apply_before);?>
+				</div>
 			   
 			   <div class="opportunity-detail-page__card--content">
 				<div class="row clearfix">
-				   <div class="col-md-6">
+				   <div class="col-md-7">
 					   <div class="opportunity-detail-page__card--content__left-section">
-						<div class="oppor-create-card__heading">
+						<div class="oppor-create-card__heading common-opportunity-heading__inner-page">
 							{{ $opportunity_data->opportunity }}
 						</div>   
-						<div class="oppor-create-card__left-content">
+
+						<div class="oppor-create-card__left-content oppor-published-card__common-list-details">
+								<ul>
+								<li><span class="for-fnt-weight">Start: {{ date("d M, Y",strtotime($opportunity_data->start_date)) }}</span></li>
+								<li><span class="for-fnt-weight">End: {{ date("d M, Y",strtotime($opportunity_data->end_date)) }}</span></li>
+								<li ><span class="for-fnt-weight">Apply by: {{ date("d M, Y",strtotime($opportunity_data->apply_before)) }}</span></li>
+								<br/>
+								<li style="display:none;">Allocated <span class="for-fnt-weight">15hrs</span></li>
+								<li><span class="for-fnt-weight">{{$opportunity_data->expert_hrs}}hrs/wk</span></li>
+								<li><span class="for-fnt-weight">{{$opportunity_data->approved_experts}}</span> of <span class="for-fnt-weight">{{$opportunity_data->expert_qty}}</span> candidate(s)</li>							
+								</ul>
+						</div>
+
+
+
+						<!-- <div class="oppor-create-card__left-content">							
 						   <span>Est start <span class="for-fnt-weight">{{ date("d M, Y",strtotime($opportunity_data->start_date)) }}</span>  |  Est end <span class="for-fnt-weight">{{ date("d M, Y",strtotime($opportunity_data->end_date)) }}</span></span>
 						   <div class="oppor-create-card__content-rewards">
 						    <span><span class="for-fnt-weight"> Rewards</span> <span> {{ $opportunity_data->rewards }}</span> </span> 
@@ -76,16 +111,37 @@
 						   </div>
 						   <div class="oppor-create-card__content--cmmn-heading">What are the incentives?</div>
 						   <p>{{ $opportunity_data->incentives }}</p>
-						</div>                                        
+						</div>-->
+
+
+						<div class="oppor-create-card__content-summary">
+								<div class="oppor-create-card__content--cmmn-heading">Summary</div>
+								<p>{{ $opportunity_data->opportunity_desc }}</p>
+													
+
+								<div class="oppor-create-card__content--cmmn-heading">What are the incentives?</div>
+								<p>{{ $opportunity_data->incentives }}</p>
+
+								<div class="oppor-create-card__content--cmmn-heading">Reward</div>
+								<p>{{ $opportunity_data->rewards }}</p>
+								<p><i class="fas fa-coins gold-coins-color" aria-hidden="true"></i><span class="for-fnt-weight">{{ $opportunity_data->tokens }}</span></p>
+                                   
+                         </div>
+
+
 					   </div>                                      
 				   </div>
-				   <div class="col-md-6">
+				 
+				   <div class="col-md-5">
 					   <div class="opportunity-detail-page__card--content__right-section">
-						   <div class="oppor-create-card__heading red-colr-txt">
+					  		 <div class="common-opportunity-heading__inner-page common-opportunity-heading-small__inner-page">
+                                                Skills
+                            </div>
+						   <!-- <div class="oppor-create-card__heading red-colr-txt">
 							   Last day to apply: {{ ($opportunity_data->apply_before) ? date("d M, Y",strtotime($opportunity_data->apply_before)) : '-'}}
-						   </div>
-						   <div class="oppor-create-card__content--cmmn-heading">Skills</div>
-						   <div class="cmmn__pills">
+						   </div> -->
+						   <!-- <div class="oppor-create-card__content--cmmn-heading">Skills</div> -->
+						   <div class="cmmn__pills common_pills__black-border">
 							<ul>
 								@foreach($opportunity_data->skills as  $skillrow)
 									<li><a href="javascript:void(0)">{{ $skillrow->name }}</a></li>
@@ -94,7 +150,7 @@
 						   </div>
 
 						   <div class="oppor-create-card__content--cmmn-heading">Focus areas</div>
-						   <div class="cmmn__pills">
+						   <div class="cmmn__pills common_pills__black-border">
 							<ul>
 								@foreach($opportunity_data->focus as  $focusrow)
 									<li><a href="javascript:void(0)">{{ $focusrow->name }}</a></li>
@@ -109,11 +165,11 @@
 				   <div class="row clearfix">                                        
 					   <div class="col-md-12">
 						<div class="opportunity-detail-page__card--apply-btn">
-						@if(Auth::user()->id !=  $opportunity_data->org_uid) 
-							@if($opportunity_data->apply == 0)
-								<a class="applyBtn{{$opportunity_data->opp_id}} common-card-apply-btn"  data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">Apply</a>
+						@if(Auth::user()->id !=  $opportunity_data->org_uid && empty($opportunity_data->job_start_date) && empty($opportunity_data->job_complete_date)) 
+							@if(($opportunity_data->apply == config('kloves.FLAG_SET'))  && ($opportunity_data->approve == config('kloves.OPP_APPLY_NEW') || $opportunity_data->approve == config('kloves.OPP_APPLY_APPROVED')) )
+								<a class="withdrawBtn{{$opportunity_data->opp_id}} common-card-apply-btn appliedOpp{{$opportunity_data->opp_id}}"  data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">{{ __('Withdraw') }}</a>
 							@else
-								<a class="applyBtn{{$opportunity_data->opp_id}} common-card-apply-btn appliedOpp{{$opportunity_data->opp_id}}" href="javascript:void(0)">{{ __('Applied') }}</a>
+								<a class="applyBtn{{$opportunity_data->opp_id}} common-card-apply-btn"  data-oid="{{$opportunity_data->opp_id}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($opportunity_data->opp_id)) }}">Apply</a>
 							@endif
 						@endif	
 						</div>
@@ -134,7 +190,7 @@
 			@if ($youMayLikeOpp != null)
 			<div class="col-md-12">
 			<div class="main-page__cmmn-card--footer">
-				<p class="show-more">Show More</p>
+			<a href="{{ route('list-opportunity') }}"><p class="show-more">Show More</p></a>
 			</div>
 			</div>
 			@endif
@@ -154,44 +210,92 @@
 		var url = $(this).attr('data-href');
 		performOpportunityAction(elem, url, oppID);
 	})
-/** applyBtn code : ends **/
-function performOpportunityAction(elem, url, oppID){
-	$.ajax({
-		url: url,
-		type: "GET",
-		data:{},
-		dataType: 'JSON',
-		beforeSend: function(){
-			var btnHtml = elem.html()
-			if(btnHtml=='Apply'){
-				elem.html('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Processing')
-			}
-		},error: function(){
-			
-		},success: function(){
-			
-		},complete: function( data ){
-			var obj = JSON.parse( data.responseText );  //console.log(obj);
-			if(obj.status==1){
-				if(obj.action=='APPLY'){
-					$('a[class^="applyBtn"]').each(function( index ) {
-						if($(this).data("oid") == oppID){
-							$(this).html('Applied');
-							$(this).removeClass();
-							$(this).addClass('appliedOpp'+oppID);
-							
-						}
-					})
+	/** applyBtn code : ends **/
+	function performOpportunityAction(elem, url, oppID){
+		$.ajax({
+			url: url,
+			type: "GET",
+			data:{},
+			dataType: 'JSON',
+			beforeSend: function(){
+				var btnHtml = elem.html()
+				if(btnHtml=='Apply'){
+					elem.html('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Processing')
 				}
-				$('#thumbUpModel').modal('show');
-				$('#success_message_thumbupWrapper').html(obj.success_html);
-				/*setTimeout(function(){ 
-					 $('#thumbUpModel').modal('toggle')
-				}, 2000);*/
-			}
-		},
-	});
-}
+			},error: function(){
+				
+			},success: function(){
+				
+			},complete: function( data ){
+				var obj = JSON.parse( data.responseText );  //console.log(obj);
+				if(obj.status==1){
+					if(obj.action=='APPLY'){
+						$('a[class^="applyBtn"]').each(function( index ) {
+							if($(this).data("oid") == oppID){
+								$(this).html('Withdraw');
+								$(this).removeClass();
+								$(this).addClass('withdrawBtn'+oppID);
+								$('.applyStatusStrip').html('<i class="fas fa-clock" aria-hidden="true"></i> Awaiting decision');
+							}
+
+						})
+					}
+					$('#thumbUpModel').modal('show');
+					$('#success_message_thumbupWrapper').html(obj.success_html);
+					/*setTimeout(function(){ 
+						$('#thumbUpModel').modal('toggle')
+					}, 2000);*/
+				}
+			},
+		});
+	}
+
+	$(document).on('click',"a[class^='withdrawBtn']",function(e){ 
+		e.stopPropagation();
+		var oppID = $(this).data('oid'); 
+		var elem = $(this);
+		var url = "<?=url('opportunity/withdraw', Crypt::encrypt($opportunity_data->opp_id))?>";
+		performOpportunityWithdrawAction(elem, url, oppID);
+	})
+
+	function performOpportunityWithdrawAction(elem, url, oppID){
+		$.ajax({
+			url: url,
+			type: "GET",
+			data:{},
+			dataType: 'JSON',
+			beforeSend: function(){
+				var btnHtml = elem.html()
+				if(btnHtml=='Withdraw'){
+					elem.html('<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Processing')
+				}
+			},error: function(){
+				
+			},success: function(){
+				
+			},complete: function( data ){
+				var obj = JSON.parse( data.responseText );  //console.log(obj);
+				if(obj.status==1){
+					if(obj.action=='WITHDRAW'){
+						$('a[class^="withdrawBtn"]').each(function( index ) {
+							if($(this).data("oid") == oppID){
+								$(this).html('Apply');
+								$(this).removeClass();
+								$(this).addClass('applyBtn'+oppID);
+								$('.applyStatusStrip').html('<i class="fas fa-clock" aria-hidden="true"></i> Apply by <?=date("M d, Y",strtotime($opportunity_data->apply_before))?>');
+							}
+
+						})
+					}
+					$('#thumbUpModel').modal('show');
+					$('#success_message_thumbupWrapper').html(obj.success_html);
+					/*setTimeout(function(){ 
+						$('#thumbUpModel').modal('toggle')
+					}, 2000);*/
+				}
+			},
+		});
+	}
 	
 	/** REMOVE FEED : STARTS **/
 	$(document).on('click', '.remove_feed_link', function() {

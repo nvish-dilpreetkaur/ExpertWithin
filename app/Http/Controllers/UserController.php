@@ -11,9 +11,14 @@ use App\Http\Requests\ProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Opportunity;
+use App\Models\Acknoledgement;
 use DB;
 use Exception;
 use Config;
+use Storage;
+use Image;
+
 class UserController extends Controller
 {
 	/**
@@ -24,6 +29,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+         $this->opportunity = new Opportunity();
     }
     /**
      * Display a listing of the resource.
@@ -104,12 +110,19 @@ class UserController extends Controller
      */
     public function show($id = null)
     {   
+		$topMatchedFilter = [];  $oppForCanFilters = [];
         if ($id) {
             $user_id = Crypt::decrypt($id);
             $action_type = 'HR-EDIT';
         }else{
             $user_id = auth()->user()->id; 
             $action_type = 'SELF-EDIT';
+            $loggedInUserID = $user_id;
+			$roleId = auth()->user()->role;
+			$topMatchedFilter['loggedUserID'] = $loggedInUserID;
+			$oppForCanFilters['loggedUserID'] = $loggedInUserID;
+			$appliedOppFilters['loggedUserID'] = $loggedInUserID;
+			$feedFilters['loggedUserID'] = $loggedInUserID;
         }
         $user = new User;
 	    $users = $user->getUserProfileDataById($user_id);
@@ -120,9 +133,10 @@ class UserController extends Controller
         $managers = $user->getManagerDdlList($user_id);
         $user_skills = UserInterest::with(["term_data"])->where('user_id',$user_id)->where('vid',1)->get()->toArray();
         $user_focus = UserInterest::with(["term_data"])->where('user_id',$user_id)->where('vid',3)->get()->toArray();
-      
-        
-	    return view('users.profile', compact(['users', 'skills', 'focus','managers','user_skills','user_focus','action_type']));
+        $topMatchedOpportunities = $this->opportunity->getTopMatchedOpportunities($topMatchedFilter);
+	    $acknowledgement = Acknoledgement::with(["ack_by.profile","ack_to.profile"])->where('user_id',$user_id)->get()->toArray();
+        $acknoledgement_count = count($acknowledgement);
+	    return view('users.profile', compact(['users', 'skills', 'focus','managers','user_skills','user_focus','action_type','topMatchedOpportunities','acknowledgement','acknoledgement_count']));
     }
 
    
@@ -328,11 +342,10 @@ class UserController extends Controller
 				$loggedInUserID = $user->id;
 				$action = $request->post('action');
 				if(!empty($action)) {
-					
+					$chk_profile = UserProfile::where('user_id', '=', $loggedInUserID)->first();	
 					switch($action) {
 						case 'activity':
-							$details = $request->post('activity');
-							$chk_profile = UserProfile::where('user_id', '=', $loggedInUserID)->first();							
+							$details = $request->post('activity');						
 							if ($chk_profile === null) {
 								UserProfile::insert(['user_id' => $loggedInUserID, 'activities' => $details]);	
 							} else {
@@ -341,8 +354,7 @@ class UserController extends Controller
 							$response['details'] = $request->post();
 						break;
 						case 'certificate':
-							$details = $request->post('certificate');
-							$chk_profile = UserProfile::where('user_id', '=', $loggedInUserID)->first();							
+							$details = $request->post('certificate');							
 							if ($chk_profile === null) {
 								UserProfile::insert(['user_id' => $loggedInUserID, 'certificate' => $details]);	
 							} else {
@@ -354,19 +366,29 @@ class UserController extends Controller
 							$details = $request->post();
 							$details['image_name'] = '';
 								if($profile_image = $request->file('profile_images')){
+									if($chk_profile !== null && isset($chk_profile->image_name)) {
+										if (Storage::disk('public_uploads')->exists($chk_profile->image_name)){
+											Storage::disk('public_uploads')->delete($chk_profile->image_name);
+											Storage::disk('public_uploads')->delete('thumbnail/'.$chk_profile->image_name);
+										}
+									}
 									$file_name =  substr(preg_replace('/[^a-zA-Z0-9\']/', '', $profile_image->getClientOriginalName()),0,10);
 									$ext = pathinfo($profile_image->getClientOriginalName(), PATHINFO_EXTENSION);
 									$filename = $file_name . "_" . time() . "." . $ext;
-									$profile_image->move(public_path('uploads'), $filename);
-									$details['image_name'] = url('/uploads/').Config('constants.DS').$filename;
+									//$profile_image->move(public_path('uploads'), $filename);
+									Storage::disk('public_uploads')->put($filename,file_get_contents($profile_image));
+									$height = Image::make($profile_image)->height();
+									$width = Image::make($profile_image)->width();
+									$this->resizeImage($filename,'thumbnail');
+									
+									$details['image_name'] = Storage::disk('public_uploads')->url('/thumbnail/'.$filename);
 								} else {
 									 $users = $user->getUserProfileDataById($loggedInUserID);
 									 $filename = $users->img_name;
 									  if(!empty($filename)) {
-										$details['image_name'] = url('/uploads/').Config('constants.DS').$filename;
+										$details['image_name'] = Storage::disk('public_uploads')->url('/thumbnail/'.$filename);
 									 }
-								}
-							$chk_profile = UserProfile::where('user_id', '=', $loggedInUserID)->first();							
+								}						
 							if ($chk_profile === null) {
 								UserProfile::insert(['user_id' => $loggedInUserID, 'image_name' => $filename, 'designation' => $details['designation'],'department' => $details['dept'],'aspirations' => $details['aspirations'],'availability' => $details['availability'],'about' => $details['about'],'manager' => $details['manager']]);
 								User::where('id', '=', $loggedInUserID)->update(['firstName' => $details['uname']]);	

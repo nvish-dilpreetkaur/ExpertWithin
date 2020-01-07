@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Storage;
 
 class Feed extends Model{
 
@@ -13,6 +14,21 @@ class Feed extends Model{
             'org_id',
             'status'
       ];
+
+      public function opportunity()
+      {
+            return $this->belongsTo('App\Models\Opportunity', "key_id", "id")->select(["id", "opportunity","opportunity_desc","rewards","org_uid","apply_before","tokens","expert_hrs","expert_qty","status","job_complete_date"]);
+      }
+      
+      public function feed_user_action(){
+		return $this->hasOne('App\Models\FeedsUserAction', "feed_pk_id", "id")->where("user_id", auth()->user()->id)->select(["feed_pk_id","removed_feed","liked_feed","marked_as_fav"]);
+	}
+      
+      
+      public function acknoledgement()
+      {
+            return $this->belongsTo('App\Models\Acknoledgement', "key_id", "id")->select("*");
+      }
       
      /**
      * add new feed
@@ -23,6 +39,8 @@ class Feed extends Model{
       public function add_feed($data = array()){
             try{ 
                   $data['org_id'] = auth()->user()->org_id;
+                  $data['created_at'] = \Carbon\Carbon::now()->toDateTimeString();
+                  $data['updated_at'] = \Carbon\Carbon::now()->toDateTimeString();
                   $last_insert_id = DB::table('feeds')->insertGetId($data);
                   DB::commit();
                   return $last_insert_id;
@@ -67,7 +85,8 @@ class Feed extends Model{
      * @param  $filters
      * @return Response
      */
-    public function getfeedData($filters = array(), $offset = 0, $limit = null){
+    public function getfeedData_bAKKKK($filters = array(), $offset = 0, $limit = null){
+			$file_path = Storage::disk('public_uploads')->url('/thumbnail/');
             $where[] = " t1.status = '1' ";
             $where[] = " t1.org_id = '". auth()->user()->org_id."' " ;
             $offset = (!empty($offset) ? $offset : 0);
@@ -79,8 +98,12 @@ class Feed extends Model{
             // echo "<pre>"; print_r($where); 
             // die;
             $query = "SELECT * FROM (
-                  SELECT t1.id,t1.feed_type, t1.key_id, t2.opportunity, t2.opportunity_desc, t2.rewards, t2.tokens, t3.message AS ack_message, t4.firstName AS ack_user, t5.firstName AS ack_added_by, t6.department, t7.firstName AS opp_added_by, t8.department AS opp_dept, COALESCE(t9.liked_feed,0) AS liked_feed,  COALESCE(t9.marked_as_fav,0) AS marked_as_fav
-                  ,  COALESCE(t9.removed_feed,0) AS removed_feed, t1.created_at
+                  SELECT t1.id,t1.feed_type, t1.key_id, t2.opportunity, t2.opportunity_desc, t2.rewards, t2.tokens, t2.apply_before,t3.message AS ack_message, t4.firstName AS ack_user, t5.firstName AS ack_added_by, t6.department, t7.firstName AS opp_added_by, t8.department AS opp_dept, COALESCE(t9.liked_feed,0) AS liked_feed,  COALESCE(t9.marked_as_fav,0) AS marked_as_fav
+                  ,  COALESCE(t9.removed_feed,0) AS removed_feed, t1.created_at,
+                  CASE
+					WHEN t6.image_name != '' THEN CONCAT('".$file_path."',  t6.image_name)
+					ELSE ''
+				  END AS image_name, t6.image_name as img_name
                   FROM ".DB::getTablePrefix()."feeds AS t1
                   LEFT JOIN ".DB::getTablePrefix()."org_opportunity AS t2 ON (t2.id = t1.key_id AND t2.status =  '".config('kloves.OPP_APPROVED')."' AND t2.org_id = '". auth()->user()->org_id."')
                   LEFT JOIN ".DB::getTablePrefix()."acknoledgement AS t3 ON (t3.id = t1.key_id AND t3.status = 1) 

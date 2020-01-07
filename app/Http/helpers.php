@@ -92,23 +92,27 @@ if (! function_exists('format_tags')) {
 	 * @return response
   */
 if (! function_exists('get_opp_status_label')) {
-	function get_opp_status_label($status) {
+	function get_opp_status_label($status, $job_complete_date=null) {
+		if(!empty($job_complete_date)) {
+			$label = '<i class="fas fa-check-circle" aria-hidden="true"></i> Complete';
+		} else {
 		switch ($status) {
 			case 0:
-			  	$label = 'Draft';
+			  	$label = '<i class="fab fa-firstdraft" aria-hidden="true"></i> Draft';
 			 	break;
 			case 1:
-				$label = 'Published';
+				$label = '<i class="fas fa-file-upload" aria-hidden="true"></i> Published';
 				break;
 			case 2:
-				$label = 'Deleted';
+				$label = '<i class="fas fa-times-circle" aria-hidden="true"></i> Deleted';
 				break;
 			case 3:
-				$label = 'Cancel';
+				$label = '<i class="fas fa-times-circle" aria-hidden="true"></i> Cancel';
 				break;
 			default:
-				$label = 'Unknown';
+				$label = '<i class="fas fa-file-upload" aria-hidden="true"></i> Unknown';
 		  }
+		}
   
 		 return $label;
 	}
@@ -171,6 +175,9 @@ if (! function_exists('get_opp_status_label')) {
 	 * @return Response
   */
   function char_trim($text, $maxchar, $end='...') {
+	  if(empty($text)) {
+		return $text;
+	  }
 	if (strlen($text) > $maxchar || $text == '') {
 	    $words = preg_split('/\s/', $text);      
 	    $output = '';
@@ -228,18 +235,41 @@ if (! function_exists('get_opp_application_status_label')) {
 	function get_opp_application_status_label($status) {
 		switch ($status) {
 			case 0:
-			  	$label = 'Applied';
+			  	$label = '<i class="fas fa-clock" aria-hidden="true"></i> Awaiting decision';
 			 	break;
 			case 1:
-				$label = 'Approved';
+				$label = '<i class="fas fa-check-circle" aria-hidden="true"></i> Match';
 				break;
 			case 2:
-				$label = 'Rejected'; //deleted
+				$label = '<i class="fas fa-times-circle" aria-hidden="true"></i> Mismatch';
+				break;
+			case 3:
+				$label = '<i class="fas fa-clock" aria-hidden="true"></i> Cancelled';
 				break;
 			default:
-				$label = 'Unknown';
+				$label = '';
 		  }
   
+		 return $label;
+	}
+  }
+
+
+  if (! function_exists('getOppApplyStatus')) {
+	function getOppApplyStatus($applyStatus, $approveStatus, $opprStatus, $job_complete_date, $apply_before) {
+		if($opprStatus==3) {
+			$label = '<i class="fas fa-clock" aria-hidden="true"></i> Cancelled';
+		} else if(!empty($job_complete_date)) {
+			$label = '<i class="fas fa-check-circle" aria-hidden="true"></i> Complete';
+		} else if($applyStatus==1 && $approveStatus==0) {
+			$label = '<i class="fas fa-clock" aria-hidden="true"></i> Awaiting decision';
+		} else if($applyStatus==1 && $approveStatus==1) {
+			$label = '<i class="fas fa-check-circle" aria-hidden="true"></i> Match';
+		} else if($applyStatus==1 && $approveStatus==2) {
+			$label = '<i class="fas fa-times-circle" aria-hidden="true"></i> Mismatch';
+		} else {
+			$label = '<i class="fas fa-clock" aria-hidden="true"></i> Apply by '.date("M d, Y",strtotime($apply_before));
+		}
 		 return $label;
 	}
   }
