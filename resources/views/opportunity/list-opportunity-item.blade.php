@@ -45,19 +45,25 @@
 
         <div class="main-page-cmmn-feed-card__footer-area favorite-card__footer-area">
             <div class="row ">
-                <div class="col-md-1">
+                <div class="col-md-1 for-common-linked-text__style">
                     
                         @if(!empty($rowVal->image_name))
+                        <a href="{{ url('profile', Crypt::encrypt($rowVal->org_uid)) }}">
                             <div class="favorite-page-cmn-card__user-pic" style="background: url('{{ $rowVal->image_name }}');">
                             </div>
+                        </a>
                         @else
+                        <a href="{{ url('profile', Crypt::encrypt($rowVal->org_uid)) }}">
                             <div class="favorite-page-cmn-card__user-pic"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></div>
+                        </a>
                         @endif
                     
                 </div>
 
                 <div class="col-md-5 for-null-paddng-right">
-                    <div class="main-page-cmmn-feed-card__footer-area--desg">{{$rowVal->firstName}}</div>
+                    <div class="main-page-cmmn-feed-card__footer-area--desg for-common-linked-text__style">
+                    <a href="{{ url('profile', Crypt::encrypt($rowVal->org_uid)) }}">{{$rowVal->firstName}}</a>
+                    </div>
                     <div class="main-page-cmmn-feed-card__footer-area--dept">{{$rowVal->department}}</div>
                 </div>
 

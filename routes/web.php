@@ -19,10 +19,13 @@ Auth::routes();
 Route::get('linkedin', function () {
 	return view('loginlinkedin');
 });
+
+Route::get('/logout', 'Auth\LoginController@getLogout');
+
 Route::get('/redirect', 'SocialAuthLinkedinController@redirect');
 Route::get('/callback', 'SocialAuthLinkedinController@callback');
 
-Route::group( ['middleware' => ['auth']], function() {
+Route::group( ['middleware' => ['auth','isactive']], function() {
 	Route::get('/', 'IndexController@index')->name('home');
 	Route::post('/', 'IndexController@index')->name('home');
 	Route::post('/acknowledge', 'AcknowledgementController@acknowledge')->name('acknowledge');
@@ -49,10 +52,22 @@ Route::group( ['middleware' => ['auth']], function() {
 	Route::post('disapprove-opportunity','OpportunityController@disapproveOpportunity')->name('disapprove-opportunity');
 	Route::post('dismiss-opportunity','OpportunityController@dismissOpportunity')->name('dismiss-opportunity');
 	Route::any('published-opportunity/{oid}','OpportunityController@publishedOpportunity')->name('published-opportunity');
+	Route::get('opportunities','OpportunityController@opportunities')->name('opportunities');
+
+	Route::get('start-opportunity/{oid}','OpportunityController@startOpportunity')->name('start-opportunity');
+	Route::get('complete-opportunity/{oid}','OpportunityController@completeOpportunity')->name('complete-opportunity');
+
+	Route::get('/opportunity-invite/{id}', 'OpportunityController@opportunityInviteView')->name('opportunity-invite');
+	Route::post('/opportunity-invite', 'OpportunityController@opportunityInvite')->name('opportunity-invite');
+
+	Route::get('focus-areas', 'SearchController@getFocusAreas')->name('focus-areas');
+	Route::any('search', 'SearchController@searchOpportunity')->name('search-opportunity');
 	
 	Route::post('opportunity-action', 'OpportunityUserController@actionOpportunityUser')->name('opportunity-action');
 	Route::get('opportunity/{action}/{id}', 'OpportunityUserController@applyOpportunity')->name('opportunity-apply');
 	Route::get('favorites', 'OpportunityUserController@favoritesOpportunity')->name('favorites');
+
+	Route::get('opportunity', 'SearchController@listOpportunity')->name('list-opportunity');
 
 	Route::post('user_interests','UserController@save_user_interests')->name('user_interests');
 	Route::post('save_user_profile','UserController@save_user_profile')->name('save_user_profile');
@@ -65,7 +80,17 @@ Route::group( ['middleware' => ['auth']], function() {
 	Route::get('taxonomy', 'TaxonomyController@index')->name('taxonomy-list');
 	Route::post('taxonomy', 'TaxonomyController@update')->name('taxonomy-update');
 	Route::post('taxonomy/status', 'TaxonomyController@status')->name('taxonomy-delete');
+	
+	Route::post('add_comment','OpportunityCommentController@add_comment')->name('add_comment');
+	Route::any('get_comment','OpportunityCommentController@get_comment')->name('get_comment');
+	Route::any('get_more_reply','OpportunityCommentController@get_more_reply')->name('get_more_reply');
+	Route::any('get_more_comment','OpportunityCommentController@get_more_comment')->name('get_more_comment');
+	
+	Route::any('get_user_comment','OpportunityController@get_user_comment')->name('get_user_comment');
+	Route::any('post_user_comment','OpportunityController@post_user_comment')->name('post_user_comment');
 
+	Route::get('notifications', 'NotificationsController@index')->name('notifications');
+	
 	/*
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::any('search', 'IndexController@searchOpportunity')->name('search');

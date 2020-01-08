@@ -263,7 +263,7 @@ class Opportunity extends Model
 			$whereCondRole = "";
 			$query = "SELECT t001.*, COALESCE(t002.removed_feed,0) AS removed_feed  FROM (SELECT  out2.id, out2.opportunity, out2.rewards, out2.tokens, out2.opportunity_desc, out2.apply_before
 			, t2.firstName AS uname, t3.department, out2.org_uid, out2.job_start_date, out2.job_complete_date, 
-			out2.expert_hrs,
+			out2.expert_hrs, out2.expert_qty,
 			IFNULL((SELECT COUNT(id) FROM ".DB::getTablePrefix()."org_opportunity_users WHERE apply=1 AND approve=1 AND oid=out1.oid),0) as approved_users,
 			CASE
 				WHEN t3.image_name != '' THEN CONCAT('".$file_path."',  t3.image_name)

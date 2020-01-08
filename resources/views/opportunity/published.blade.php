@@ -30,16 +30,17 @@
                                        <div class="col-md-3">
                                             <!--<i class="fas fa-file-upload"></i>
                                              <span class="common-heading-text--card">Published</span>-->
-                                            <div class="common-user-info__header--section publish-opor__creator">
-												
+                                            <div class="common-user-info__header--section publish-opor__creator for-common-linked-text__style">
                                                 @if(!empty($opportunity->creator->profile["image_name"]))
-													<div class="publish-page-cmn-card__user-pic" style="background: url('{{ $opportunity->creator->profile['image_url'] }}') ;"></div>
+                                                <a href="{{ url('profile', Crypt::encrypt($opportunity->creator->id)) }}"><div class="publish-page-cmn-card__user-pic" style="background: url('{{ $opportunity->creator->profile['image_url'] }}') ;"></div></a>
 												@else
-													<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+                                                <a href="{{ url('profile', Crypt::encrypt($opportunity->creator->id)) }}"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></a>
 												@endif
                                                 
                                                 
-                                                <div class="common-user-info__header--section-user-name">{{$opportunity->creator->firstName}}</div>
+                                                <div class="common-user-info__header--section-user-name for-common-linked-text__style">
+                                                <a href="{{ url('profile', Crypt::encrypt($opportunity->creator->id)) }}">{{$opportunity->creator->firstName}}</a>
+                                                </div>
                                                 <div class="common-user-info__header--section-user-desg">{{$opportunity->creator->profile->department}}</div>
                                             </div>
                                        </div>
@@ -121,20 +122,20 @@
                                     </div>
                                  <!--------------RIGHT SECTION START--------------->
                                     <div class="col-md-6">
-                                          <div class="common-opportunity-heading__inner-page common-opportunity-heading-small__inner-page">
+                                          <div class="common-opportunity-heading__inner-page common-opportunity-heading-small__inner-page hidden">
                                                 Candidates – <span class="oppor-match__approved">{{count($usersApproved)}}</span> of {{$opportunity->expert_qty}} matched
                                           </div>
-                                          <div class="match__user-list">
+                                          <div class="match__user-list for-common-linked-text__style hidden">
                                           @foreach($usersApproved as $user)
 											  @if(!empty($user["profile_image"]["profile_image"]))
-												<div class="common-user-pic-and__name-for-published" id="match__user-{{$user['org_uid']}}" style="background: url('{{ $user['profile_image']['profile_image'] }}') ;">
+                                              <a href="{{ url('profile', Crypt::encrypt($user['org_uid'])) }}"><div class="common-user-pic-and__name-for-published" id="match__user-{{$user['org_uid']}}" style="background: url('{{ $user['profile_image']['profile_image'] }}') ;">
 													<span>{{ $user["user_details"]["firstName"] }}</span>
-												</div>
+												</div></a>
 											@else
-												<div class="common-user-pic-and__name-for-published" id="match__user-{{$user['org_uid']}}">
+                                            <a href="{{ url('profile', Crypt::encrypt($user['org_uid'])) }}"><div class="common-user-pic-and__name-for-published" id="match__user-{{$user['org_uid']}}">
 													 <i class="fas fa-user-circle fa-3x" aria-hidden="true"></i>
 													 <span>{{ $user["user_details"]["firstName"] }}</span>
-												</div>	 
+												</div></a>	 
 											@endif
                                           
                                           @endforeach
@@ -226,12 +227,20 @@
 											</div>
 										
                                             @if(!empty($user["profile_image"]["profile_image"]))
-                                                <div class="common__user-detail-card--user-picture" style="background:url('{{ $user['profile_image']['profile_image'] }}');"></div>
+                                                <div class="for-common-linked-text__style">
+                                                <a href="{{ url('profile', Crypt::encrypt($user['org_uid'])) }}">
+                                                    <div class="common__user-detail-card--user-picture" style="background:url('{{ $user['profile_image']['profile_image'] }}');"></div>
+                                                </a>
+                                                </div>
                                             @else
-                                                <div class="common__user-detail-card--user-picture"><i class="fas fa-user-circle fa-7x" aria-hidden="true"></i></div>
+                                                <div class="common__user-detail-card--user-picture for-common-linked-text__style">
+                                                <a href="{{ url('profile', Crypt::encrypt($user['org_uid'])) }}"><i class="fas fa-user-circle fa-7x" aria-hidden="true"></i></a>
+                                                </div>
                                             @endif
                                         
-                                        <div class="common__user-detail-card--user-name">{{ $user["user_details"]["firstName"] }}</div>
+                                        <div class="common__user-detail-card--user-name for-common-linked-text__style">
+                                        <a href="{{ url('profile', Crypt::encrypt($user['org_uid'])) }}">{{ $user["user_details"]["firstName"] }}</a>
+                                        </div>
                                         <div class="common__user-detail-card--user-status">
                                             <i class="fas fa-clock"></i>
                                             <span>
@@ -295,7 +304,7 @@
                             @if($rowItem==0)
                             <ul class="card-wrapper__with-flex">
                             @endif
-                                <li class="flex-item" data-uid="{{ $rUser["user_details"]["id"] }}">
+                                <li class="flex-item" data-uid='{{ $rUser["user_details"]["id"] }}'>
                                     <div class="common__user-detail-card">
 										
 											<div class="common__user-details-card--comments user_comments" id="user_comments" data-user_id="{{$rUser['user_id']}}" data-opp_id="{{$opportunity->id}}" data-toggle="modal">
@@ -306,12 +315,20 @@
 											</div>
 									    	
                                             @if(!empty($rUser["profile_image"]["profile_image"]))
+                                            <div class="for-common-linked-text__style">
+                                            <a href="{{ url('profile', Crypt::encrypt($rUser['user_id'])) }}">
                                                 <div class="common__user-detail-card--user-picture" style="background:url('{{ $rUser['profile_image']['profile_image'] }}')"></div>
+                                            </a>
+                                            </div>
                                             @else
-                                                <div class="common__user-detail-card--user-picture"><i class="fas fa-user-circle fa-7x" aria-hidden="true"></i> </div>
+                                            <div class="common__user-detail-card--user-picture for-common-linked-text__style">
+                                                <a href="{{ url('profile', Crypt::encrypt($rUser['user_id'])) }}"><i class="fas fa-user-circle fa-7x" aria-hidden="true"></i></a>
+                                            </div>
                                             @endif
                                        
-                                        <div class="common__user-detail-card--user-name">{{ $rUser["user_details"]["firstName"] }}</div>
+                                        <div class="common__user-detail-card--user-name for-common-linked-text__style">
+                                        <a href="{{ url('profile', Crypt::encrypt($rUser['user_id'])) }}">{{ $rUser["user_details"]["firstName"] }}</a>
+                                        </div>
                                         <div class="common__user-detail-card--invite-button">
                                              @if (in_array($rUser["user_details"]["id"], $alreadyInvitedUsers))
                                              <a href="javascript:void(0)" class="invitedUserBtn{{$rUser['user_details']['id']}}" data-action="SINGLE-INVITE" data-opp_id="{{$opportunity->id}}" data-user_id="{{ $rUser['user_details']['id'] }}">Invited</a>

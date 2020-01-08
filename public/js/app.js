@@ -13,7 +13,7 @@ var swiper = new Swiper('.swiper-container', {
 });
 
 if ($(".fixme").length > 0) {
-    var fixmeTop = $('.fixme').offset().top - 70;
+    var fixmeTop = $('.fixme').offset().top - 65;
 }
 $(window).scroll(function() {
     var currentScroll = $(window).scrollTop();
@@ -32,7 +32,7 @@ $(window).scroll(function() {
 });
 
 if ($(".fixme-rite-sec").length > 0) {
-    var fixmeTopRightSec = $('.fixme-rite-sec').offset().top - 70;
+    var fixmeTopRightSec = $('.fixme-rite-sec').offset().top - 65;
 }
 
 $(window).scroll(function() {

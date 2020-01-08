@@ -17,8 +17,8 @@
 					
 					<div class="dropdown-menu dots__options-list--for-feed">
 						<ul>
-						<li><a href="javascript:void(0)" class="remove_feed_link" data-id="{{ $feedVal['id'] }}">Remove from feed</a></li>
-						<li><a href="javascript:void(0)">Report</a></li>
+						<li><i class="far fa-times-circle" aria-hidden="true"></i><a href="javascript:void(0)" class="remove_feed_link" data-id="{{ $feedVal['id'] }}">Remove from feed</a></li>
+						<li><i class="far fa-times-circle" aria-hidden="true"></i><a href="javascript:void(0)">Report</a></li>
 						</ul>
 					</div>
 					<div class="main-page-cmmn-feed-card__desc">
@@ -32,16 +32,16 @@
 				<div class="main-page-cmmn-feed__footer-area">							
 					<div class="row clearfix">
 					@if(!empty($feedVal['acknoledgement']['ack_by']['profile']['image_name']))
-						<div class="col-md-1">
-							<div class="favorite-page-cmn-card__user-pic" style="background:url('{{$feedVal['acknoledgement']['ack_by']['profile']['image_url']}}')"></div>
+						<div class="col-md-1 for-common-linked-text__style">
+							<a href="{{ url('profile', Crypt::encrypt($feedVal['acknoledgement']['ack_by']['id'])) }}"><div class="favorite-page-cmn-card__user-pic" style="background:url('{{$feedVal['acknoledgement']['ack_by']['profile']['image_url']}}')"></div></a>
 						</div>
 				   @else
-						<div class="col-md-1">
-						<i class='fas fa-user-circle fa-2x'></i>
+						<div class="col-md-1 for-common-linked-text__style">
+						<a href="{{ url('profile', Crypt::encrypt($feedVal['acknoledgement']['ack_by']['id'])) }}"><i class='fas fa-user-circle fa-2x'></i></a>
 					</div>
 				   @endif
 					<div class="col-md-4">
-						<div class="main-page-cmmn-feed-card__footer-area--desg">{{ $feedVal['acknoledgement']['ack_by']['firstName'] }}</div> 
+						<div class="main-page-cmmn-feed-card__footer-area--desg desg for-common-linked-text__style"><a href="{{ url('profile', Crypt::encrypt($feedVal['acknoledgement']['ack_by']['id'])) }}">{{ $feedVal['acknoledgement']['ack_by']['firstName'] }}</a></div> 
 						<div class="main-page-cmmn-feed-card__footer-area--dept">{{$feedVal['acknoledgement']['ack_by']['profile']['department'] }}</div>
 					</div>
 						@include('home.common.feed-action-card')
@@ -55,8 +55,8 @@
 				</div>
 				<div class="dropdown-menu dots__options-list--for-feed">
 					<ul>
-					<li><a href="javascript:void(0)" class="remove_feed_link" data-id="{{ $feedVal['id'] }}">Remove from feed</a></li>
-					<li><a href="javascript:void(0)" >Report</a></li>
+					<li><i class="far fa-times-circle" aria-hidden="true"></i><a href="javascript:void(0)" class="remove_feed_link" data-id="{{ $feedVal['id'] }}">Remove from feed</a></li>
+					<li><i class="far fa-times-circle" aria-hidden="true"></i><a href="javascript:void(0)" >Report</a></li>
 					</ul>
 				</div>
 				
@@ -148,17 +148,17 @@
 				<div class="main-page-cmmn-feed-card__footer-area">							
 					<div class="row clearfix">
 						@if(!empty($feedVal['opportunity']['creator']['profile']['image_name']))
-								<div class="col-md-1">
-									<div class="favorite-page-cmn-card__user-pic" style="background:url('{{$feedVal['opportunity']['creator']['profile']['image_url']}}')"></div>
+								<div class="col-md-1 for-common-linked-text__style">
+									<a href="{{ url('profile', Crypt::encrypt($feedVal['opportunity']['creator']['id'])) }}"><div class="favorite-page-cmn-card__user-pic" style="background:url('{{$feedVal['opportunity']['creator']['profile']['image_url']}}')"></div></a>
 								</div>
 						@else
-								<div class="col-md-1">
-								<i class='fas fa-user-circle fa-2x'></i>
+								<div class="col-md-1 for-common-linked-text__style">
+								<a href="{{ url('profile', Crypt::encrypt($feedVal['opportunity']['creator']['id'])) }}"><i class='fas fa-user-circle fa-2x'></i></a>
 							</div>
 						@endif	
 
 						<div class="col-md-4">
-						<div class="main-page-cmmn-feed-card__footer-area--desg">{{ $feedVal['opportunity']['creator']['firstName'] }}</div> 
+						<div class="main-page-cmmn-feed-card__footer-area--desg for-common-linked-text__style"><a href="{{ url('profile', Crypt::encrypt($feedVal['opportunity']['creator']['id'])) }}">{{ $feedVal['opportunity']['creator']['firstName'] }}</a></div> 
 						<div class="main-page-cmmn-feed-card__footer-area--dept">{{ $feedVal['opportunity']['creator']['profile']['department'] }}</div>
 						</div>
 

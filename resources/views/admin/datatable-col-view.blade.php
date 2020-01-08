@@ -7,6 +7,7 @@
 		@else 
 		<a title="{{ __('Cancel') }}" class="delete-action" data-msg="Are you sure to close this opportunity?" href="{{ url('role_action/not_approve', Crypt::encrypt($users->roleID)) }}" data-url=""><i class="fa fa-trash"></i></a>
 		@endif  */ ?>
+		<a title="{{ __('View') }}" class="" href="{{ url('profile', Crypt::encrypt($users->id)) }}"><i class="fa fa-edit"></i></a>
 		<a title="{{ __('Delete') }}" class="delete-action" data-msg="Are you sure to delete?" href="{{ url('role_action/remove', Crypt::encrypt($users->id)) }}" data-url=""><i class="fa fa-trash"></i></a>
     </td>
 @elseif($colName == 'status')

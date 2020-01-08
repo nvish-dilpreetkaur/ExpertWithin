@@ -229,7 +229,7 @@
 						</div>
 						<div class="main-page__form-buttons">
 							<button type="submit" id="btn-opr-later" class="btn btn-primary" value="save-for-later">Save for later</button>
-							<button type="submit" id="btn-opr-cont" class="btn btn-primary" value="continue">Continue</button>
+							<button type="submit" id="btn-opr-cont" class="btn btn-primary for-common-red-btn" value="continue">Continue</button>
 						</div>
 					</form>
 			</div>

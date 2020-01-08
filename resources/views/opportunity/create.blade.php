@@ -33,24 +33,26 @@
                         <div class="card slide current-slide">
                           <div class="card-header">
                             <div class="form-slides-container__header">
-                            <div class="common-user-info__header--section">
+                            <div class="common-user-info__header--section for-common-linked-text__style">
                                 @if(!empty($opportunity->creator->profile["image_name"]))
-									<div class="publish-page-cmn-card__user-pic" style="background: url('{{ $opportunity->creator->profile['image_url'] }}') ;"></div>
-								@else
-									<i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
-								@endif
-                               <div class="common-user-info__header--section-user-name">{{$opportunity->creator->firstName}}</div>
+                                <a href="{{ url('profile', Crypt::encrypt($opportunity->creator->id)) }}"><div class="publish-page-cmn-card__user-pic" style="background: url('{{ $opportunity->creator->profile['image_url'] }}') ;"></div></a>
+                                @else
+                                <a href="{{ url('profile', Crypt::encrypt($opportunity->creator->id)) }}"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></a>
+                                @endif
+                               <div class="common-user-info__header--section-user-name for-common-linked-text__style">
+                                <a href="{{ url('profile', Crypt::encrypt($opportunity->creator->id)) }}">{{$opportunity->creator->firstName}}</a>
+                                </div>
                                <div class="common-user-info__header--section-user-desg">{{$opportunity->creator->profile->department}}</div>
                             </div>
                               <button id="btn-opr-u-save" type="button" class="create-oppor-hdr-cmmn-btn">
                               <span>Save (⌘+S )</span>
                               </button>
-                              <button id="btn-opr-u-publish" type="button" class="create-oppor-hdr-cmmn-btn">
+                              <button id="btn-opr-u-publish" type="button" class="for-common-red-btn create-oppor-hdr-cmmn-btn">
                               <span>Publish</span>
                               </button>
                             </div>
                           </div>
-                          <div class="common-black-strip-for-status-message"> <i class="fas fa-file-upload"></i> Draft
+                          <div class="common-black-strip-for-status-message"> <i class="fab fa-firstdraft"></i> Draft
                             </div>
                           <div class="card-body">
                             <form action="#" id="opportunity-store" class="needs-validation form-create-opportunity" novalidate>
@@ -192,7 +194,7 @@
                             <button id="btn-opr-save" type="button" class="create-oppor-hdr-cmmn-btn">
                             <span>Save (⌘+S )</span>
                             </button>
-                            <button id="btn-opr-publish" type="button" class="create-oppor-hdr-cmmn-btn">
+                            <button id="btn-opr-publish" type="button" class="for-common-red-btn create-oppor-hdr-cmmn-btn">
                             <span>Publish</span>
                             </button>
                           </div>

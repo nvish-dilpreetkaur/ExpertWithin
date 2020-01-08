@@ -567,14 +567,19 @@ class OpportunityController extends Controller
     protected function completeOpportunity($oid) {
         Opportunity::where("id", $oid)->update(array("job_complete_date"=> Carbon::now()));
 
-        /** add notification : start */
-        // $notification_data['type_of_notification'] = config('kloves.NOTI_OPOR_COMPLETED');
-        // $notification_data['key_value'] = $oid;
-        // $notification_data['sender_id'] = auth()->user()->id;
-        // $notification_data['recipient_id'] = auth()->user()->id;
-        // $notification_data['status'] = config('kloves.RECORD_STATUS_ACTIVE');
-        // Notification::insert($notification_data);
-        /** add notification : end */
+        // $appliedUsers = OpportunityUser::select(["org_uid"])->where("oid", $oid)
+        //     ->where("apply", 1)
+        //     ->where("approve", 1)
+        //     ->get();
+
+        // foreach($appliedUsers as $user) {
+        //     $notification_data['type_of_notification'] = config('kloves.NOTI_COMPLETE_ACKNOWLEDGE');
+        //     $notification_data['key_value'] = $oid;
+        //     $notification_data['sender_id'] = $user->org_uid;
+        //     $notification_data['recipient_id'] = auth()->user()->id;
+        //     $notification_data['status'] = config('kloves.RECORD_STATUS_ACTIVE');
+        //     Notification::insert($notification_data);
+        // }
 
         $result = array('status' => true);
         return response()->json($result, Config::get('constants.STATUS_OK'));
@@ -823,7 +828,29 @@ class OpportunityController extends Controller
 
         $page_title = "Opportunity Details";
 
-        return view('opportunity.view', compact(['opportunity_data','youMayLikeOpp','shareUserJsonList']));
+
+        $prevOpportunity = Opportunity::select(["id"])
+            ->where("id","<",$id)->where("status",1)
+            ->orderBy("id", "DESC");
+        if($prevOpportunity->count()>0) {
+            $prevOpportunity = $prevOpportunity->first()->toArray();
+        } else {
+            $prevOpportunity = array();
+        }
+        
+        $nextOpportunity = Opportunity::select(["id"])
+            ->where("id",">",$id)->where("status",1)
+            ->orderBy("id", "ASC");
+        if($nextOpportunity->count()>0) {
+            $nextOpportunity = $nextOpportunity->first()->toArray();
+        } else {
+            $nextOpportunity = array();
+        }
+
+        $prevOpportunity = (isset($prevOpportunity["id"]) && !empty($prevOpportunity["id"]))?Crypt::encrypt($prevOpportunity["id"]):"";
+        $nextOpportunity = (isset($nextOpportunity["id"]) && !empty($nextOpportunity["id"]))?Crypt::encrypt($nextOpportunity["id"]):"";
+
+        return view('opportunity.view', compact(['opportunity_data','youMayLikeOpp','shareUserJsonList','prevOpportunity','nextOpportunity']));
     }
 	
 	

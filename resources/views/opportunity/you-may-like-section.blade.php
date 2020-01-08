@@ -48,17 +48,19 @@
             <div class="main-page-cmmn-feed-card__footer-area oppor-create-card__footer">
                <div class="row clearfix">
                       @if(!empty($likeVal->image_name))
-							<div class="col-md-1">
-                     <div class="publish-page-cmn-card__user-pic" style="background: url('{{$opportunity_data->image_name}}') ;"></div>
-							 <!-- <img src="{{$opportunity_data->image_name}}" style="width: 100%;"> -->
+							<div class="col-md-1 for-common-linked-text__style">
+                     <a href="{{ url('profile', Crypt::encrypt($likeVal->org_uid)) }}"><div class="publish-page-cmn-card__user-pic" style="background: url('{{$likeVal->image_name}}') ;"></div></a>
+							 <!-- <img src="{{$likeVal->image_name}}" style="width: 100%;"> -->
 						   </div>
 					   @else
-						<div class="col-md-1">
-						 <i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+						<div class="col-md-1 for-common-linked-text__style">
+                  <a href="{{ url('profile', Crypt::encrypt($likeVal->org_uid)) }}"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></a>
 					   </div>
 					   @endif
                   <div class="col-md-5 like-opr__user-details">
-                     <div class="main-page-cmmn-feed-card__footer-area--desg">{{ $likeVal->uname }}</div>
+                     <div class="main-page-cmmn-feed-card__footer-area--desg for-common-linked-text__style">
+                     <a href="{{ url('profile', Crypt::encrypt($likeVal->org_uid)) }}">{{ $likeVal->uname }}</a>
+                     </div>
                      <div class="main-page-cmmn-feed-card__footer-area--dept">{{ $likeVal->department }}</div>
                   </div>
                   <div class="col-md-5">

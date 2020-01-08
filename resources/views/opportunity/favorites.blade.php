@@ -36,7 +36,7 @@
 												</div>
 												@if(Auth::user()->id != $favRow['opportunity']['org_uid']) 
 													@if(($favRow['apply'] == config('kloves.FLAG_SET'))  && ($favRow['approve'] == config('kloves.OPP_APPLY_NEW') || $favRow['approve'] == config('kloves.OPP_APPLY_APPROVED')) )
-														<a id="appliedCardOpp{{$favRow['oid']}}" class="main-page-cmmn-feed-card__action-btn favorite--card-action__button" href="javascript:void(0)">{{ __('Applied') }}</a>
+														<a id="withdrawCardBtn{{$favRow['oid']}}" class="main-page-cmmn-feed-card__action-btn favorite--card-action__button"  data-oid="{{$favRow['oid']}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($favRow['oid'])) }}">{{ __('Withdraw') }}</a>
 													@else
 														<a id="applyCardBtn{{$favRow['oid']}}" class="main-page-cmmn-feed-card__action-btn favorite--card-action__button"  data-oid="{{$favRow['oid']}}" href="javascript:void(0)" data-href="{{ url('opportunity/apply', Crypt::encrypt($favRow['oid'])) }}" >Interested ?</a>
 														
@@ -63,18 +63,22 @@
 								
 										<div class="main-page-cmmn-feed-card__footer-area favorite-card__footer-area">
 										<div class="row ">
-											<div class="col-md-1">
+											<div class="col-md-1 for-common-linked-text__style">
 												
 												@if(!empty($favRow["opportunity"]['creator']["profile"]["image_name"]))
-													<div class="favorite-page-cmn-card__user-pic" style="background: url('{{ $favRow['opportunity']['creator']['profile_image']['profile_image'] }}') ;"></div>
+												<a href="{{ url('profile', Crypt::encrypt($favRow['opportunity']['creator']['id'])) }}"><div class="favorite-page-cmn-card__user-pic" style="background: url('{{ $favRow['opportunity']['creator']['profile_image']['profile_image'] }}') ;"></div></a>
 												@else
-													<div class="favorite-page-cmn-card__user-pic"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></div>
+													<div class="favorite-page-cmn-card__user-pic for-common-linked-text__style">
+													<a href="{{ url('profile', Crypt::encrypt($favRow['opportunity']['creator']['id'])) }}"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></a>
+													</div>
 												@endif
 												
 											</div>
 
 											<div class="col-md-5 for-null-paddng-right">
-												<div class="main-page-cmmn-feed-card__footer-area--desg">{{ $favRow['opportunity']['creator']['firstName'] }}</div>
+												<div class="main-page-cmmn-feed-card__footer-area--desg for-common-linked-text__style">
+												<a href="{{ url('profile', Crypt::encrypt($favRow['opportunity']['creator']['id'])) }}">{{ $favRow['opportunity']['creator']['firstName'] }}</a>
+												</div>
 												<div class="main-page-cmmn-feed-card__footer-area--dept">{{ $favRow['opportunity']['creator']['profile']['department'] }}</div>
 											</div>
 																				

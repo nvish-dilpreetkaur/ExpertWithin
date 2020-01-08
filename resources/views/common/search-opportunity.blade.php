@@ -48,16 +48,16 @@
 
             <div class="main-page-cmmn-feed-card__footer-area favorite-card__footer-area search-drawer__footer-area">
                 <div class="row ">
-                    <div class="col-md-1">
+                    <div class="col-md-1 for-common-linked-text__style">
                         @if(!empty($rowVal->image_name))
-                            <div class="favorite-page-cmn-card__user-pic"  style="background: url('{{ $rowVal->image_name }}');">
-                            </div>
+                            <a href="{{ url('profile', Crypt::encrypt($rowVal->org_uid)) }}"><div class="favorite-page-cmn-card__user-pic"  style="background: url('{{ $rowVal->image_name }}');">
+                            </div></a>
                         @else
-                           <i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+                            <a href="{{ url('profile', Crypt::encrypt($rowVal->org_uid)) }}"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></a>
                         @endif
                     </div>
-                    <div class="col-md-5 for-null-paddng-right">
-                        <div class="main-page-cmmn-feed-card__footer-area--desg">{{$rowVal->firstName}}</div>
+                    <div class="col-md-5 for-null-paddng-right for-common-linked-text__style">
+                        <a href="{{ url('profile', Crypt::encrypt($rowVal->org_uid)) }}"><div class="main-page-cmmn-feed-card__footer-area--desg">{{$rowVal->firstName}}</div></a>
                         <div class="main-page-cmmn-feed-card__footer-area--dept">{{$rowVal->department}}</div>
                     </div>
                     @include('common.search-feed-action-card')

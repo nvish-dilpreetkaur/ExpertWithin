@@ -18,8 +18,8 @@
                            </a>
 
                            <div class="common-icons__paginations">
-                                <a href="{{ (!empty($prevOpportunity))?url('published-opportunity', $prevOpportunity):'' }}" class="common-icons__paginations--for-left-pagination ripple-effect {{(empty($prevOpportunity))?'disabled':''}}"><i class="fas fa-chevron-left"></i></a>
-                                <a href="{{ (!empty($nextOpportunity))?url('published-opportunity', $nextOpportunity):'' }}" class="common-icons__paginations--for-right-pagination ripple-effect {{(empty($nextOpportunity))?'disabled':''}}"><i class="fas fa-chevron-right"></i></a>
+                                <a href="{{ (!empty($prevOpportunity))?url('view-opportunity', $prevOpportunity):'' }}" class="common-icons__paginations--for-left-pagination ripple-effect {{(empty($prevOpportunity))?'disabled':''}}"><i class="fas fa-chevron-left"></i></a>
+                                <a href="{{ (!empty($nextOpportunity))?url('view-opportunity', $nextOpportunity):'' }}" class="common-icons__paginations--for-right-pagination ripple-effect {{(empty($nextOpportunity))?'disabled':''}}"><i class="fas fa-chevron-right"></i></a>
                            </div>
                         </div>
 
@@ -29,16 +29,18 @@
 			   <div class="opportunity-detail-page__card--top-bottom">
 				   <div class="row clearfix">
 					   @if(!empty($opportunity_data->image_name))
-						<div class="col-md-1">
-							<div class="publish-page-cmn-card__user-pic" style="background: url('{{$opportunity_data->image_name}}') ;"></div>
+						<div class="col-md-1 for-common-linked-text__style">
+							<a href="{{ url('profile', Crypt::encrypt($opportunity_data->org_uid)) }}"><div class="publish-page-cmn-card__user-pic" style="background: url('{{$opportunity_data->image_name}}') ;"></div></a>
 					   </div>
 					   @else
-						<div class="col-md-1">
-						 <i class="fas fa-user-circle fa-2x" aria-hidden="true"></i>
+						<div class="col-md-1 for-common-linked-text__style">
+						<a href="{{ url('profile', Crypt::encrypt($opportunity_data->org_uid)) }}"><i class="fas fa-user-circle fa-2x" aria-hidden="true"></i></a>
 					   </div>
 					   @endif
 					   <div class="col-md-2 for-null-paddng">
-						<div class="main-page-cmmn-feed-card__footer-area--desg">{{ $opportunity_data->uname }}</div>
+						<div class="main-page-cmmn-feed-card__footer-area--desg for-common-linked-text__style">
+						<a href="{{ url('profile', Crypt::encrypt($opportunity_data->org_uid)) }}">{{ $opportunity_data->uname }}</a>
+						</div>
 						<div class="main-page-cmmn-feed-card__footer-area--dept">{{ $opportunity_data->department }}</div>
 					   </div>
 					   <div class="col-md-4 for-null-paddng">

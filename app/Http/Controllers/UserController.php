@@ -113,7 +113,21 @@ class UserController extends Controller
 		$topMatchedFilter = [];  $oppForCanFilters = [];
         if ($id) {
             $user_id = Crypt::decrypt($id);
-            $action_type = 'HR-EDIT';
+            $loggedInUserID = $user_id;
+            $topMatchedFilter['loggedUserID'] = $loggedInUserID;
+			$oppForCanFilters['loggedUserID'] = $loggedInUserID;
+			$appliedOppFilters['loggedUserID'] = $loggedInUserID;
+			$feedFilters['loggedUserID'] = $loggedInUserID;
+			if($user_id == auth()->user()->id) {
+				$action_type = 'SELF-EDIT';
+			} else {
+				$userRoles = $this->userRoles();
+				if(in_array(config('kloves.ROLE_ADMIN'),$userRoles)) {
+					$action_type = 'HR-EDIT';
+				} else {
+					$action_type = 'view_Profile';
+				}
+			}
         }else{
             $user_id = auth()->user()->id; 
             $action_type = 'SELF-EDIT';

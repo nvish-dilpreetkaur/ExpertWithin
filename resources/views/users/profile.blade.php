@@ -11,12 +11,15 @@
 								<div class="profile-sec__cmmn-tile--heading">
 									Profile
 								</div>
-								<div class="profile-sec__edit-icon" data-toggle="modal" data-target="#editAbout">
-									<i class="fas fa-edit" aria-hidden="true" id="editProfile"></i>
-								</div>
-								<div class="profile-sec__edit-icon--optimize">
-									<i class="fab fa-linkedin"></i>Optimize with LinkedIn
-								</div>
+								@if($action_type != 'view_Profile')
+									<div class="profile-sec__edit-icon" data-toggle="modal" data-target="#editAbout">
+										<i class="fas fa-edit" aria-hidden="true" id="editProfile"></i>
+									</div>
+									<div class="profile-sec__edit-icon--optimize">
+										<i class="fab fa-linkedin"></i>Optimize with LinkedIn
+									</div>
+								@endif	
+								
 							</div>
 						<div class="row">
 						 <div class="profile-sec__user-details--left">
@@ -160,8 +163,9 @@
 						<div class="profile-sec__cmmn-tiles--wrapper">
 							<div class="profile-sec__cmmn-tile--left-side profile__swiper-section">
 								<div class="profile-sec__cmmn-tile">
-									<div class="profile-sec__swiper-slider">
+									
 										@if ($topMatchedOpportunities != null)
+										<div class="profile-sec__swiper-slider">
 											<div class="swiper-container">
 												<div class="swiper-wrapper">
 												@foreach ($topMatchedOpportunities as $topOppRow)
@@ -179,8 +183,14 @@
 											<!-- Add Arrows -->
 											<div class="swiper-button-next"></div>
 											<div class="swiper-button-prev"></div> 
+										  </div>	
+										@else
+											<div class="carousel-item active  no_opportunity">
+												<div class="profile__carousel-item--heading">
+													No opportunities yet.
+												</div>
+											</div>
 										@endif
-									</div>
 								</div>
 							</div>
 
@@ -254,10 +264,12 @@
 									 <div class="profile-sec__cmmn-tile--heading">
 										Skills
 									 </div>
+									 @if($action_type != 'view_Profile')
 									 <div class="profile-sec__edit-icon" data-toggle="modal"
 										data-target="#editAbout">
 										<i class="fas fa-edit" aria-hidden="true" id="editSkill"></i>
 									 </div>
+									 @endif
 									<div class="profile-sec__cmmn-pills" id="skills_show">
 										<ul>
 										@foreach($user_skills as $uskills)
@@ -286,9 +298,11 @@
 								<div class="profile-sec__cmmn-tile--heading">
 									Focus Area
 								</div>
+								@if($action_type != 'view_Profile')
 								<div class="profile-sec__edit-icon" data-toggle="modal" data-target="#editAbout">
 									<i class="fas fa-edit" aria-hidden="true" id="editFocus"></i>
 								</div>
+								@endif
 								<div class="profile-sec__cmmn-pills"  id="focus_show">
 									<ul>
 										@foreach($user_focus as $usr_fc)
@@ -318,9 +332,11 @@
 							<div class="profile-sec__cmmn-tile--heading">
 								Activities
 							</div>
+							@if($action_type != 'view_Profile')
 							<div class="profile-sec__edit-icon" data-toggle="modal" data-target="#editAbout">
 								<i class="fas fa-edit" aria-hidden="true" id="editActivity"></i>
 							</div>
+							@endif
 							<div class="profile-sec__card-content--ful-width__cmmn" id="show_activity">{{$users->activities}}</div>
 							<div class="form-group cmmn-profile-page__textfield hidden" id="edit_activity">
 							   <div class="form-group">
@@ -340,9 +356,11 @@
 							<div class="profile-sec__cmmn-tile--heading">
 								Certificates
 							</div>
+							@if($action_type != 'view_Profile')
 							<div class="profile-sec__edit-icon" data-toggle="modal" data-target="#editAbout">
 								<i class="fas fa-edit" aria-hidden="true" id="editCertificate"></i>
 							</div>
+							@endif
 							<div class="profile-sec__card-content--ful-width__cmmn" id="show_certificate">{{$users->certificate}}</div>
 							<div class="form-group cmmn-profile-page__textfield hidden" id="edit_certificate">
 								 <div class="form-group">
